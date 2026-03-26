@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: https://betterstudio.com/
+ *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
  *
  *  \--> BetterStudio, 2017 <--/
  */
@@ -29,9 +29,8 @@ var Better_Fonts_Manager = (function ($) {
                 // Setup Panel
                 case 'panel':
 
-
-                    this.load_fonts();
                     this.setup_panel_fonts_manager();
+
                     //Setup General fields
                     this.setup_field_typography();
                     this.setup_field_font_selector();
@@ -74,9 +73,9 @@ var Better_Fonts_Manager = (function ($) {
 
         attach_events: function () {
             var self = this;
-            $(document).on('bf-ajax-tab-loaded bf-ajax-group-loaded', function (e, target) {
-
+            $(document).on('bf-ajax-tab-loaded', function (e, target) {
                 self.setup_panel_fonts_manager(target);
+
                 //Setup General fields
                 self.setup_field_typography(target);
             });
@@ -231,9 +230,7 @@ var Better_Fonts_Manager = (function ($) {
                                 });
 
                                 wp.media.frame.on('select', function () {
-                                    $('.input', $btn.parent())
-                                        .val(wp.media.frame.state().get('selection').first().toJSON().url)
-                                        .trigger('keyup');
+                                    $('.input', $btn.parent()).trigger('keyup');
                                 });
 
                             }, 100);
@@ -549,9 +546,7 @@ var Better_Fonts_Manager = (function ($) {
                                 this.options.content.header =
                                     this.options.content.header.replace('{{btn}}', this.generate_buttons());
                             }
-                        },
-
-                        initialZIndex: 15000
+                        }
                     });
 
                 modalObject.show();
@@ -587,7 +582,16 @@ var Better_Fonts_Manager = (function ($) {
 
         },
 
-        load_fonts() {
+
+        /**
+         * Setup Typography Field
+         ******************************************/
+        setup_field_typography: function (context) {
+
+            // Init preview in page load
+            $('.bf-section-typography-option', context).each(function () {
+                Better_Fonts_Manager.refresh_typography($(this).closest(".bf-section-container"), 'first-time');
+            });
 
             if (Object.keys(Better_Fonts_Manager.load_google_fonts).length > 0) {
                 WebFont.load({
@@ -622,27 +626,14 @@ var Better_Fonts_Manager = (function ($) {
                     });
                 });
             }
-        },
-
-        /**
-         * Setup Typography Field
-         ******************************************/
-        setup_field_typography: function (context) {
-
-            // Init preview in page load
-            $('.bf-section-typography-option', context).each(function () {
-                Better_Fonts_Manager.refresh_typography($(this).closest(".bf-section-container"), 'first-time');
-            });
-
-
 
             // Prepare active field in page load
             $('.bf-section-typography-option .typo-enable-container input[type=hidden]', context).each(function () {
 
                 $(this).closest(".bf-section-typography-option").addClass('have-enable-field');
 
-                if ($(this).attr("value") === '1') {
-                    $(this).closest(".bf-section-typography-option").addClass('enable-field');
+                if ($(this).attr("checked")) {
+                    $(this).closest(".bf-section-typography-option").addClass('enable-field`');
                 } else {
                     $(this).closest(".bf-section-typography-option").addClass('disable-field');
                 }

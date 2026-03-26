@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: https://betterstudio.com/
+ *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
  *
  *  \--> BetterStudio, 2017 <--/
  */
@@ -23,168 +23,9 @@ var bf_ignore_reload_notice = false,
     Better_Framework = (function($) {
     "use strict";
 
-        /**
-         * @file A WordPress-like hook system for JavaScript.
-         *
-         * This file demonstrates a simple hook system for JavaScript based on the hook
-         * system in WordPress. The purpose of this is to make your code extensible and
-         * allowing other developers to hook into your code with their own callbacks.
-         *
-         * There are other ways to do this, but this will feel right at home for
-         * WordPress developers.
-         *
-         * @author Rheinard Korf
-         * @license GPL2 (https://www.gnu.org/licenses/gpl-2.0.html)
-         *
-         * @requires underscore.js (http://underscorejs.org/)
-         */
-        var Hooks = {};
-
-        Hooks.actions = Hooks.actions || {}; // Registered actions
-        Hooks.filters = Hooks.filters || {}; // Registered filters
-
-        /**
-         * Add a new Action callback to Hooks.actions
-         *
-         * @param tag The tag specified by do_action()
-         * @param callback The callback function to call when do_action() is called
-         * @param priority The order in which to call the callbacks. Default: 10 (like WordPress)
-         */
-        Hooks.add_action = function (tag, callback, priority) {
-
-            if (typeof priority === "undefined") {
-                priority = 10;
-            }
-
-            // If the tag doesn't exist, create it.
-            Hooks.actions[tag] = Hooks.actions[tag] || [];
-            Hooks.actions[tag].push({priority: priority, callback: callback});
-
-        }
-
-        /**
-         * Add a new Filter callback to Hooks.filters
-         *
-         * @param tag The tag specified by apply_filters()
-         * @param callback The callback function to call when apply_filters() is called
-         * @param priority Priority of filter to apply. Default: 10 (like WordPress)
-         */
-        Hooks.add_filter = function (tag, callback, priority) {
-
-            if (typeof priority === "undefined") {
-                priority = 10;
-            }
-
-            // If the tag doesn't exist, create it.
-            Hooks.filters[tag] = Hooks.filters[tag] || [];
-            Hooks.filters[tag].push({priority: priority, callback: callback});
-
-        }
-
-        /**
-         * Remove an Anction callback from Hooks.actions
-         *
-         * Must be the exact same callback signature.
-         * Warning: Anonymous functions can not be removed.
-         * @param tag The tag specified by do_action()
-         * @param callback The callback function to remove
-         */
-        Hooks.remove_action = function (tag, callback) {
-
-            Hooks.actions[tag] = Hooks.actions[tag] || [];
-
-            Hooks.actions[tag].forEach(function (filter, i) {
-                if (filter.callback === callback) {
-                    Hooks.actions[tag].splice(i, 1);
-                }
-            });
-        }
-
-        /**
-         * Remove a Filter callback from Hooks.filters
-         *
-         * Must be the exact same callback signature.
-         * Warning: Anonymous functions can not be removed.
-         * @param tag The tag specified by apply_filters()
-         * @param callback The callback function to remove
-         */
-        Hooks.remove_filter = function (tag, callback) {
-
-            Hooks.filters[tag] = Hooks.filters[tag] || [];
-
-            Hooks.filters[tag].forEach(function (filter, i) {
-                if (filter.callback === callback) {
-                    Hooks.filters[tag].splice(i, 1);
-                }
-            });
-        }
-
-        /**
-         * Calls actions that are stored in Hooks.actions for a specific tag or nothing
-         * if there are no actions to call.
-         *
-         * @param tag A registered tag in Hook.actions
-         * @options Optional JavaScript object to pass to the callbacks
-         */
-        Hooks.do_action = function (tag, options) {
-
-            var actions = [];
-
-            if (typeof Hooks.actions[tag] !== "undefined" && Hooks.actions[tag].length > 0) {
-
-                Hooks.actions[tag].forEach(function (hook) {
-
-                    actions[hook.priority] = actions[hook.priority] || [];
-                    actions[hook.priority].push(hook.callback);
-
-                });
-
-                actions.forEach(function (hooks) {
-
-                    hooks.forEach(function (callback) {
-                        callback(options);
-                    });
-
-                });
-            }
-
-        }
-
-        /**
-         * Calls filters that are stored in Hooks.filters for a specific tag or return
-         * original value if no filters exist.
-         *
-         * @param tag A registered tag in Hook.filters
-         * @options Optional JavaScript object to pass to the callbacks
-         */
-        Hooks.apply_filters = function (tag, value, options) {
-
-            var filters = [];
-
-            if (typeof Hooks.filters[tag] !== "undefined" && Hooks.filters[tag].length > 0) {
-
-                Hooks.filters[tag].forEach(function (hook) {
-
-                    filters[hook.priority] = filters[hook.priority] || [];
-                    filters[hook.priority].push(hook.callback);
-                });
-
-                filters.forEach(function (hooks) {
-
-                    hooks.forEach(function (callback) {
-                        value = callback(value, options);
-                    });
-
-                });
-            }
-
-            return value;
-        }
-
     // module
     return {
-        Hooks:Hooks,
-        loaded: false,
+        _interactive_fields_cache: {},
         _doingAjax: false,
         _cuurentAjax: false,
         radioCheckboxInitialized: false,
@@ -215,10 +56,6 @@ var bf_ignore_reload_notice = false,
             this.setup_deferred_panel_fields();
 
             this.vc_modifications();
-
-            this.customizePage();
-
-            this.setup_show_on();
 
 
             switch( better_framework_loc.type ){
@@ -254,6 +91,8 @@ var bf_ignore_reload_notice = false,
 
                     this.setup_fields_for_vc();
 
+                    this.setup_interactive_fields_for_vc();
+
                     this.change_metabox_data_notice();
 
                     this.vc_editor_fix();
@@ -287,11 +126,7 @@ var bf_ignore_reload_notice = false,
 
             }
 
-            this.pageBuilderCompatibility.init();
-
             $(document).trigger('bf-loaded');
-
-            this.loaded = true;
         },
 
         /**
@@ -608,12 +443,12 @@ var bf_ignore_reload_notice = false,
 
                 },
                 afterAjaxCallback: function ($inner) {
-
                     self.init_term_select($inner);
-                    self.setup_deferred_panel_fields();
-                    Better_Framework.setup_field_color_picker($inner);
 
-                    Hooks.do_action('panel/tabs/loaded-deferred', $inner);
+                    self.setup_interactive_fields_for_bf($inner);
+                    self.setup_deferred_panel_fields();
+
+                    Better_Framework.setup_field_color_picker($inner);
                 }
             }).init();
         },
@@ -707,9 +542,16 @@ var bf_ignore_reload_notice = false,
                     $('body,html').animate({
                         scrollTop: 0
                     }, 400);
+                }
 
-                    Hooks.do_action('panel/tabs/switching', _target);
+                function initShowOn() {
 
+                    if( ! _this.data('show-on-initialized')) {
+                        self.setup_interactive_fields_for_bf(_target);
+                        _this.data('show-on-initialized',true);
+                    }
+
+                    _target.find(':input:first').trigger('force-change');
                 }
 
                 var isTabAjax = $parent.hasClass('bf-ajax-tab') &&
@@ -717,6 +559,7 @@ var bf_ignore_reload_notice = false,
 
                 if(! isTabAjax) {
 
+                    initShowOn();
                     displayTab();
                     $.cookie( 'bf_current_tab_of_' + panelID, _clicked.data("go"), { expires: 7 });
 
@@ -794,22 +637,18 @@ var bf_ignore_reload_notice = false,
         /**
          * @see _get_panel_data
          */
-        handle_editor:function($context) {
+        handle_editor:function() {
             var self = this;
 
             jQuery(document).ready(function($) {
                 self._init_editor();
-            }).on('bf-ajax-tab-loaded bf-ajax-group-loaded', function(e,target) {
+            }).on('bf-ajax-tab-loaded', function(e,target) {
                 self._init_editor(target);
             }).on('tinymce-editor-init', function() {
 
                 // Fix Bug: tinymce update textarea filed with delay
                 // This event change textarea field value immediately
                 tinymce.activeEditor.on('change', function() {
-
-                    if(! this.container) {
-                        return ;
-                    }
                     var container = this.container.closest('.bf-section-container');
 
                     if(container) {
@@ -817,13 +656,8 @@ var bf_ignore_reload_notice = false,
                     }
                 });
             });
-
-            if($context && $context.length) {
-                self._init_editor($context);
-            }
         },
         _init_editor: function (context) {
-
             $('.bf-editor-wrapper', context).each(function() {
                 var $wrapper  = $(this),
                     $editor   = $wrapper.find('.bf-editor'),
@@ -834,7 +668,6 @@ var bf_ignore_reload_notice = false,
 
                     $textarea.hide();
 
-                    $editor.css('min-height', '100px');
                     var
                         lang = $editor.data('lang'),
                         max_lines = $editor.data('max-lines'),
@@ -854,14 +687,13 @@ var bf_ignore_reload_notice = false,
 
                     session.setUseWorker(false);
 
-                    editor.getSession().setValue($textarea.val());
+                    editor.getSession().setValue($textarea
+                        .val());
 
                     session.on('change', function (e, EditSession) {
                         $textarea
                             .val(editor.getSession().getValue())
                             .trigger('bf-changed');
-
-                        $textarea[0].dispatchEvent(new Event('change',{bubbles: true}));
                     });
 
                 } else {
@@ -1042,10 +874,8 @@ var bf_ignore_reload_notice = false,
 
                 if($parentModal.length) {
                     initialZIndex = parseInt($parentModal.css('z-index'));
-                } else {
-
-                    initialZIndex =1.3e5;
                 }
+
                 if (data[ 0 ]) {
 
                     $.bs_selector_modal({
@@ -1114,6 +944,7 @@ var bf_ignore_reload_notice = false,
 
                                     $btn.attr('class', 'bf-btn-primary disabled').html(data[ 2 ].btn_label_active);
                                     $btn.parent().removeClass('bf-toggle-item-status');
+
                                     $btn.on('click', function (e) {
                                         e.preventDefault();
                                     });
@@ -1121,12 +952,8 @@ var bf_ignore_reload_notice = false,
 
                                 function setValue(id,label) {
 
-                                    var $input = $select.find('input.select-value');
-                                    $input.val(id).change();
+                                    $select.find('input.select-value').val(id).change();
                                     $select.find('.active-item-label').html(label);
-
-                                    $input[0].dispatchEvent(new Event('change',{bubbles: true}));
-
                                 }
                                 function setImage(src) {
                                     $select.find('.select-popup-selected-image img').attr('src', src);
@@ -1609,15 +1436,6 @@ var bf_ignore_reload_notice = false,
 
             var $bf_loading = $('.bf-loading');
 
-            if($bf_loading.length === 0 ) {
-
-                $(document.body)
-                    .append('<div class="bf-loading">\n    <div class="loader">\n        <div class="loader-icon in-loading-icon "><i class="dashicons dashicons-update"></i></div>\n        <div class="loader-icon loaded-icon"><i class="dashicons dashicons-yes"></i></div>\n        <div class="loader-icon not-loaded-icon"><i class="dashicons dashicons-no-alt"></i></div>\n        <div class="message">An Error Occurred!</div>\n    </div>\n</div>')
-                    .append('<style>\n    .bf-loading {\n        position: fixed;\n        top: 0;\n        left: 0;\n        width: 100%;\n        height: 100%;\n        background-color: #636363;\n        background-color: rgba(0, 0, 0, 0.41);\n        display: none;\n        z-index: 99999;\n    }\n\n    .bf-loading .loader {\n        width: 300px;\n        height: 180px;\n        position: absolute;\n        top: 50%;\n        left: 50%;\n        margin-top: -90px;\n        margin-left: -150px;\n        text-align: center;\n    }\n\n    .bf-loading.not-loaded,\n    .bf-loading.loaded,\n    .bf-loading.in-loading {\n        display: block;\n    }\n\n    .bf-loading.in-loading .loader {\n        color: white;\n    }\n\n    .bf-loading.loaded .loader {\n        color: #27c55a;\n    }\n\n    .bf-loading.not-loaded .loader {\n        color: #ff0000;\n    }\n\n    .bf-loading .loader .loader-icon {\n        font-size: 30px;\n        -webkit-transition: all 0.2s ease;\n        -moz-transition: all 0.2s ease;\n        -ms-transition: all 0.2s ease;\n        -o-transition: all 0.2s ease;\n        transition: all .2s ease;\n        opacity: 0;\n        border-radius: 10px;\n        background-color: #333;\n        background-color: rgba(51, 51, 51, 0.86);\n        width: 60px;\n        height: 60px;\n        line-height: 60px;\n        margin-top: 20px;\n        display: none;\n        position: absolute;\n        left: 50%;\n        margin-left: -30px;\n    }\n\n    .bf-loading .loader .loader-icon .dashicons,\n    .bf-loading .loader .loader-icon .dashicons-before:before {\n        font-size: 55px;\n        line-height: 60px;\n        width: 60px;\n        height: 60px;\n        text-align: center;\n    }\n\n    .bf-loading.in-loading .loader .loader-icon.in-loading-icon,\n    .bf-loading.in-loading.loader .loader-icon.in-loading-icon {\n        opacity: 1;\n        display: inline-block;\n    }\n\n    .bf-loading.in-loading .loader .loader-icon.in-loading-icon .dashicons,\n    .bf-loading.in-loading .loader .loader-icon.in-loading-icon .dashicons-before:before {\n        -webkit-animation: spin 1.15s linear infinite;\n        -moz-animation: spin 1.15s linear infinite;\n        animation: spin 1.15s linear infinite;\n        font-size: 30px;\n    }\n\n    .bf-loading.loaded .loader .loader-icon.loaded-icon {\n        opacity: 1;\n        display: inline-block;\n        font-size: 50px;\n    }\n\n    .bf-loading.loaded .loader .loader-icon.loaded .dashicons,\n    .bf-loading.loaded .loader .loader-icon.loaded .dashicons-before:before {\n        width: 57px;\n    }\n\n    .bf-loading.not-loaded .loader .loader-icon.not-loaded-icon {\n        opacity: 1;\n        display: inline-block;\n    }\n\n    .bf-loading.not-loaded .loader .loader-icon.not-loaded-icon .dashicons,\n    .bf-loading.not-loaded .loader .loader-icon.not-loaded-icon .dashicons-before:before {\n        font-size: 50px;\n        line-height: 62px;\n    }\n\n    .bf-loading .loader .message {\n        display: none;\n        color: #ff0000;\n        font-size: 12px;\n        line-height: 24px;\n        min-width: 100px;\n        max-width: 300px;\n        left: auto;\n        right: auto;\n        text-align: center;\n        background-color: #333;\n        background-color: rgba(51, 51, 51, 0.86);\n        border-radius: 5px;\n        padding: 4px 20px;\n        margin-top: 90px;\n    }\n\n    .bf-loading.with-message .loader .message {\n        display: inline-block;\n    }\n\n    .bf-loading.loaded .loader .message {\n        color: #27c55a;\n    }\n\n    .bf-loading.in-loading .loader .message {\n        color: #fff;\n    }\n\n    @-moz-keyframes spin {\n        100% {\n            -moz-transform: rotate(360deg);\n        }\n    }\n\n    @-webkit-keyframes spin {\n        100% {\n            -webkit-transform: rotate(360deg);\n        }\n    }\n\n    @keyframes spin {\n        100% {\n            -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n        }\n    }\n</style>');
-
-                $bf_loading = $('.bf-loading');
-            }
-
             message = typeof message !== 'undefined' ? message : '';
 
             if( status == 'loading'){
@@ -1914,434 +1732,370 @@ var bf_ignore_reload_notice = false,
             return count;
         },
 
-        setup_show_on: function () {
+        _interactive_field_change: function (e, options) {
 
-            var instances = {};
+            var settings = $.extend({
+                el:false,
+                ID: false,
+                $container: false,
+                inputWrapperSelector: false,
+                parentSelector: false,
+                paramDataName: 'param-name',
+                paramSettingsName: 'param-settings',
+                filterDataCallback: false
+            }, options);
 
-            var showOnModule = {
 
-                init: function () {
+            if(! settings.el) {
+                throw new Error('Invalid Element');
+            }
 
-                    var submodule = this.submodule();
+            var $this         = $(settings.el),
+                self          = this,
+                $row          = $this.closest(settings.parentSelector),
+                columns_value = {};
 
-                    if (!submodule) {
+            if( settings.$container) {
+                if (self._interactive_fields_cache[settings.ID]) {
+                    columns_value = self._interactive_fields_cache[settings.ID];
+                } else {
 
-                        return false;
-                    }
+                    var cache = {};
 
-                    this.initContainers(
-                        submodule.containers()
-                    );
+                    $(settings.inputWrapperSelector, settings.$container).each(function () {
+                        var $col       = $(this),
+                            $inputs    = $col.find(':input'),
+                            param_name = $col.data(settings.paramDataName);
 
-                    submodule.setup && submodule.setup();
-
-                    Hooks.add_action("panel/tabs/loaded-deferred", this.onTabLoaded.bind(this));
-                    Hooks.add_action("panel/tabs/switching", this.onTabSwitching.bind(this));
-
-                    return true;
-                },
-
-                initContainers: function(containers) {
-
-                    for (var id in containers) {
-
-                        instances[id] = new BFShowOn(containers[id].element, containers[id].options);
-
-                        this.attachEvents(instances[id]);
-                    }
-                },
-
-                attachEvents: function(showOn) {
-
-                    this.repeaterSupport(showOn);
-                },
-
-                repeaterSupport: function (showOn) {
-
-                    $(showOn.wrapper()).on("repeater_item_added", ".bf-section", function (e, $repeater) {
-
-                        showOn.setup($repeater.find(".bf-repeater-item:last")[0]);
+                        cache[param_name] = $inputs.length > 1 ? $inputs.filter(':checked').val() : $inputs.val();
                     });
-                },
 
-                onTabLoaded: function ($container) {
+                    columns_value = cache;
+                }
+            }
 
-                    var el = $container[0],
-                        submodule = this.submodule(),
-                        showOn = submodule.find(el);
+            $row.find(settings.inputWrapperSelector).each(function () {
+                var $col        = $(this),
+                    _settings   = $col.data(settings.paramSettingsName),
+                    $inputs     = $col.find(':input'),
+                    param_name  = $col.data(settings.paramDataName),
+                    param_value = $inputs.length > 1 ? $inputs.filter(':checked').val() : $inputs.val();
 
-                    showOn && showOn.setup(el);
-                },
+                if( settings.filterDataCallback ) {
+                    var filtered = settings.filterDataCallback(param_name,param_value,$row,$inputs);
 
-                onTabSwitching: function($tab) {
+                    columns_value[ filtered[0] ] = filtered[1];
+                } else {
+                    columns_value[ param_name ] = param_value;
+                }
 
-                    var el = $tab[0],
-                        submodule = this.submodule(),
-                        showOn = submodule.find(el);
+                if (!_settings || !self._length(_settings)) {
+                    return;
+                }
 
-                    showOn && showOn.setup(el);
-                },
+                if ('always_show' in _settings && _settings.always_show)
+                    return;
 
-                submodule: function () {
+                var action = e.type === 'force-change' ? 'hide' : 'slideUp';
+                if (_settings.show_on instanceof Array) {
 
-                    var name;
+                    var length = _settings.show_on.length;
 
-                    switch (better_framework_loc.type) {
+                    for (var i = 0; i < length; i++) {
+                        var array_values = typeof _settings.show_on[ i ] === 'string' ? [ _settings.show_on[ i ] ] : _settings.show_on[ i ],
+                            condition    = true;
 
-                        case "taxonomy":
-                        case "metabox":
-                        case "users":
+                        for (var j = 0; j < array_values.length; j++) {
 
-                            name = "metabox";
+                            var split = array_values[ j ].match(/(.*?)(\!?\=)(.*)/);
 
-                            break;
+                            if (!split) {
+                                continue;
+                            }
 
-                        case "menus":
+                            var _param_value = split[ 3 ],
+                                _param_name  = split[ 1 ],
+                                operator     = split[ 2 ];
 
-                            name = "menu";
+                            if (typeof columns_value[ _param_name ] === 'undefined') {
 
-                            break;
+                                condition = false;
+                            } else {
 
-                        case "widgets":
+                                switch (operator) {
+                                    case '=':
+                                        condition = columns_value[ _param_name ] == _param_value;
+                                        break;
+                                    case '!=':
+                                        condition = columns_value[ _param_name ] != _param_value;
+                                        break;
+                                }
 
-                            name = "widget";
+                            }
 
-                            break;
-
-                        default:
-                            name = better_framework_loc.type;
-
-                    }
-
-                    return name && this[name] || false;
-                },
-
-                metabox: {
-
-                    wrapperSelector: '.bf-metabox-wrap',
-                    overrideOptions: {
-                        groupSelector: '.bf-group-inner,.group,.bf-metabox-wrap',
-                    },
-
-                    setup: function () {
-
-                        showOnModule.gutenberg.setup();
-                        showOnModule.vc.setup();
-                        showOnModule.mce.setup();
-
-                    },
-
-                    find: function (element) {
-
-                        if (!element) {
-                            return;
-                        }
-
-                        var wrapper = element.closest(this.wrapperSelector);
-
-                        if (!wrapper) {
-
-                            return;
-                        }
-
-                        var id = wrapper.dataset.metaboxId || wrapper.id || wrapper.dataset.id;
-
-                        return instances[id];
-                    },
-
-                    containers: function () {
-
-                        var containers = {};
-                        var self = this;
-
-                        document.querySelectorAll(this.wrapperSelector)
-                            .forEach(function (metabox) {
-
-                                var id = metabox.dataset.metaboxId || metabox.id || metabox.dataset.id ;
-
-                                containers[id] = {
-                                    element: metabox,
-                                    options: self.overrideOptions
-                                };
-                            });
-
-                        return containers;
-                    },
-                },
-
-                panel: {
-
-                    find: function () {
-
-                        return instances.panel;
-                    },
-
-                    containers: function () {
-
-                        return {
-                            panel: {
-                                element: document.getElementById('bf-panel'),
-                                options: {}
+                            if (!condition) {
+                                break;
                             }
                         }
+
+                        if (condition) {
+                            action = e.type === 'force-change' ? 'show' : 'slideDown';
+                            break;
+                        }
                     }
-                },
 
-                menu: {
+                    if(action === 'slideDown') {
 
-                    menuItemSelector: ".menu-item-settings",
-                    wrapperSelector: '.fields-group',
-                    overrideOptions: {
-                        showOnLocation: {
-                            selector: ".bf-menu-custom-field",
-                            optionsDataset: "paramSettings",
-                            nameDataset: "paramName",
-                        },
-                        cacheValues: false,
-                        dynamicInputWrapper: ".bf-group-inner"
-                    },
-
-                    setup: function () {
-                        $(document).on('menu-item-added', this.onMenuItemAdded.bind(this));
-                    },
-
-                    onMenuItemAdded:function (e, $wrapper) {
-
-                        var containers = {};
-
-                        this.showOnContainers($wrapper[0],containers);
-
-                        showOnModule.initContainers(
-                            containers
-                        );
-                    },
-
-                    find: function (element) {
-
-                        if (!element) {
-                            return;
-                        }
-
-                        var wrapper = element.closest(this.wrapperSelector);
-
-                        if (!wrapper) {
-
-                            return;
-                        }
-                        var menuItem = wrapper.closest(this.menuItemSelector);
-
-                        if (!menuItem) {
-
-                            return;
-                        }
-
-                        var menuId = menuItem.querySelector(".menu-item-data-db-id").value;
-                        var groupID = wrapper.dataset.paramName || wrapper.id;
-
-                        return instances[menuId + "-" + groupID];
-                    },
-
-                    containers: function () {
-
-                        var self = this;
-                        var containers = {};
-
-                        document.querySelectorAll(this.menuItemSelector)
-                            .forEach(function (menuItem) {
-                                self.showOnContainers(menuItem, containers)
-                            });
-
-                        return containers;
-                    },
-
-                    showOnContainers: function (menuItemEl, containers) {
-
-                        var menuId = menuItemEl.id.match(/\-(\d+)$/)[1];
-                        var self = this;
-
-                        menuItemEl.querySelectorAll(this.wrapperSelector)
-                            .forEach(function (group) {
-
-                                var groupID = group.dataset.paramName || group.id;
-
-                                containers[menuId + "-" + groupID] = {
-                                    element: group,
-                                    options: self.overrideOptions
-                                };
-                            });
-                    }
-                },
-
-                widget: {
-
-                    widgetSelector: "#widgets-right .widget",
-                    wrapperSelector: '.fields-group',
-                    overrideOptions: {
-                        groupSelector: '.bf-group-inner,.group,.widget',
-                        showOnLocation: {
-                            selector: ".bf-widgets",
-                            optionsDataset: "paramSettings",
-                            nameDataset: "paramName",
-                        },
-                        cacheValues: false,
-                        dynamicInputWrapper: ".bf-group-inner"
-                    },
-
-                    setup: function () {
-
-                        $(document).on('widget-added widget-updated', this.onWidgetChanged.bind(this));
-                    },
-
-                    onWidgetChanged: function(e, $widget) {
-
-                        var containers = {};
-
-                        containers[$widget[0].id] = {
-                            element: $widget[0],
-                            options: this.overrideOptions
-                        };
-
-                        showOnModule.initContainers(
-                            containers
-                        );
-                    },
-
-                    find: function (element) {
-
-                        if (!element) {
-                            return;
-                        }
-
-                        var wrapper = element.closest(this.wrapperSelector);
-
-                        if (!wrapper) {
-
-                            return;
-                        }
-                        var widgetEl = wrapper.closest(this.widgetSelector);
-
-                        if (!widgetEl) {
-
-                            return;
-                        }
-
-                        var groupID = wrapper.dataset.paramName || wrapper.id;
-
-                        return instances[widgetEl.id + "-" + groupID];
-                    },
-
-                    containers: function () {
-
-                        var self = this;
-                        var containers = {};
-
-                        document.querySelectorAll(this.widgetSelector)
-                            .forEach(function (widget) {
-
-                                containers[widget.id] = {
-                                    element: widget,
-                                    options: self.overrideOptions
-                                };
-                            });
-
-                        return containers;
-                    }
-                },
-
-                vc: {
-                    setup: function() {
-
-                        Better_Framework.attachVcEditShortcodeEvent(this.onRenderedEdit)
-                    },
-                    onRenderedEdit: function(view) {
-
-                        var instance = new BFShowOn(view.$el[0], {
-                            groupSelector: ".vc_edit-form-tab",
-                            showOnLocation: {
-                                selector: ".vc_column",
-                                optionsDataset: "param_settings",
-                                nameDataset: "vcShortcodeParamName",
-                            },
+                        $col.stop()[ action ](function() {
+                            $(this).css('height', 'auto');
                         });
 
-                        showOnModule.repeaterSupport(instance);
-                    }
-                },
-                mce: {
-                    setup: function() {
+                    } else {
 
-                        $(document).on("mce-view-fields-loaded", this.onMceFieldsLoaded.bind(this));
-                    },
-
-                    onMceFieldsLoaded: function(e,modal) {
-
-                        var instance = new BFShowOn(modal.$modal[0]);
-
-                        showOnModule.repeaterSupport(instance);
-                    }
-                },
-
-                gutenberg: {
-                    setup: function() {
-
-                        $(document).on('bf-component-did-mount', Better_Framework.debounce(this.onPanelClicked.bind(this)));
-                    },
-
-                    onPanelClicked: function(e) {
-
-                        var panel = e.detail.closest('.components-panel__body');
-
-                        if(panel) {
-                            var instance = new BFShowOn(panel,{
-                                groupSelector: ".components-panel__body",
-                            });
-                            showOnModule.repeaterSupport(instance);
-                        }
+                        $col.stop()[ action ]();
                     }
                 }
+            });
+
+            self._interactive_fields_cache[settings.ID] = columns_value;
+        },
+
+        setup_interactive_fields_for_bf: function ($context) {
+
+            if($context && $context[0] === document.body) {
+                $context  = undefined;
+            }
+
+            var self = this,
+                $wrapper = $context,
+                parentSelector = '.group,.tinymce-addon-fields',
+                inputWrapperSelector = '.bf-section-container,.fields-group';
+
+            var widgetParentSelector = function() {
+                return $(document.body).hasClass('widgets_access') ? '.widget-inside' : '.widget';
             };
 
-            showOnModule.init();
-        },
+            if($context && ($context.hasClass('widget') || better_framework_loc.type === 'widgets')) {
 
-        attachVcEditShortcodeEvent: function(callback) {
+                parentSelector = widgetParentSelector();
 
-            if(typeof vc !== "object" || ! vc.events) {
+            } else if($context && better_framework_loc.type === 'panel'){
 
-                return false;
+                parentSelector = "#bf_options_form";
+
+            } else{
+
+                switch(better_framework_loc.type) {
+
+                    case 'widgets':
+
+                        parentSelector = widgetParentSelector();
+                        $wrapper       = $("#widgets-right",$context);
+
+                        // Fix: show_on initialization on widgets page
+                        setTimeout(function(){
+                            $(parentSelector, $wrapper).each(function(){
+                                $(".widget-inside :input:first",this).trigger('force-change');
+                            });
+                        });
+
+                        // Fix: Init show_on after widget saved
+                        $(document).on( 'widget-updated', function(e,$widget) {
+                            $(".widget-inside :input:first",$widget).trigger('force-change');
+                        });
+
+                        break;
+
+                    case 'metabox':
+                    case 'users':
+
+                        if(! $context) {
+
+                            $wrapper = $(".bf-metabox-wrap");
+                            parentSelector = '.bf-metabox-wrap';
+                        }
+                        break;
+
+                    case 'menus':
+
+                        $wrapper = $(".menu-item-settings>.fields-group",$context);
+                        parentSelector = '.fields-group';
+                        inputWrapperSelector = '.bf-menu-custom-field,.bf-section-container';
+                        break;
+
+                    case 'taxonomy':
+
+                        if(! $context || !$context.hasClass('group')) {
+
+                            $wrapper = $(".bf-metabox-container>.group:visible",$context);
+                        }
+
+                        break;
+
+                    default:
+
+                        parentSelector = "#bf_options_form";
+
+                        if ($("#bf_options_form>.group").length > 0) {
+                            $wrapper = $("#bf_options_form>.group:visible",$context);
+                        } else {
+                            $wrapper = $("#bf-panel",$context);
+                        }
+                }
             }
-            var attach = function() {
-                vc.edit_element_block_view
-                &&
-                vc.edit_element_block_view.on("afterRender", function(){
-                    callback(this);
-                })
+
+            if($wrapper.data('show-on-initialized')) {
+                return ;
             }
 
-            if(vc.edit_element_block_view) {
+            var $containers = $wrapper.closest('.bf-tax-meta-wrap,.postbox,.widget,#bf-main,.menu-item');
 
-                attach();
 
+            if ($containers.length) {
+
+                $containers.each(function () {
+                    var $container = $(this),
+                        ID         = $container.data('show-on-id');
+
+                    if ( ! ID ) {
+                        ID = 'show-on-' + Math.ceil(Math.random() * 1e5);
+                        $container.attr('data-show-on-id', ID);
+                        $container.data('show-on-id', ID);
+                    }
+
+                    $($wrapper.selector, $container).on('change force-change', ':input, .bf-repeater-item :input:first', function (e) {
+
+                        self._interactive_field_change(e, {
+                            el: this,
+                            ID: ID,
+                            $container: $container,
+                            inputWrapperSelector: inputWrapperSelector,
+                            parentSelector: parentSelector
+                        })
+                    });
+                });
             } else {
 
-                vc.events.on("app.render",attach)
+                $wrapper.on('change force-change', ':input, .bf-repeater-item :input:first', function (e) {
+
+                    self._interactive_field_change(e,{
+                        el:this,
+                        inputWrapperSelector: inputWrapperSelector,
+                        parentSelector: parentSelector
+                    })
+                });
             }
 
-            return true;
+            $wrapper.find(':hidden:first').trigger('force-change');
+
+            $wrapper.find(':input[type!=hidden]:first')
+                .trigger('force-change');
+
+            $wrapper.find('.bf-repeater-item :input:first')
+                .trigger('force-change');
+
+            if(parentSelector === '.group') {
+
+                setTimeout(function() {
+                    $(".group:visible :input:first",$wrapper ).trigger('force-change');
+                },100);
+              }
+
+            $wrapper.on('bf-ajax-tab-loaded', function(e,$target) {
+                $target.find(':input:first')
+                       .trigger('force-change');
+            });
+
+
+            $wrapper.on('repeater_item_added', '.bf-section', function(e,$repeater) {
+                $(this).find(':input:first').trigger('force-change');
+            });
+
+
+            $wrapper.data('show-on-initialized',true);
         },
+
+        /**
+         * Visual Composer
+         ******************************************/
+
+        setup_interactive_fields_for_vc: function () {
+            var self = this;
+
+            $(document).ajaxSuccess(function (e, xhr, settings) {
+
+                var _data = $.unserialize(settings.data);
+
+                if (_data.action == "wpb_show_edit_form" || _data.action == "vc_edit_form") {
+                    var $wrapper = $("#vc_ui-panel-edit-element")
+                        .find('.bf-interactive-fields');
+
+                    $wrapper
+                        .on('change force-change', ':input', function (e) {
+                            self._interactive_field_change(e,{
+                                el:this,
+                                ID: false,
+                                containerSelector: false,
+                                inputWrapperSelector: '.vc_column',
+                                parentSelector:  '.vc_row',
+                                paramDataName: 'vc-shortcode-param-name',
+                                paramSettingsName: 'param_settings'
+                            });
+                        });
+
+                    //auto trigger event
+                    var match,
+                        classes       = $wrapper.attr('class'),
+                        $form_wrapper = $("#vc_ui-panel-edit-element"),
+                        _regex        = /bf-filter-field-([^\s]+)/gi;
+
+                    while (match = _regex.exec(classes)) {
+                        var el_name = match[ 1 ];
+
+                        $form_wrapper
+                            .find('.bf-interactive-fields [name=' + el_name + ']')
+                            .trigger('force-change');
+                    }
+                }
+            });
+        },
+
+
         // Setup fields when VC create new popup window
         setup_fields_for_vc: function(){
 
-            this.attachVcEditShortcodeEvent(function(view) {
+            jQuery(document).ajaxSuccess(function(e, xhr, settings) {
 
-                Better_Framework.setup_field_color_picker(view.$el);
-                Better_Framework.setup_field_switch();
-                Better_Framework.setup_field_slider();
-                Better_Framework.setup_field_ajax_select();
-                Better_Framework.setup_vc_field_sorter();
-                Better_Framework.init_term_select(view.$el);
-                Better_Framework.set_up_vc_field_image_radio();
+                var _data = $.unserialize(settings.data);
+
+                if(_data.reqID === 'fetch-mce-view-fields') {
+
+                    var $context = $("#es-modal .bs-modal-body");
+
+                } else {
+
+                    var $context = $('.vc_ui-panel-window-inner:visible');
+                }
+
+                if( _data.action == "wpb_show_edit_form" || _data.action == "vc_edit_form" ||
+                    _data.reqID === 'fetch-mce-view-fields' ) {
+                    // TODO do this for just new elements
+
+                    Better_Framework.setup_field_color_picker($context);
+                    Better_Framework.setup_field_switch();
+                    Better_Framework.setup_field_slider();
+                    Better_Framework.setup_field_ajax_select();
+                    Better_Framework.setup_vc_field_sorter();
+                    Better_Framework.setup_vc_term_select();
+
+                }
+
+                if(_data.reqID === 'fetch-mce-view-fields') {
+                    Better_Framework.setup_interactive_fields_for_bf($("#es-modal .bs-modal-body"));
+                }
             });
+
+            Better_Framework.set_up_vc_field_image_radio();
         },
 
 
@@ -2453,6 +2207,8 @@ var bf_ignore_reload_notice = false,
 
                     changeStateAttr($wrapper,nextState);
 
+                    $('.bf-checkbox-status', $wrapper).val(nextState);
+
                     $wrapper.trigger('bf-checkbox-change', [ nextState ].concat(Array.prototype.slice.call(arguments, 1)) );
                 });
 
@@ -2507,7 +2263,6 @@ var bf_ignore_reload_notice = false,
             );
         },
         init_term_select: function ($context) {
-
             var config = {
               autoCheckParent: false // Check parent term if all childrens was checked
             };
@@ -2583,7 +2338,7 @@ var bf_ignore_reload_notice = false,
                         state    = $this.data('state'),
                         isEnable = $.inArray(state, validStatus) > -1;
 
-                    $this[ isEnable ? 'removeClass' : 'addClass' ]('disabled');
+                    $this[ isEnable ? "removeClass" : 'addClass' ]('disabled');
                 })
             }
 
@@ -2622,12 +2377,11 @@ var bf_ignore_reload_notice = false,
             }
 
             function canCollectTermAsDeactivated(checkboxStatusEL) {
-                return checkboxStatusEL.parentElement.dataset.currentState === 'deactivate';
+                return checkboxStatusEL.value === 'deactivate';
             }
 
             function canCollectTermAsActivated(checkboxStatusEL, $checkboxContainer) {
-
-                return checkboxStatusEL.parentElement.dataset.currentState === 'active' && (function ($container) {
+                return checkboxStatusEL.value === 'active' && (function ($container) {
                         return !$container.hasClass('bf-checkbox-skip-collect-active-term-id');
                     })($checkboxContainer || $(checkboxStatusEL).closest('.bf-checkbox-multi-state'));
             }
@@ -2655,11 +2409,10 @@ var bf_ignore_reload_notice = false,
                 }
             }
 
-            $context.on('bf-checkbox-change','.bf-checkbox-multi-state', function (e, state, calledFrom) {
+            $('.bf-checkbox-multi-state', $context).on('bf-checkbox-change', function (e, state, calledFrom) {
                 var $this       = $(this),
                     $container  = $this.closest('.bf-field-term-select-wrapper'),
                     termsIdList = [];
-
 
                 var $clickedCheckBox  = $this.closest('.bf-checkbox-multi-state'),
                     $childrenUL       = $clickedCheckBox.nextAll('.children'),
@@ -2721,7 +2474,6 @@ var bf_ignore_reload_notice = false,
                         status = 'deactivate';
                     }
                     else if (canCollectTermAsActivated(this, $container)) {
-
                         status = 'active';
                         if (isTermPrimary($label)) {
                             termsIdList.unshift("+" + termID);
@@ -2760,8 +2512,7 @@ var bf_ignore_reload_notice = false,
                     }
                 }).promise().done(function () {
 
-                    $container.nextAll('.bf-term-select-value').val(termsIdList.join(','))
-                        .change()[0].dispatchEvent(new Event('change',{bubbles: true}));
+                    $container.nextAll('.bf-vc-term-select-value').val(termsIdList.join(',')).change();
                 });
             });
 
@@ -2775,7 +2526,7 @@ var bf_ignore_reload_notice = false,
                 var $this      = $(this),
                     termID     = $this.data('term-id'),
                     $container = $this.closest('.bf-field-term-select-wrapper'),
-                    $vcInputEL = $container.siblings('.bf-term-select-value');
+                    $vcInputEL = $container.siblings('.bf-vc-term-select-value');
 
                 /**
                  * Regenerate terms id and mark primary term with a + sign
@@ -2950,59 +2701,19 @@ var bf_ignore_reload_notice = false,
             // Clone Repeater Item by click
             // TODO refactor this
             $(document).on( 'click', '.bf-widget-clone-repeater-item', function(e){
-
-
                 e.preventDefault();
-                var //name_format = undefined === $(this).data( 'name-format' ) ? '$1[$2][$3][$4][$5]' : $(this).data( 'name-format'),
-                    _html = $(this).siblings('script').html();
-
-                if(! _html) {
-                    return ;
-                }
-                var $inside = $(this).closest('.widget-inside'),
-                    widgetBaseName = '';
-
-                if($inside.length) {
-
-                    var widgetIdBase  = $inside.find('input.id_base').val(),
-                        widgetNumber = $inside.find('input.multi_number').val();
-
-                    if(! widgetBaseName && better_framework_loc.page_builder.indexOf('Elementor') > -1 ) {
-
-                        widgetNumber = 'REPLACE_TO_ID';
-                    }
-
-                    widgetBaseName = "widget-"+widgetIdBase+"["+widgetNumber+"]";
-
-                } else {
-
-
-                    var $wrapper = $(this).closest('.bf-controls'),
-                        inputName = $(":input:first",$wrapper).attr('name');
-
-                    if(inputName) {
-
-                        var match = inputName.match(/(.*?)\[\d+\]\[.*?\]$/);
-
-                        if(match && match[1]) {
-                            widgetBaseName = match[1];
-                        }
-                    }
-                }
-
-                if(! widgetBaseName) {
-                    return ;
-                }
+                var name_format = undefined === $(this).data( 'name-format' ) ? '$1[$2][$3][$4][$5]' : $(this).data( 'name-format'), _html = $(this).siblings('script').html();
 
                 var _new = $(this).siblings('.bf-repeater-items-container').find('>*').size();
                 var new_num = _new + 1;
-
                 $(this).siblings('.bf-repeater-items-container').append(
-                    _html.replace(/\|_to_clone_(.*?)-num-(.*?)\|/g,widgetBaseName + '[$1]['+new_num+'][$2]')
+                    _html
+                       .replace( /([\"\'])(\|)(_to_clone_)(.+)?-num-(.+)?(\|)(\1)/g, '$1$2$3$4-num-'+new_num+'-$5$6$7$8')
+                       .replace( /[\"\']\|_to_clone_(.+)?-(\d+)-(.+)?-num-(\d+)-(.+)\|[\"\']/g, '"'+name_format+'"' )
                 );
-                // bf_color_picker_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-color-picker') );
-                // bf_date_picker_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-date-picker-input') );
-                // bf_image_upload_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-image-upload-choose-file') );
+                bf_color_picker_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-color-picker') );
+                bf_date_picker_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-date-picker-input') );
+                bf_image_upload_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-image-upload-choose-file') );
             });
 
             saveGroupStatus();
@@ -3148,16 +2859,26 @@ var bf_ignore_reload_notice = false,
 
             Better_Framework.setup_ajax_action();
 
-            this.handle_editor($context);
+            $(document).on('bf-loaded', function() {
+
+                Better_Framework.setup_interactive_fields_for_bf($context);
+            });
+
+            $(document).on('menu-item-added', function(e,$menuMarkup) {
+
+                Better_Framework.setup_interactive_fields_for_bf($menuMarkup);
+                Better_Framework.setup_fields($menuMarkup);
+
+            });
         },
 
 
         // Setup Fields Group
         setup_fields_group: function(){
 
-            $( document )
-                .off( 'click', '.fields-group-title-container' )
-                .on( 'click', '.fields-group-title-container', function() {
+            $( document ).off( 'click', '.fields-group-title-container' );
+
+            $( document ).on( 'click', '.fields-group-title-container', function() {
 
                 var $_group = $(this).closest( '.fields-group'),
                     $_button = $(this).find( '.collapse-button' );
@@ -3201,24 +2922,9 @@ var bf_ignore_reload_notice = false,
             });
 
             // Remove Repeater Item
-            $(document)
-                .off( 'click', '.bf-remove-repeater-item-btn')
-                .on( 'click', '.bf-remove-repeater-item-btn', function( e ){
+            $(document).on( 'click', '.bf-remove-repeater-item-btn', function( e ){
 
-                    var $this = $(this);
-
-                    if($this.hasClass('no-event')) {
-
-                        return ;
-                    }
-                var $section =  $this.closest('.bf-section');
-
-                if($(".bf-repeater-items-container>.bf-repeater-item",$section).length === 1){
-
-                    alert("Can not remove last item!");
-                    return ;
-                }
-
+                var $section =  $(this).closest('.bf-section');
                 if( confirm( 'Are you sure?' ) ){
 
                     /**
@@ -3249,9 +2955,8 @@ var bf_ignore_reload_notice = false,
             });
 
             // Collapse
-            $(document).off('click', '.handle-repeater-item')
-                .on( 'click', '.handle-repeater-item', function(){
-                $(this).toggleClass('bf-closed').closest('.bf-repeater-item').find('.repeater-item-container').slideToggle(400);
+            $(document).on( 'click', '.handle-repeater-item', function(){
+                $(this).toggleClass('closed').closest('.bf-repeater-item').find('.repeater-item-container').slideToggle(400);
             });
 
             // Clone Repeater Item by click
@@ -3259,12 +2964,6 @@ var bf_ignore_reload_notice = false,
                 e.preventDefault();
 
                 var $this = $(this);
-
-                if($this.hasClass('no-event')) {
-
-                    return ;
-                }
-
                 var $repeater_items_container = $(this).siblings('.bf-repeater-items-container'),
                     name_format = undefined === $(this).data( 'name-format' ) ? '$1[$2][$3]' : $(this).data( 'name-format'),
                     _html = $this.siblings('script').html(),
@@ -3272,10 +2971,6 @@ var bf_ignore_reload_notice = false,
                     index = count + 1;
 
                 // Retrieve script tags
-
-                if(! _html) {
-                    return ;
-                }
 
                 _html = _html.replace(/<\s*\!\-\-\s*SCRIPT\s*TAG\s*START\s*--\s*>\s*<\s*div\s*((.|\n)*)style=(([^>]+))/ig,'<script $1') // open script tag
                         .replace(/<\s*\/\s*div\s*>\s*<\s*\!\-\-\s*SCRIPT\s*TAG\s*END\s*--\s*>/ig,'</script>');  // open script tag
@@ -3438,33 +3133,37 @@ var bf_ignore_reload_notice = false,
         setup_field_image_select: function(){
 
             // Open Close Select Options Box
-            var $doc = $(document);
-
-            $doc.off('click.image-select', '.better-select-image').off('click.image-select');
-
-            $doc.on('click.image-select', '.better-select-image' ,function(e){
+            $(document).on('click', '.better-select-image' ,function(e){
                 var $_target = $(e.target);
 
-                if ( $_target.hasClass('selected-option') || $_target.hasClass('select-options')  ) {
+                if ( $_target.hasClass('selected-option')  ) {
                     // close All Other open boxes
-                    $(this).toggleClass('bf-opened');
+                    $(this).toggleClass('opened');
+                    return;
+                }
+                if( $_target.hasClass('select-options') ){
+                    $(this).toggleClass('opened');
+                    return;
+                }
+
+                if( $_target.hasClass('image-select-option') ){
                     return;
                 }
 
             });
 
             // Close Everywhere clicked
-            $doc.on('click.image-select',function( e ){
+            $(document).on('click',function( e ){
                 if (e.target.class !== 'better-select-image' && $(e.target).parents('.better-select-image').length === 0) {
                     $('.better-select-image').each(function(){
-                        if($(this).hasClass('bf-opened')){
-                            $(this).removeClass('bf-opened');
+                        if($(this).hasClass('opened')){
+                            $(this).removeClass('opened');
                         }
                     });
                 }
             });
             // Select when clicked
-            $doc.on('click.image_select', '.better-select-image .image-select-option' ,function(e){
+            $(document).on('click', '.better-select-image .image-select-option' ,function(e){
                 var $this = $(this);
                 var $parent = $this.closest('.better-select-image');
                 var $input = $parent.find('input[type=hidden]');
@@ -3472,44 +3171,20 @@ var bf_ignore_reload_notice = false,
 
                 if($this.hasClass('selected')){
                     e.preventDefault();
-                    $parent.find('.select-options').toggleClass('bf-opened');
+                    $parent.find('.select-options').toggleClass('opened');
                 }
                 else{
                     $input.attr('value',$this.data('value')).trigger('change');
                     $parent.find('.image-select-option.selected').removeClass('selected');
                     $this.addClass('selected');
                     $selected_label.html($this.data('label'));
-                    $parent.toggleClass('bf-opened');
+                    $parent.toggleClass('opened');
                 }
             });
+
+
         },
 
-        once: function (callback) {
-
-            var fired = false;
-
-            return function () {
-
-                if (fired) {
-                    return;
-                }
-
-                fired = true;
-                return callback.call(this, arguments);
-            }
-        },
-        debounce: function (func, wait, immediate) {
-            var timeout;
-            return function() {
-                var context = this, args = arguments;
-                clearTimeout(timeout);
-                timeout = setTimeout(function() {
-                    timeout = null;
-                    if (!immediate) func.apply(context, args);
-                }, wait);
-                if (immediate && !timeout) func.apply(context, args);
-            };
-        },
 
         // Setup input fields prefix and postfix
         setup_field_with_prefix_or_postfix: function(){
@@ -3541,7 +3216,11 @@ var bf_ignore_reload_notice = false,
                 $('.cb-disable', parent).removeClass('selected');
                 $(this).addClass('selected');
 
-                $('.checkbox', parent).attr('value', 1).trigger('change')[0].dispatchEvent(new Event('change',{bubbles: true}));
+                if ($('.checkbox', parent).hasClass('bf_switchery_field')) {
+                    $('.checkbox', parent).attr('value', 1).trigger('change');
+                } else {
+                    $('.checkbox', parent).attr('value', 1).trigger('change');
+                }
             });
 
             $doc.on('click', ".cb-disable", function () {
@@ -3549,7 +3228,11 @@ var bf_ignore_reload_notice = false,
                 $('.cb-enable', parent).removeClass('selected');
                 $(this).addClass('selected');
 
-                $('.checkbox', parent).attr('value', 0).trigger('change')[0].dispatchEvent(new Event('change',{bubbles: true}));
+                if ($('.checkbox', parent).hasClass('bf_switchery_field')) {
+                    $('.checkbox', parent).attr('value', 0).trigger('change');
+                } else {
+                    $('.checkbox', parent).attr('value', 0).trigger('change');
+                }
             });
 
 
@@ -3563,7 +3246,7 @@ var bf_ignore_reload_notice = false,
 
             // prepare selector
             if( better_framework_loc.type == 'widgets' ){
-                selector = '#widgets-right .bf-slider-slider,#elementor-panel .bf-slider-slider';
+                selector = '#widgets-right .bf-slider-slider';
             }
             else{
                 selector = '.bf-slider-slider';
@@ -3588,7 +3271,7 @@ var bf_ignore_reload_notice = false,
                     max: _max,
                     slide: function( event, ui ) {
                         _this.find(".ui-slider-handle").html( '<span>'+ui.value+_dimension+'</span>' );
-                        _this.siblings('.bf-slider-input').val( ui.value ).change();
+                        _this.siblings('.bf-slider-input').val( ui.value );
                     },
                     create: function( event, ui ) {
                         _this.find(".ui-slider-handle").html( '<span>'+_val+_dimension+'</span>' );
@@ -3622,29 +3305,92 @@ var bf_ignore_reload_notice = false,
         // Setup color picker fields
         setup_field_color_picker: function($context){
 
-            if (!$context) {
-                $context = $(document);
+            var fixWidgetBtn = function(event) {
+
+                if(better_framework_loc.type !== "widgets") {
+                    return ;
+                }
+
+                if(! event.originalEvent) {
+                    return ;
+                }
+
+                $(this).closest('.widget-inside').find('.widget-control-save').prop( 'disabled', false ).val( better_framework_loc.translation.widgets.save );
+            };
+
+            var initColorPicker = function($context) {
+
+                $('.bs-color-picker-value', $context).wpColorPicker({
+                    change: function( event, ui ) {
+
+                        fixWidgetBtn.call(this,event);
+                    },
+                    clear: function(event, ui) {
+
+                        fixWidgetBtn.call(this,event);
+                    }
+                });
+
+            };
+
+            // FIX: performance
+
+
+
+            initColorPicker($context);
+
+            $context.on('repeater_item_added', '.bf-section', function(e,$repeater) {
+
+                initColorPicker(
+                    $repeater.find('.bf-repeater-item:last-child')
+                );
+            });
+
+            return ;
+
+            var $doc = $(document.body);
+
+            if($doc.data('color-picker-init')) {
+                return ;
             }
 
-            var clickable = ".wp-picker-container .wp-color-result";
+            $doc.on('click', '.bs-color-picker-wrapper:not(.bs-clicked) .bs-wp-picker-container', function (e) {
+                e.preventDefault();
 
-            $context.on('click',clickable, function() {
-                var $parent = $(this).parent(),
-                    $wrapper = $parent.closest('.bs-color-picker-wrapper');
+                var $this = $(this).closest('.bs-color-picker-wrapper');
+                $this.addClass('bs-clicked');
+                $this.find('.bs-color-picker-value').wpColorPicker().wpColorPicker('open');
 
-                $wrapper.find('.bs-color-picker-value').wpColorPicker({
-                    change: Better_Framework.once(function() {
-                        if(better_framework_loc.type === "widgets") { /// FIX: color save issue on widgets page
-                            $(this).closest('.widget-inside').find('.widget-control-save').prop( 'disabled', false );
-                        }
-                    })
-                }); // init the color picker
-                $parent.remove(); // remove placeholder
-
-                setTimeout(function() {
-                    $wrapper.find(clickable).click(); // open color picker
-                });
             });
+
+
+            $doc.on('click', '.bs-color-picker-wrapper .bs-wp-picker-container', function (e) {
+                e.preventDefault();
+
+                var $this = $(this);
+
+                setTimeout(function () {
+
+                    var $wrapper = $this.closest('.bs-color-picker-wrapper');
+
+                    // Close another color picker before opening another one
+                    var $maybeOpenColorPickers = $(".bs-color-picker-wrapper.bs-clicked").not($wrapper);
+
+                    $maybeOpenColorPickers.each(function () {
+
+                        var $this  = $(this),
+                            isOpen = $this.find(".wp-picker-container:visible .iris-picker").is(":visible");
+
+                        if (isOpen) {
+
+                            $('.bs-color-picker-value', this).wpColorPicker('close');
+                        }
+                    });
+                });
+
+            });
+
+            $doc.data('color-picker-init',true);
         },
 
         // Setup Sorter field
@@ -3665,38 +3411,13 @@ var bf_ignore_reload_notice = false,
                 });
             }
 
-            var sorterUpdated = function(evt, params) {
+            $('.bf-section-container li input').on('change', function(evt, params) {
 
-                var $this = $(this);
-
-                if( typeof $this.attr('checked') != "undefined" ){
-                    $this.closest('li').addClass('checked-item');
+                if( typeof $(this).attr('checked') != "undefined" ){
+                    $(this).closest('li').addClass('checked-item');
                 }else{
-                    $this.closest('li').removeClass('checked-item');
+                    $(this).closest('li').removeClass('checked-item');
                 }
-
-            };
-
-            $( ".bf-sorter-list" ).sortable({
-                placeholder: "placeholder-item",
-                cancel: "li.disable-item"
-            });
-
-            $('.bf-section-container li input')
-                .off('change', sorterUpdated)
-                .on('change', sorterUpdated);
-
-
-            jQuery(document).on('bf-component-did-mount', function(e,target) {
-
-                $( ".bf-sorter-list" ).sortable({
-                    placeholder: "placeholder-item",
-                    cancel: "li.disable-item"
-                });
-
-                $('.bf-section-container li input')
-                    .off('change', sorterUpdated)
-                    .on('change', sorterUpdated);
 
             });
         },
@@ -3708,31 +3429,18 @@ var bf_ignore_reload_notice = false,
 
                 var $this = $(this);
 
-                var $parent = $this.parent();
                 // Uncheck all radio button for this field
-                $parent.find(':radio').prop("checked", false);
+                $this.parent().find(':radio').prop("checked", false);
 
                 // Checked the clicked radio button
                 // Fires change for third party code usage
-                var $checked = $this.find(':radio');
-                $checked.prop("checked", true).change()
-                    [0].dispatchEvent(new Event('change',{bubbles: true}));
+                $this.find(':radio').prop("checked", true).change();
 
                 // Remove checked class from field options and add checked class to clicked option
                 $this.siblings().removeClass('checked').end().addClass('checked');
 
                 // Prevent Browser Default Bahavior
                 e.preventDefault();
-
-                $this.closest('.image-radio-field')
-
-                var $elements = $parent.find('.image-radio-value');
-
-                if ($elements.length) {
-
-                    $elements.val($checked.val()).change()
-                        [0].dispatchEvent(new Event('change',{bubbles: true}));
-                }
             });
 
         },
@@ -3767,13 +3475,12 @@ var bf_ignore_reload_notice = false,
                 // when select pressed in uploader popup
                 custom_uploader.on('select', function() {
 
+
                     var attachment = custom_uploader.state().get('selection').first().toJSON();
 
                     _this.siblings('.bf-background-image-preview').find("img").attr( "src", attachment.url );
 
-                    var $input = _this.siblings('.bf-background-image-input');
-                    $input.val( attachment.url ).change();
-                    $input[0].dispatchEvent(new Event('change',{bubbles: true}));
+                    _this.siblings('.bf-background-image-input').val( attachment.url );
 
                     _this.siblings('.bf-background-image-preview').show(100);
                     _this.siblings('.bf-background-image-uploader-select-container').removeClass('hidden').show(100);
@@ -3788,11 +3495,9 @@ var bf_ignore_reload_notice = false,
                 return false;
             });
             $('body').on( 'click', '.bf-background-image-remove-btn' ,function() {
-                var _this = $(this),
-                    $input = _this.siblings('.bf-background-image-input');
+                var _this = $(this);
 
-                $input.val('').change();
-                $input[0].dispatchEvent(new Event('change',{bubbles: true}));
+                _this.siblings('.bf-background-image-input').val( '' );
 
                 // hide remove button, select and preview
                 _this.hide( 100 );
@@ -3933,10 +3638,6 @@ var bf_ignore_reload_notice = false,
                         $_input.val( attachment.url ).trigger('change');
                     }
 
-                    $_input.change();
-
-                    $_input[0].dispatchEvent(new Event('change',{bubbles: true}));
-
                     var preview = '';
 
                     if( typeof _this.data('size') != "undefined" ){
@@ -4021,9 +3722,7 @@ var bf_ignore_reload_notice = false,
             $(document).on( 'click', '.bf-media-image-remove-btn' ,function() {
                 var _this = $(this);
 
-                var $input = _this.siblings('.bf-media-image-input').val( '' ).change();
-
-                $input[0].dispatchEvent(new Event('change',{bubbles: true}));
+                _this.siblings('.bf-media-image-input').val( '' ).change();
 
                 // hide remove button, select and preview
                 _this.hide();
@@ -4065,9 +3764,7 @@ var bf_ignore_reload_notice = false,
 
             var bf_ajax_input_interval = 850;
 
-            $(document)
-                .off( 'keyup.ajaxselect', '.bf-ajax-suggest-input')
-                .on( 'keyup.ajaxselect', '.bf-ajax-suggest-input', function(e){
+            $(document).on( 'keyup', '.bf-ajax-suggest-input', function(e){
 
                 var _this   =   $(e.target),
                     _s      =   bf_ajax_generate_options_object( _this );
@@ -4150,10 +3847,6 @@ var bf_ignore_reload_notice = false,
                                 });
 
                                 _s_.hidden_field.val( value.replace( ',,', ',' ).replace( /^,+/ ,'' ).replace( /,+$/, '' ) );
-                                _s_.hidden_field.change();
-
-                                _s_.hidden_field[0].dispatchEvent(new Event('change',{bubbles: true}));
-
                             }
 
                         });
@@ -4175,9 +3868,7 @@ var bf_ignore_reload_notice = false,
                 }, bf_ajax_input_interval);
             });
 
-            $(document)
-                .off('blur.ajaxselect', '.bf-ajax-suggest-input')
-                .on( 'blur.ajaxselect', '.bf-ajax-suggest-input', function(){
+            $(document).on( 'blur', '.bf-ajax-suggest-input', function(){
 
                 var _s = bf_ajax_generate_options_object($(this));
 
@@ -4185,9 +3876,7 @@ var bf_ignore_reload_notice = false,
 
             });
 
-            $(document)
-                .off('focus.ajaxselect', '.bf-ajax-suggest-input')
-                .on( 'focus.ajaxselect', '.bf-ajax-suggest-input', function(){
+            $(document).on( 'focus', '.bf-ajax-suggest-input', function(){
 
                 var _s = bf_ajax_generate_options_object($(this));
 
@@ -4196,9 +3885,7 @@ var bf_ignore_reload_notice = false,
 
             });
 
-            $(document)
-                .off('click.ajaxselect', '.bf-ajax-suggest-search-results li')
-                .on( 'click.ajaxselect', '.bf-ajax-suggest-search-results li', function(e){
+            $(document).on( 'click', '.bf-ajax-suggest-search-results li', function(e){
                 var _this   = $( e.target ),
                     _s      = bf_ajax_generate_options_object( _this.parent().siblings('.bf-ajax-suggest-input') );
 
@@ -4214,10 +3901,6 @@ var bf_ignore_reload_notice = false,
                 _s.controls_box.append( e.target.outerHTML );
 
                 _s.hidden_field.val($.array_unique( value ).join(',').replace(',,',',').replace(/^,+/,'').replace(/,+$/,''));
-                _s.hidden_field.change();
-
-                _s.hidden_field[0].dispatchEvent(new Event('change',{bubbles: true}));
-
 
                 $(this).remove();
 
@@ -4225,9 +3908,7 @@ var bf_ignore_reload_notice = false,
 
             });
 
-            $(document)
-                .off('click.ajaxselect', '.bf-ajax-suggest-controls li .del')
-                .on( 'click.ajaxselect', '.bf-ajax-suggest-controls li .del', function(e){
+            $(document).on( 'click', '.bf-ajax-suggest-controls li .del', function(e){
 
                 if( confirm('Are You Sure?') ){
                     var _new,
@@ -4244,10 +3925,7 @@ var bf_ignore_reload_notice = false,
                         return value != ID;
                     });
 
-                    _s.hidden_field.val( _new.join( ',' ).replace( ',,', ',' ).replace( /^,+/, '' ).replace( /,+$/, '' ) ).change();
-
-                    _s.hidden_field[0].dispatchEvent(new Event('change',{bubbles: true}));
-
+                    _s.hidden_field.val( _new.join( ',' ).replace( ',,', ',' ).replace( /^,+/, '' ).replace( /,+$/, '' ) );
                 }
             });
 
@@ -4262,11 +3940,10 @@ var bf_ignore_reload_notice = false,
                     });
 
                     _s_.hidden_field.val( value.replace( ',,', ',' ).replace( /^,+/ ,'' ).replace( /,+$/, '' ) );
-                    _s_.hidden_field.change();
 
-                    _s.hidden_field[0].dispatchEvent(new Event('change',{bubbles: true}));
                 }
             });
+
         },
         init_mega_menus: function() {
 
@@ -4393,7 +4070,7 @@ var bf_ignore_reload_notice = false,
                         .append(
                             '<div class="bf-notice-message-collapse">'
                             + '<a class="bf-notice-message-toggle title" href="#">' + label + '</a></div>')
-                        .addClass('bf-close');
+                        .addClass('close');
                 }
             }).on('click', '.bf-notice-message-toggle', function () {
 
@@ -4405,9 +4082,9 @@ var bf_ignore_reload_notice = false,
                 $('.bf-notice-text', $content).css('max-height', 'none');
 
                 $content.css('max-height', '3000px').delay(animTime).queue(function (n) {
-                    $content.find('.bf-notice-text-container').removeClass('bf-close').css('max-height', 'none');
+                    $content.find('.bf-notice-text-container').removeClass('close').css('max-height', 'none');
 
-                    $this.closest('.bf-notice-message-collapse').remove();
+                    $this.closest('.bf-notice-message-collapse').remove()
 
                     n();
                 });
@@ -4441,569 +4118,16 @@ var bf_ignore_reload_notice = false,
                     }
                 });
             }
-        },
-
-        customizePage: function(){
-
-            var api = wp.customize;
-
-            if( !api || !api.controlConstructor || !api.controlConstructor.sidebar_widgets) {
-
-                $( document ).on( 'widget-added', this.customizePage.bind(this));
-
-                return;
-            }
-
-            var addWidget = api.controlConstructor.sidebar_widgets.prototype.addWidget;
-
-            api.controlConstructor.sidebar_widgets = api.controlConstructor.sidebar_widgets.extend({
-
-                addWidget: function(widgetId) {
-
-                    // ByPass parseWidgetId Issue
-                    if(widgetId.match(/^bs\-.*?\-\d+$/)) {
-                        widgetId += '-0';
-                    }
-
-                    return addWidget.call(this,widgetId);
-                }
-            });
-        },
-
-        pageBuilderCompatibility: {
-
-            init: function () {
-
-                if (
-                    better_framework_loc.page_builder.indexOf('KCP') > -1
-                    ||
-                    better_framework_loc.page_builder.indexOf('KC') > -1
-                ) { // isKingComposer
-
-                    this.kingComposer.init();
-
-                }
-                if (better_framework_loc.page_builder.indexOf('Elementor') > -1) {
-
-                    this.elementor.init();
-
-                }
-                if (better_framework_loc.page_builder.indexOf('SiteOrigin') > -1) {
-
-                    this.siteOrigin.init();
-
-                }
-                if (better_framework_loc.page_builder.indexOf('Gutenberg') > -1) {
-
-                    this.gutenberg.init();
-                }
-            },
-
-            kingComposer: {
-
-                loadedFields : [],
-
-                init: function() {
-
-                    if(! window.kc || ! window.kc.backbone) {
-                        return ;
-                    }
-
-                    var main = this;
-
-                    window.kc.backbone.settings = function( e, atts,p ) {
-
-                        if (e === undefined)
-                            return;
-
-
-                        var el = ( typeof( e.tagName ) != 'undefined' ) ? e : this;
-
-                        var mid = kc.get.model(el),
-                            data = kc.storage[mid],
-                            popup = kc.tools.popup;
-
-                        if (kc.maps[data.name] === undefined)
-                            return false;
-
-                        var map = $().extend({}, kc.maps['_std']);
-                        map = $().extend(map, kc.maps[data.name]);
-
-
-                        if (map.title === undefined)
-                            map.title = map.name + ' Settings';
-
-                        var attz = {
-                            title: map.title,
-                            width: map.pop_width,
-                            scrollBack: false,
-                            scrollTo: false,
-                            class: data.name + '_wrpop kc-elm-settings-popup',
-                        };
-
-                        if (atts !== undefined)
-                            attz = $.extend(attz, atts);
-
-                        var pop = popup.render(el, attz);
-
-                        var fixPopupWidth = function() {
-                            var totalWidth = 40;
-                            pop.find('.kc-pop-tabs>li').each(function() {
-                                totalWidth+= this.width ? this.with : this.offsetWidth;
-                            }).promise().done(function() {
-
-                                if(popup.el.width()<totalWidth)
-                                popup.el.width(totalWidth);
-                            });
-                        };
-
-                        var triggerLoadedEvent = function() {
-
-                            $(document).trigger('bf-kc-tab-loaded', [pop.find('.form-active')]);
-                        };
-
-                        pop.data({model: mid, callback: kc.backbone.save});
-
-                        var renderPopup = function () {
-
-                            var form = $('<form class="fields-edit-form kc-pop-tab form-active"></form>'),
-                                tab_icon = 'et-puzzle';
-
-                            if (map.params[0] !== undefined) {
-
-                                kc.params.fields.render(form, map.params, data.args);
-
-                            } else {
-
-                                for (var n in map.params) {
-
-
-                                    popup.add_tab(pop, {
-                                        title: n,
-                                        class: 'kc-tab-general-' + kc.tools.esc_slug(n),
-                                        cfg: n + '|' + mid + '|' + data.name,
-                                        callback: kc.params.fields.tabs
-                                    });
-                                }
-
-                                pop.find('.m-p-wrap>.kc-pop-tabs>li').first().trigger('click');
-
-                            }
-
-                            pop.find('.m-p-body').append(form);
-
-                             /***  /
-                            /**** /	Add presets tab for every element
-                           /*****/
-
-                            popup.add_tab(pop, {
-
-                                title: 'Presets',
-                                class: 'kc-tab-general-presets',
-                                cfg: 'presets|' + mid + '|' + data.name,
-
-                                callback: kc.backbone.presets
-                            });
-                        };
-
-                        kc.ui.fix_position_popup(pop);
-
-                        function appendTemplate(templateId, html) {
-
-                            var elementId = 'tmpl-kc-field-type-' + templateId + '-template',
-                                element = document.getElementById(elementId);
-
-                            element && element.remove();
-
-                            var template = document.createElement('script');
-                            template.id = elementId;
-                            template.type = 'text/html';
-                            template.appendChild(document.createTextNode(html));
-
-                            document.body.appendChild(template);
-
-                            return true;
-                        }
-
-                        data.deferred = main.getDeferredFieldsType(data.name);
-
-                        if ('kc_wp_widget' === data.name) {
-
-                            // load widgets kc_admin_footer()
-
-                        } else if (data.deferred) {
-
-                            var ajaxData = {
-                                token: $("#bf_kc_ajax_field").val(),
-                                shortcode: data.name,
-                            };
-
-                            if('always' === data.deferred) {
-                                var shortcodeArgs = {};
-                                for (var key in data.args) {
-                                    if (data.args.hasOwnProperty(key)) {
-                                        shortcodeArgs[key] = data.args[key];
-                                    }
-                                }
-                                ajaxData.shortcode_atts = shortcodeArgs;
-                            }
-
-                            // Append Loading
-                            pop.find('.m-p-body').append('<div class="bs-modal-loading">\n\t<div class="la-line-scale-pulse-out-rapid la-2x">\n\t\t<div></div>\n\t\t<div></div>\n\t\t<div></div>\n\t\t<div></div>\n\t\t<div></div>\n\t</div>\n</div>\n')
-
-                            var ajax = wp.ajax.post('bf_load_kc_fields', ajaxData);
-
-                            ajax.done(function (res) {
-
-                                // Remove loading
-                                pop.find('.bs-modal-loading').remove();
-
-                                res.global_fields && res.global_fields.forEach(function (tpl) {
-
-                                    appendTemplate(tpl.id, tpl.html);
-
-                                    if (kc_param_types_support.indexOf(tpl.id) === -1)
-                                        kc_param_types_support.push(tpl.id);
-                                });
-
-                                res.dedicated_fields && res.dedicated_fields.forEach(function (tpl) {
-
-                                    appendTemplate(tpl.id, '<div class="bf-deferred-kc-field {{data.name}}"></div>');
-
-                                    if (kc_param_types_support.indexOf(tpl.id) === -1)
-                                        kc_param_types_support.push(tpl.id);
-                                });
-
-                                main.mapFieldsLoaded(data.name);
-
-                                renderPopup.call(this);
-
-                                var initDynamicFields = function () {
-
-                                    res.dedicated_fields && res.dedicated_fields.forEach(function (tpl) {
-
-                                        pop.find('.bf-deferred-kc-field.' + tpl.name).replaceWith(tpl.html);
-                                    })
-                                };
-
-                                var setupFields = function(){
-
-                                    var $context = pop.find('.form-active');
-
-                                    Better_Framework.setup_field_color_picker($context);
-                                    Better_Framework.setup_field_switch();
-                                    Better_Framework.setup_field_slider();
-                                    Better_Framework.setup_field_ajax_select();
-                                    //  Better_Framework.setup_vc_field_sorter();
-                                    Better_Framework.setup_term_select(
-                                        $context
-                                    );
-                                    //  $(document).trigger('bf-ajax-tab-loaded', [$context])
-
-                                };
-
-                                pop.find(".kc-pop-tabs>li").one('click', function () {
-
-                                    setTimeout(function () {
-
-                                        initDynamicFields();
-                                        setupFields();
-
-                                        var $tab = pop.find('.form-active');
-
-                                        main.setupShowOn($tab);
-
-                                        $(":input:first", $tab).trigger('force-change');
-
-                                        triggerLoadedEvent();
-                                    });
-                                });
-
-                                setTimeout(function () {
-                                    initDynamicFields();
-                                    fixPopupWidth();
-
-                                    setupFields();
-                                    triggerLoadedEvent();
-                                });
-
-                            });
-
-                        } else {
-
-                            renderPopup.call(this);
-                            setTimeout(function() {
-                                fixPopupWidth();
-                                triggerLoadedEvent();
-                            });
-                        }
-
-                        return pop;
-                    };
-
-                    window.kc.ui.verify_tmpl = function(refresh) {
-
-                        var cfg = $().extend( kc.cfg, kc.backbone.stack.get('KC_Configs') );
-
-                        if( cfg.version != kc_version || refresh || localStorage['KC_TMPL_CACHE'] === undefined || localStorage['KC_TMPL_CACHE'] === ''){
-
-                            if( !refresh) kc.msg( 'KingComposer is initializing', 'loading' );
-
-                            $.post(
-
-                                kc_ajax_url, {
-                                    'action': 'bf_kc_tmpl_storage',
-                                    'security': kc_ajax_nonce
-                                },
-
-                                function (result) {
-
-                                    $('#kc-preload').remove();
-
-                                    if( result != -1 && result != 0 ){
-
-                                        kc.ui.upgrade_notice( parseFloat(cfg.version) );
-
-                                        cfg.version = kc_version;
-
-                                        localStorage.clear();
-
-                                        kc.backbone.stack.set( 'KC_Configs', cfg );
-                                        kc.backbone.stack.set( 'KC_TMPL_CACHE', result );
-
-                                        kc.init();
-
-                                    }
-                                }
-                            );
-
-                        }else if( !kc.ui.check_tmpl() ){
-                            return false;
-                        } else return true;
-                    }
-                },
-
-                getDeferredFieldsType: function(map) {
-
-                    if (!kc_maps[map]) {
-                        return false;
-                    }
-
-                    if (kc_maps[map].always_fetch_fields) {
-                        return 'always';
-                    }
-
-                    if (!kc_maps[map].deferred_fields) {
-                        return false;
-                    }
-
-                    var def = kc_maps[map].deferred_fields;
-
-                    for (var i = 0; i < def.length; i++) {
-
-                        if (!this.isFieldLoaded(def[i])) {
-                            return 'once';
-                        }
-                    }
-
-                    return false;
-                },
-
-                isFieldLoaded: function(field) {
-
-                    return this.loadedFields.indexOf(field) > -1;
-                },
-
-                mapFieldsLoaded: function(map) {
-
-                    if(! kc_maps[map] || ! kc_maps[map].deferred_fields) {
-                        return false;
-                    }
-
-                    var self = this;
-
-                    kc_maps[map].deferred_fields.forEach(function(field) {
-
-                        self.loadedFields.push(field);
-                    });
-                },
-
-                setupShowOn: function($wrapper){
-
-                    // .kc-param-row, .bf-section-container, .kc-pop-tab
-                }
-            },
-
-            elementor: {
-
-                init: function() {
-
-                    var self = this;
-
-                    var interval = setInterval(function() {
-
-                        if(! window.elementorFrontend) {
-                            return ;
-                        }
-
-                        if( !elementorFrontend.hooks || !elementorFrontend.hooks.addAction) {
-                            return ;
-                        }
-
-                        clearInterval(interval);
-
-                        self.bindEvents();
-
-                    },100);
-                },
-
-                bindEvents: function() {
-
-                    if(! better_framework_loc.shortcodes_id) {
-                        return ;
-                    }
-
-                    var self = this;
-
-                    better_framework_loc.shortcodes_id.forEach( function(widgetId) {
-
-                        elementor.hooks.addAction( 'panel/widgets/wp-widget-' + widgetId + '/controls/wp_widget/loaded', function( view ) {
-                            self.widgetLoaded(view);
-                        } );
-                    });
-                },
-
-                widgetLoaded: function(view) {
-
-                    Better_Framework.setup_fields(view.$el);
-                }
-            },
-
-            siteOrigin: {
-
-                init: function () {
-
-                    this.bindEvents();
-
-                    Better_Framework.setup_widget_fields();
-                    Better_Framework.sort_widgets();
-
-                },
-
-                bindEvents: function() {
-
-                    var self = this;
-
-                    $(document).ajaxSuccess(function (e, xhr, settings) {
-                        var data = $.unserialize(settings.data);
-
-                        if(data.action === 'so_panels_widget_form') {
-
-                            var $scope = $(".so-panels-dialog-wrapper .so-content");
-
-                            self.widgetLoaded($scope);
-                        }
-                    });
-                },
-
-                widgetLoaded: function($scope) {
-
-                    Better_Framework.setup_fields($scope);
-                }
-            },
-
-            gutenberg: {
-
-                init: function () {
-
-                    var self = this;
-
-                    $(document).on('bf-component-did-mount', function (e) {
-
-                        if(! e.detail || ! e.detail.parentElement) {
-
-                            return ;
-                        }
-
-                        var $scope = $(e.detail.parentElement);
-
-                        if(! $scope.data('component-initialized')){
-
-                            Better_Framework._init_editor($scope[0]);
-                            self.intTermSelect($scope);
-
-                            $scope.data('component-initialized',true);
-                        }
-                    });
-                },
-
-                intTermSelect: function ($scope) {
-
-                    var list = [];
-
-                    var $fields = $(".bf-field-term-select-deferred", $scope);
-
-                    $fields.each(function () {
-
-                        var $this = $(this);
-
-                        list.push({
-                            taxonomy: $this.data('taxonomy'),
-                            value: $this.closest('.bf-term-select-field').find('.bf-term-select-value').val()
-                        });
-
-                    }).promise().done(function () {
-
-                        if (list.length === 0) {
-                            return;
-                        }
-
-                        $.ajax({
-                            type: 'POST',
-                            dataType: 'json',
-                            url: better_framework_loc.bf_ajax_url,
-                            data: {
-                                action: 'bf_ajax',
-                                reqID: 'term_select_items',
-                                nonce: better_framework_loc.nonce,
-                                data: list
-                            },
-                            success: function (res) {
-
-                                res.data.forEach(function (markup, index) {
-
-                                    $($fields.get(index)).html('<ul>' + markup + '</ul>')
-                                        .removeClass('bf-field-term-select-deferred')
-                                        .removeClass('loading');
-                                });
-
-                                Better_Framework.init_term_select($scope);
-                            },
-                            error: function (MLHttpRequest) {
-                            }
-                        });
-                    });
-                }
-            }
         }
     };
 
 })(jQuery);
 
 // load when ready
-
 jQuery(function($) {
 
     Better_Framework.init();
-});
 
-
-jQuery(window).load(function() {
-
-    if(! Better_Framework.loaded) {
-
-        Better_Framework.init();
-    }
 });
 
 
@@ -5093,17 +4217,12 @@ jQuery(function($) {
     }
 
     // Custom Serializer
-    $.fn.bf_serialize = function (asObject,options) {
+    $.fn.bf_serialize = function (asObject) {
         var results = {}, value;
-
-        options = $.extend({
-            nameAttribute:'name'
-        },options);
 
         $(this).find(':input').each(function () {
             var $this = $(this),
-                name = $this.attr(options.nameAttribute);
-
+                name = $this.attr('name');
             if (name && !this.disabled) {
                 var type = $this.attr('type'),
                     name = encodeURIComponent(name);

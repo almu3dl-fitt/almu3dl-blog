@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: https://betterstudio.com/
+ *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
  *
  *  \--> BetterStudio, 2017 <--/
  */
@@ -27,6 +27,7 @@
             jQuery(document).ready(function ($) {
                 self.attach_register_btn_event();
                 self.attach_submit_event();
+                self.attach_help_modal();
             });
         },
         attach_register_btn_event: function () {
@@ -36,6 +37,29 @@
                 self.attach_auto_check_license_event();
                 window.open(this.href);
             });
+        },
+        attach_help_modal: function () {
+            if ($.bs_modal) {
+
+                $("#register-help-modal").on('click', function (e) {
+                    e.preventDefault();
+                    $.bs_modal({
+                        content: bs_register_product.help,
+                        buttons: {
+                            close_modal: {
+                                type: 'primary',
+                                action: 'close',
+                                label: bs_register_product.help.close_btn
+                            }
+                        },
+                        template: 'single_image',
+                        styles: {
+                            container: 'top:10%'
+                        },
+                        is_vertical_center: false
+                    });
+                });
+            }
         },
         bind_input_mask: function () {
             if ($.fn.inputmask) {

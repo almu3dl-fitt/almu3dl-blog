@@ -172,19 +172,19 @@
                 $input.attr('label', selected.label);
 
                 input = $input_width.val(selected.width).change()[0];
-                input && input.dispatchEvent(new Event('input'));
+                input && input.dispatchEvent(new Event('change',{bubbles: true}));
 
                 input = $input_height.val(selected.height).change()[0];
-                input && input.dispatchEvent(new Event('input'));
+                input && input.dispatchEvent(new Event('change',{bubbles: true}));
 
                 input = $input_type.val(selected.type).change()[0];
-                input && input.dispatchEvent(new Event('input'));
+                input && input.dispatchEvent(new Event('change',{bubbles: true}));
 
                 input = $input_font_code.val(selected.code).change()[0];
-                input && input.dispatchEvent(new Event('input'));
+                input && input.dispatchEvent(new Event('change',{bubbles: true}));
 
                 input = $input.val(selected.id).change()[0];
-                input && input.dispatchEvent(new Event('input'));
+                input && input.dispatchEvent(new Event('change',{bubbles: true}));
 
 
                 custom_icon_hide();

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>TRY</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="TRY" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#D00027" x="0" y="0" width="33.56" height="19.58"></rect>
+            <g id="Group" transform="translate(4.000000, 4.000000)">
+                <path d="M5.79,0.89 C8.48936944,0.890005644 10.6781523,3.07730467 10.6799886,5.77667348 C10.6818249,8.4760423 8.49601997,10.6663172 5.79665304,10.6699955 C3.0972861,10.6736737 0.905520183,8.48936379 0.9,5.79 C0.899994373,3.08770516 3.08771079,0.895514887 5.79,0.89" id="Shape" fill="#FFFFFF"></path>
+                <path d="M7,1.87 C8.58728691,1.86190149 10.0227879,2.81182705 10.6358361,4.27597092 C11.2488842,5.74011479 10.9184604,7.42944652 9.79893865,8.55470937 C8.67941694,9.67997221 6.99179744,10.0190328 5.52453695,9.41348182 C4.05727646,8.80793085 3.10002066,7.37730757 3.1,5.79 C3.09997192,3.63283028 4.84285835,1.88100597 7,1.87" id="Shape" fill="#D00027"></path>
+                <polygon id="Shape" fill="#FFFFFF" points="9.93 5.79 12.25 6.55 12.63 5.38"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="9.93 5.79 12.25 5.04 12.63 6.2"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="11.62 3.46 11.62 5.91 12.84 5.91"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="11.62 3.46 13.05 5.44 12.07 6.16"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="11.62 8.12 13.05 6.14 12.07 5.42"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="11.62 8.12 11.62 5.67 12.84 5.67"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="14.35 4.36 12.03 5.11 12.41 6.27"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="14.35 4.36 12.91 6.33 11.92 5.61"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="14.35 7.23 12.91 5.25 11.92 5.97"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="14.35 7.23 12.03 6.47 12.41 5.31"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

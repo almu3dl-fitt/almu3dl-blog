@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>SYP</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="SYP" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="0" width="33.56" height="19.58"></rect>
+            <rect id="Rectangle-path" fill="#BC0030" x="0" y="0" width="33.56" height="6.53"></rect>
+            <polygon id="Shape" fill="#429E61" points="22.66 7.67 23.13 9.14 24.67 9.14 23.43 10.04 23.9 11.51 22.66 10.6 21.41 11.51 21.89 10.04 20.64 9.14 22.18 9.14"></polygon>
+            <polygon id="Shape" fill="#429E61" points="10.91 7.67 11.38 9.14 12.92 9.14 11.68 10.04 12.15 11.51 10.91 10.6 9.66 11.51 10.14 10.04 8.89 9.14 10.43 9.14"></polygon>
+            <rect id="Rectangle-path" fill="#000000" x="0" y="13.05" width="33.56" height="6.53"></rect>
+        </g>
+    </g>
+</svg>

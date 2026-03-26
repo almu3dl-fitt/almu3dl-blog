@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>VEF</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="VEF" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#EED12F" x="0" y="0" width="33.56" height="6.53"></rect>
+            <rect id="Rectangle-path" fill="#242EA7" x="0" y="6.53" width="33.56" height="6.53"></rect>
+            <rect id="Rectangle-path" fill="#BD0034" x="0" y="13.05" width="33.56" height="6.53"></rect>
+            <polygon id="Shape" fill="#FFFFFF" points="15.32 8.85 15.58 6.99 16.46 8.65 14.78 7.83 16.62 7.5"></polygon>
+            <polygon id="Shape" fill="#FFFFFF" points="17.1 8.65 17.98 6.99 18.24 8.85 16.94 7.5 18.79 7.83"></polygon>
+            <polygon id="Shape" fill="#FFFFFF" points="13.72 9.65 13.33 7.81 14.72 9.07 12.85 8.87 14.48 7.93"></polygon>
+            <polygon id="Shape" fill="#FFFFFF" points="18.84 9.07 20.23 7.81 19.84 9.65 19.08 7.93 20.7 8.87"></polygon>
+            <polygon id="Shape" fill="#FFFFFF" points="12.48 10.95 11.49 9.35 13.23 10.05 11.41 10.51 12.62 9.07"></polygon>
+            <polygon id="Shape" fill="#FFFFFF" points="20.33 10.05 22.07 9.35 21.08 10.95 20.95 9.07 22.15 10.51"></polygon>
+            <polygon id="Shape" fill="#FFFFFF" points="11.77 12.59 10.29 11.43 12.17 11.49 10.61 12.55 11.25 10.78"></polygon>
+            <polygon id="Shape" fill="#FFFFFF" points="21.4 11.49 23.27 11.43 21.79 12.59 22.31 10.78 22.95 12.55"></polygon>
+        </g>
+    </g>
+</svg>

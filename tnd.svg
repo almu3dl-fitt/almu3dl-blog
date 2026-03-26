@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>TND</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="TND" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#D30025" x="0" y="0" width="33.56" height="19.58"></rect>
+            <g id="Group" transform="translate(11.000000, 4.000000)">
+                <path d="M5.78,0.89 C8.47936379,0.895520183 10.6636737,3.0872861 10.6599955,5.78665304 C10.6563172,8.48601997 8.4660423,10.6718249 5.76667348,10.6699886 C3.06730467,10.6681523 0.880005644,8.47936944 0.88,5.78 C0.879997285,4.48135689 1.39656472,3.23604839 2.31578156,2.3187075 C3.23499841,1.40136661 4.48135961,0.887344288 5.78,0.89" id="Shape" fill="#FFFFFF"></path>
+                <path d="M5.78,2.12 C7.80557411,2.1255193 9.44367098,3.77107021 9.43999395,5.79664851 C9.43631693,7.8222268 7.79225655,9.46181962 5.76667575,9.45998487 C3.74109494,9.45815012 2.10000752,7.81558163 2.1,5.79 C2.09999638,4.81492039 2.4880284,3.87992286 3.17845124,3.19137617 C3.86887407,2.50282948 4.80492401,2.11734311 5.78,2.12" id="Shape" fill="#D30025"></path>
+                <path d="M6.76,2.85 C7.95002753,2.85000688 9.02268544,3.56740171 9.47714942,4.66723261 C9.9316134,5.76706351 9.67824119,7.03239068 8.83533236,7.87243247 C7.99242353,8.71247427 6.72624043,8.96153385 5.62796434,8.50332522 C4.52968825,8.04511659 3.81595229,6.97002064 3.82,5.78 C3.82550959,4.16018944 5.14018007,2.84999063 6.76,2.85" id="Shape" fill="#FFFFFF"></path>
+                <polyline id="Shape" fill="#D30025" points="4.56 5.79 6.65 6.47 6.99 5.42"></polyline>
+                <polyline id="Shape" fill="#D30025" points="4.56 5.79 6.65 5.11 6.99 6.16"></polyline>
+                <polyline id="Shape" fill="#D30025" points="6.08 3.69 6.08 5.89 7.18 5.89"></polyline>
+                <polyline id="Shape" fill="#D30025" points="6.08 3.69 7.37 5.48 6.48 6.13"></polyline>
+                <polyline id="Shape" fill="#D30025" points="6.08 7.88 7.37 6.1 6.48 5.45"></polyline>
+                <polyline id="Shape" fill="#D30025" points="6.08 7.88 6.08 5.68 7.18 5.68"></polyline>
+                <polyline id="Shape" fill="#D30025" points="8.54 4.49 6.45 5.18 6.79 6.23"></polyline>
+                <polyline id="Shape" fill="#D30025" points="8.54 4.49 7.25 6.27 6.35 5.63"></polyline>
+                <polyline id="Shape" fill="#D30025" points="8.54 7.09 7.25 5.3 6.35 5.95"></polyline>
+                <polyline id="Shape" fill="#D30025" points="8.54 7.09 6.45 6.4 6.79 5.35"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

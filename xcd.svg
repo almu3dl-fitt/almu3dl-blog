@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="67px" viewBox="0 0 100 67" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>XCD</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="XCD" transform="translate(0.000000, -2.000000)" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="2.17391304" width="100" height="66.6666667"></rect>
+            <rect id="Rectangle-path" fill="#000000" x="0" y="2.17391304" width="100" height="33.3333333"></rect>
+            <g id="Group" transform="translate(27.536232, 0.000000)" fill="#FCD116">
+                <g id="c3" transform="translate(0.000000, 9.420290)">
+                    <polygon id="c" points="0.724637681 18.8405797 22.4637681 14.6794409 22.4637681 23.0017186"></polygon>
+                    <g id="c-link" transform="translate(12.421599, 14.680977) rotate(22.500000) translate(-12.421599, -14.680977) translate(1.552034, 10.333151)">
+                        <polygon id="c" points="0 4.34782609 21.7391304 0.186687246 21.7391304 8.50896493"></polygon>
+                    </g>
+                    <g id="c-link" transform="translate(14.777825, 11.154636) rotate(45.000000) translate(-14.777825, -11.154636) translate(3.908260, 6.806810)">
+                        <polygon id="c" points="0 4.34782609 21.7391304 0.186687246 21.7391304 8.50896493"></polygon>
+                    </g>
+                </g>
+                <g id="c3-link" transform="translate(25.553558, 16.784588) rotate(67.500000) translate(-25.553558, -16.784588) translate(12.510080, 5.190385)">
+                    <g id="c3">
+                        <polygon id="c" points="0.724637681 18.8405797 22.4637681 14.6794409 22.4637681 23.0017186"></polygon>
+                        <g id="c-link" transform="translate(12.421599, 14.680977) rotate(22.500000) translate(-12.421599, -14.680977) translate(1.552034, 10.333151)">
+                            <polygon id="c" points="0 4.34782609 21.7391304 0.186687246 21.7391304 8.50896493"></polygon>
+                        </g>
+                        <g id="c-link" transform="translate(14.777825, 11.154636) rotate(45.000000) translate(-14.777825, -11.154636) translate(3.908260, 6.806810)">
+                            <polygon id="c" points="0 4.34782609 21.7391304 0.186687246 21.7391304 8.50896493"></polygon>
+                        </g>
+                    </g>
+                </g>
+                <g id="c3-link" transform="translate(34.248881, 26.723681) rotate(135.000000) translate(-34.248881, -26.723681) translate(21.205403, 15.129478)">
+                    <g id="c3">
+                        <polygon id="c" points="0.724637681 18.8405797 22.4637681 14.6794409 22.4637681 23.0017186"></polygon>
+                        <g id="c-link" transform="translate(12.421599, 14.680977) rotate(22.500000) translate(-12.421599, -14.680977) translate(1.552034, 10.333151)">
+                            <polygon id="c" points="0 4.34782609 21.7391304 0.186687246 21.7391304 8.50896493"></polygon>
+                        </g>
+                        <g id="c-link" transform="translate(14.777825, 11.154636) rotate(45.000000) translate(-14.777825, -11.154636) translate(3.908260, 6.806810)">
+                            <polygon id="c" points="0 4.34782609 21.7391304 0.186687246 21.7391304 8.50896493"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </g>
+            <rect id="Rectangle-path" fill="#0072C6" x="0" y="28.2608696" width="100" height="14.4927536"></rect>
+            <polygon id="Shape" fill="#CE1126" points="0 2.17391304 0 68.8405797 100 68.8405797 100 2.17391304 50 68.8405797"></polygon>
+        </g>
+    </g>
+</svg>

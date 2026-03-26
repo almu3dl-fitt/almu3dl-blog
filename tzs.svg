@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>TZS</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="TZS" fill-rule="nonzero">
+            <polygon id="Shape" fill="#42A04B" points="0 0 0 14.86 25.59 0"></polygon>
+            <polygon id="Shape" fill="#4694D2" points="7.97 19.58 33.56 19.58 33.56 4.71"></polygon>
+            <polygon id="Shape" fill="#EAC126" points="33.54 0 33.55 0.01 33.56 0"></polygon>
+            <polygon id="Shape" fill="#EAC126" points="0 19.58 0.01 19.57 0 19.55"></polygon>
+            <polygon id="Shape" fill="#EAC126" points="25.59 0 0 14.86 0 16.38 28.14 0"></polygon>
+            <polygon id="Shape" fill="#EAC126" points="0 19.58 0 19.58 0.02 19.58 0.01 19.57"></polygon>
+            <polygon id="Shape" fill="#EAC126" points="33.56 0 33.55 0.01 33.56 0.02"></polygon>
+            <polygon id="Shape" fill="#EAC126" points="5.42 19.58 7.97 19.58 33.56 4.71 33.56 3.19"></polygon>
+            <polygon id="Shape" fill="#000000" points="28.14 0 0 16.38 0 19.55 0.01 19.57 0.02 19.58 5.42 19.58 33.56 3.19 33.56 0.02 33.55 0.01 33.54 0"></polygon>
+        </g>
+    </g>
+</svg>

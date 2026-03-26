@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>SRD</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="SRD" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#2F742E" x="0" y="0" width="33.56" height="3.92"></rect>
+            <rect id="Rectangle-path" fill="#2F742E" x="0" y="15.66" width="33.56" height="3.92"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="3.92" width="33.56" height="1.96"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="13.7" width="33.56" height="1.96"></rect>
+            <rect id="Rectangle-path" fill="#C0003B" x="0" y="5.87" width="33.56" height="7.83"></rect>
+            <polygon id="Shape" fill="#F5CD28" points="19.15 13.4 16.78 11.68 14.4 13.4 15.31 10.62 12.95 8.89 15.88 8.89 16.78 6.11 17.68 8.9 20.61 8.9 18.24 10.62"></polygon>
+        </g>
+    </g>
+</svg>

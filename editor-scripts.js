@@ -426,12 +426,7 @@ BetterStudio_ShortCodes.prototype = {
          * </ul>
          */
         edit.addCommand('BS_CheckList', function () {
-
-            var node = edit.selection.getNode();
-
-            if (node.tagName !== 'LI' && node.tagName !== 'BODY')
-                edit.execCommand("InsertUnorderedList", false);
-
+            edit.execCommand("InsertUnorderedList", false)
             self._runWithDelay(function () {
 
                 var $list = jQuery(edit.dom.getParent(edit.selection.getNode(), "ul")),
@@ -449,12 +444,7 @@ BetterStudio_ShortCodes.prototype = {
             });
         });
         edit.addCommand('BS_StarList', function () {
-
-            var node = edit.selection.getNode();
-
-            if (node.tagName !== 'LI' && node.tagName !== 'BODY')
-                edit.execCommand("InsertUnorderedList", false);
-
+            edit.execCommand("InsertUnorderedList", false)
             self._runWithDelay(function () {
 
                 var $list = jQuery(edit.dom.getParent(edit.selection.getNode(), "ul")),
@@ -472,12 +462,7 @@ BetterStudio_ShortCodes.prototype = {
             });
         });
         edit.addCommand('BS_EditList', function () {
-
-            var node = edit.selection.getNode();
-
-            if (node.tagName !== 'LI' && node.tagName !== 'BODY')
-                edit.execCommand("InsertUnorderedList", false)
-
+            edit.execCommand("InsertUnorderedList", false)
             self._runWithDelay(function () {
 
                 var $list = jQuery(edit.dom.getParent(edit.selection.getNode(), "ul")),
@@ -495,12 +480,7 @@ BetterStudio_ShortCodes.prototype = {
             });
         });
         edit.addCommand('BS_FolderList', function () {
-
-            var node = edit.selection.getNode();
-
-            if (node.tagName !== 'LI' && node.tagName !== 'BODY')
-                edit.execCommand("InsertUnorderedList", false)
-
+            edit.execCommand("InsertUnorderedList", false)
             self._runWithDelay(function () {
 
                 var $list = jQuery(edit.dom.getParent(edit.selection.getNode(), "ul")),
@@ -518,12 +498,7 @@ BetterStudio_ShortCodes.prototype = {
             });
         });
         edit.addCommand('BS_FileList', function () {
-
-            var node = edit.selection.getNode();
-
-            if (node.tagName !== 'LI' && node.tagName !== 'BODY')
-                edit.execCommand("InsertUnorderedList", false)
-
+            edit.execCommand("InsertUnorderedList", false)
             self._runWithDelay(function () {
 
                 var $list = jQuery(edit.dom.getParent(edit.selection.getNode(), "ul")),
@@ -541,12 +516,7 @@ BetterStudio_ShortCodes.prototype = {
             });
         });
         edit.addCommand('BS_HeartList', function () {
-
-            var node = edit.selection.getNode();
-
-            if (node.tagName !== 'LI' && node.tagName !== 'BODY')
-                edit.execCommand("InsertUnorderedList", false)
-
+            edit.execCommand("InsertUnorderedList", false)
             self._runWithDelay(function () {
 
                 var $list = jQuery(edit.dom.getParent(edit.selection.getNode(), "ul")),
@@ -564,12 +534,7 @@ BetterStudio_ShortCodes.prototype = {
             });
         });
         edit.addCommand('BS_AsteriskList', function () {
-
-            var node = edit.selection.getNode();
-
-            if (node.tagName !== 'LI' && node.tagName !== 'BODY')
-                edit.execCommand("InsertUnorderedList", false)
-
+            edit.execCommand("InsertUnorderedList", false)
             self._runWithDelay(function () {
 
                 var $list = jQuery(edit.dom.getParent(edit.selection.getNode(), "ul")),

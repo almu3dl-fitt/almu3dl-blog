@@ -192,7 +192,6 @@ var bf_ignore_reload_notice = false,
         init: function(){
 
             var $context = $(document.body);
-            var self = this;
 
             if(better_framework_loc.type === 'panel') {
                 $context = $("#bf-panel");
@@ -288,18 +287,12 @@ var bf_ignore_reload_notice = false,
 
             }
 
-            $(document).on("mce-view-fields-loaded", function(e,editorModal) {
-
-                self.setup_fields(editorModal.$modal);
-            });
-
             this.pageBuilderCompatibility.init();
 
             $(document).trigger('bf-loaded');
 
             this.loaded = true;
         },
-
 
         /**
          *
@@ -3127,7 +3120,7 @@ var bf_ignore_reload_notice = false,
 
             Better_Framework.setup_field_switch();
 
-            Better_Framework.setup_field_slider($context);
+            Better_Framework.setup_field_slider();
             Better_Framework.setup_field_sorter();
 
             Better_Framework.setup_field_color_picker($context);
@@ -3564,7 +3557,7 @@ var bf_ignore_reload_notice = false,
         },
 
         // Set up Slider filed
-        setup_field_slider: function(context){
+        setup_field_slider: function(){
 
             var selector = '';
 
@@ -3576,8 +3569,7 @@ var bf_ignore_reload_notice = false,
                 selector = '.bf-slider-slider';
             }
 
-
-            $(selector,context).each( function(){
+            $(selector).each( function(){
 
                 var _min = $(this).data('min');
                 var _max = $(this).data('max');

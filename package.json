@@ -1,15 +1,18 @@
 {
-  "name": "better-framework",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest"
-  },
-  "keywords": [],
-  "author": "",
+  "name": "beter-post-views",
+  "version": "3.0.0",
+  "description": "BetterSudio Post Views Plugin",
+  "main": "gulpfile.js",
+  "author": "BetterStudio",
   "license": "ISC",
-  "devDependencies": {
-    "jest": "^23.5.0"
+  "homepage": "https://betterstudio.com/",
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-uglify": "^3.0.2",
+    "gulp-util": "^3.0.8",
+    "vinyl-bufferstream": "^1.0.1"
   }
 }

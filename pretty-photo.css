@@ -203,7 +203,7 @@ div.pp_default .pp_description {
     line-height: 14px;
     margin: 16px 10px 5px 180px;
 }
-div.pp_default .pp_loaderIcon { background: url(/wp-content/plugins/better-post-views/includes/libs/better-framework/assets/img/pretty-photo-loader.gif) center center no-repeat; } /* Loader icon */
+div.pp_default .pp_loaderIcon { background: url(/wp-content/plugins/better-reviews/includes/libs/better-framework/assets/img/pretty-photo-loader.gif) center center no-repeat; } /* Loader icon */
 
 
 /* ------------------------------------------------------------------------

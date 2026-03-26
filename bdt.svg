@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>BDT</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="BDT" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#2D6B4F" x="0" y="0" width="33.56" height="19.57"></rect>
+            <path d="M15.11,3.07 C18.8132214,3.07552308 21.8118327,6.08010332 21.8099917,9.78332836 C21.8081507,13.4865534 18.8065534,16.4881507 15.1033284,16.4899917 C11.4001033,16.4918327 8.39552308,13.4932214 8.39,9.79 C8.39,6.08416933 11.3941693,3.08 15.1,3.08" id="Shape" fill="#E01748"></path>
+        </g>
+    </g>
+</svg>

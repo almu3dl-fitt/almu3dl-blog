@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="16px" viewBox="0 0 24 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>CLP</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="CLP" fill-rule="nonzero">
+            <polygon id="Shape" fill="#0039A6" points="0 0 24 0 24 16 0 16"></polygon>
+            <path d="M8,0 L8,16 L24,16 L24,0 L8,0 Z M4,2 L3.55,3.385 L2.075,3.385 L3.268,4.247 L2.82,5.624 L3.99,4.769 L5.174,5.622 L4.722,4.232 L5.884,3.382 L4.45,3.382 L4,2 Z" id="Shape" fill="#FFFFFF"></path>
+            <polyline id="Shape" fill="#D52B1E" points="24 16 0 16 0 8 24 8"></polyline>
+        </g>
+    </g>
+</svg>

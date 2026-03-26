@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>AZN</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="AZN" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#438FC3" x="0" y="0" width="33.56" height="19.58"></rect>
+            <rect id="Rectangle-path" fill="#D6003F" x="0" y="6.53" width="33.56" height="6.53"></rect>
+            <rect id="Rectangle-path" fill="#48AE68" x="0" y="13.05" width="33.56" height="6.52"></rect>
+            <g id="Group" transform="translate(13.000000, 7.000000)" fill="#FFFFFF">
+                <path d="M4.44,5.08 C3.46151758,5.08344254 2.58895189,4.46480444 2.26835182,3.54032876 C1.94775174,2.61585307 2.24995791,1.58981438 3.02048486,0.986715774 C3.7910118,0.38361717 4.85960186,0.336720909 5.68,0.87 C4.90029407,0.0761663754 3.71793939,-0.167306254 2.68803259,0.253888623 C1.65812578,0.675083499 0.985211009,1.67729467 0.985211009,2.79 C0.985211009,3.90270533 1.65812578,4.9049165 2.68803259,5.32611138 C3.71793939,5.74730625 4.90029407,5.50383362 5.68,4.71 C5.3110747,4.95050124 4.88039272,5.07901119 4.44,5.08" id="Shape"></path>
+                <polygon id="Shape" points="7.54 3.83 6.79 3.49 6.5 4.26 6.21 3.49 5.46 3.83 5.8 3.08 5.03 2.79 5.8 2.5 5.46 1.75 6.21 2.09 6.5 1.32 6.79 2.09 7.54 1.75 7.2 2.5 7.97 2.79 7.2 3.08"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

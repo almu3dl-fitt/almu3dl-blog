@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>CAD</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="CAD" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#EA0020" x="0" y="0" width="7.9" height="19.58"></rect>
+            <rect id="Rectangle-path" fill="#EA0020" x="25.67" y="0" width="7.9" height="19.58"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="7.9" y="0" width="17.77" height="19.58"></rect>
+            <path d="M16.78,2.54 L15.62,4.8 C15.49,5.05 15.25,5.02 15.01,4.88 L14.17,4.42 L14.8,7.9 C14.93,8.54 14.51,8.54 14.3,8.26 L12.82,6.55 L12.58,7.42 C12.5452318,7.56796615 12.3987653,7.6611721 12.25,7.63 L10.4,7.22 L10.89,9.07 C11,9.48 11.08,9.65 10.78,9.76 L10.12,10.08 L13.32,12.79 C13.4498355,12.9002566 13.50437,13.0755462 13.46,13.24 L13.18,14.24 L16.37,13.85 C16.47,13.85 16.63,13.94 16.63,14.05 L16.48,17.56 L17,17.56 L16.94,14 C16.94,13.89 17.09,13.79 17.18,13.79 L20.37,14.18 L20.09,13.18 C20.0504667,13.013685 20.1085843,12.839332 20.24,12.73 L23.44,10.02 L22.78,9.7 C22.49,9.59 22.57,9.42 22.67,9.01 L23.16,7.16 L21.3,7.57 C21.1778022,7.59205171 21.0556773,7.53098927 21,7.42 L20.76,6.55 L19.26,8.27 C19.05,8.54 18.63,8.54 18.76,7.91 L19.39,4.43 L18.55,4.89 C18.31,5.03 18.07,5.05 17.94,4.81 L16.78,2.54 Z" id="Shape" fill="#EA0020"></path>
+        </g>
+    </g>
+</svg>

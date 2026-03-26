@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="50px" viewBox="0 0 100 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>CUP</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="CUP" fill-rule="nonzero">
+            <polyline id="Shape" fill="#002A8F" points="0 0 100 0 100 50 0 50"></polyline>
+            <polyline id="Shape" fill="#FFFFFF" points="0 10 100 10 100 20 0 20 0 30 100 30 100 40 0 40"></polyline>
+            <polyline id="Shape" fill="#CF142B" points="43.3 25 0 0 0 50"></polyline>
+            <polyline id="Shape" fill="#FFFFFF" points="14.4375 17.5 18.85625 31.0625 7.29375 22.6875 21.56875 22.6875 10.00625 31.0625"></polyline>
+        </g>
+    </g>
+</svg>

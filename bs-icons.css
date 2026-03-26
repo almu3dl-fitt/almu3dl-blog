@@ -1,10 +1,10 @@
 @font-face {
     font-family: "bs-icons";
-    src:url("/wp-content/plugins/better-content-protector/includes/libs/better-framework/assets/fonts/bs-icons.eot");
-    src:url("/wp-content/plugins/better-content-protector/includes/libs/better-framework/assets/fonts/bs-icons.eot#iefix") format("embedded-opentype"),
-    url("/wp-content/plugins/better-content-protector/includes/libs/better-framework/assets/fonts/bs-icons.woff") format("woff"),
-    url("/wp-content/plugins/better-content-protector/includes/libs/better-framework/assets/fonts/bs-icons.ttf") format("truetype"),
-    url("/wp-content/plugins/better-content-protector/includes/libs/better-framework/assets/fonts/bs-icons.svg#bs-icons") format("svg");
+    src:url("/wp-content/plugins/better-facebook-chat/includes/libs/better-framework/assets/fonts/bs-icons.eot");
+    src:url("/wp-content/plugins/better-facebook-chat/includes/libs/better-framework/assets/fonts/bs-icons.eot#iefix") format("embedded-opentype"),
+    url("/wp-content/plugins/better-facebook-chat/includes/libs/better-framework/assets/fonts/bs-icons.woff") format("woff"),
+    url("/wp-content/plugins/better-facebook-chat/includes/libs/better-framework/assets/fonts/bs-icons.ttf") format("truetype"),
+    url("/wp-content/plugins/better-facebook-chat/includes/libs/better-framework/assets/fonts/bs-icons.svg#bs-icons") format("svg");
     font-weight: normal;
     font-style: normal;
 }

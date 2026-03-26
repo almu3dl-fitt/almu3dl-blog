@@ -4,7 +4,7 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify');
 
 gulp.task('styles', function () {
-    return gulp.src(['./assets/css/*.css', '!./assets/css/*.min.css'])
+    return gulp.src(['./css/*.css', '!./css/*.min.css'])
         .pipe(cleanCSS({
             keepSpecialComments: 1,
             level: 2
@@ -16,7 +16,7 @@ gulp.task('styles', function () {
 });
 
 gulp.task('scripts', function () {
-    return gulp.src(['./assets/js/*.js', '!./assets/js/*.min.js'])
+    return gulp.src(['./js/*.js', '!./js/*.min.js'])
         .pipe(uglify())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest(function (file) {

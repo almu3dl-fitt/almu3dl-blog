@@ -1,6 +1,8 @@
 class BF_Sorter_Checkbox extends wp.element.Component {
 
-    constructor(props) {
+	wrapper = React.createRef();
+
+	constructor(props) {
 
         super(...arguments);
 
@@ -31,7 +33,7 @@ class BF_Sorter_Checkbox extends wp.element.Component {
 
         let values = {};
 
-        [...ReactDOM.findDOMNode(this).getElementsByClassName('sorter-checkbox-value')].forEach(function (e) {
+        [... this.wrapper.current.getElementsByClassName('sorter-checkbox-value') ].forEach(function (e) {
 
             values[e.name] = e.checked ? '1' : '0';
         });
@@ -109,7 +111,7 @@ class BF_Sorter_Checkbox extends wp.element.Component {
 
 
         return (
-            <div className="bf-sorter-groups-container">
+            <div className="bf-sorter-groups-container" ref={this.wrapper}>
 
                 <ul id={"bf-sorter-group-" + this.props.id} className={'bf-sorter-list bf-sorter-' + this.props.id}>
 

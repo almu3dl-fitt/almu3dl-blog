@@ -1,12 +1,22 @@
 var gulp = require('gulp'),
-    postcss = require('gulp-postcss')
     cleanCSS = require('gulp-minify-css'),
-    rtlCSS = require('rtlcss'),
     rename = require('gulp-rename'),
     uglify = require('gulp-uglify');
 
+
+var css_files = [
+    './css/*.css',
+    '!css/*.min.css'
+];
+
+var js_files = [
+    './js/*.js',
+    '!js/*.min.js'
+];
+
+
 gulp.task('styles', function () {
-    return gulp.src(['./css/*.css', '!./css/*.min.css'])
+    return gulp.src(css_files)
         .pipe(cleanCSS({
             keepSpecialComments: 1,
             level: 2
@@ -18,7 +28,7 @@ gulp.task('styles', function () {
 });
 
 gulp.task('scripts', function () {
-    return gulp.src(['./js/*.js', '!./js/*.min.js'])
+    return gulp.src(js_files)
         .pipe(uglify())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest(function (file) {
@@ -27,16 +37,8 @@ gulp.task('scripts', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch(['./css/*.css', '!./css/*.min.css'], ['styles']);
-    gulp.watch(['./js/*.js', '!./js/*.min.js'], ['scripts']);
+    gulp.watch(css_files, ['styles']);
+    gulp.watch(js_files, ['scripts']);
 });
 
-gulp.task('rtl', function () {
-    return gulp.src('css/better-playlist.css')
-        .pipe(postcss([rtlCSS]))
-
-        .pipe(rename({basename: 'better-playlist-rtl'}))
-        .pipe(gulp.dest('css/'));
-});
-
-gulp.task('default', gulp.series('rtl', 'styles', 'scripts'));
+gulp.task('default', gulp.series('styles', 'scripts'));

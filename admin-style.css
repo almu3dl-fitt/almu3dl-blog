@@ -597,6 +597,10 @@
     border-bottom: none;
 }
 
+.bf-section.disable {
+    opacity: 0.5;
+}
+
 .bf-section-container.highlight-hover {
     -webkit-transition: all .3s ease;
     -moz-transition: all .3s ease;

@@ -26,11 +26,11 @@
 
 @font-face {
     font-family: "Better Studio Admin Icons";
-    src:url("/wp-content/plugins/better-weather/includes/libs/better-framework/assets/fonts/better-studio-admin-icons.eot");
-    src:url("/wp-content/plugins/better-weather/includes/libs/better-framework/assets/fonts/better-studio-admin-icons.eot#iefix") format("embedded-opentype"),
-    url("/wp-content/plugins/better-weather/includes/libs/better-framework/assets/fonts/better-studio-admin-icons.woff") format("woff"),
-    url("/wp-content/plugins/better-weather/includes/libs/better-framework/assets/fonts/better-studio-admin-icons.ttf") format("truetype"),
-    url("/wp-content/plugins/better-weather/includes/libs/better-framework/assets/fonts/better-studio-admin-icons.svg#better-studio-admin-icons") format("svg");
+    src:url("/wp-content/plugins/blockquote-pack-pro/includes/libs/better-framework/assets/fonts/better-studio-admin-icons.eot");
+    src:url("/wp-content/plugins/blockquote-pack-pro/includes/libs/better-framework/assets/fonts/better-studio-admin-icons.eot#iefix") format("embedded-opentype"),
+    url("/wp-content/plugins/blockquote-pack-pro/includes/libs/better-framework/assets/fonts/better-studio-admin-icons.woff") format("woff"),
+    url("/wp-content/plugins/blockquote-pack-pro/includes/libs/better-framework/assets/fonts/better-studio-admin-icons.ttf") format("truetype"),
+    url("/wp-content/plugins/blockquote-pack-pro/includes/libs/better-framework/assets/fonts/better-studio-admin-icons.svg#better-studio-admin-icons") format("svg");
     font-weight: normal;
     font-style: normal;
 

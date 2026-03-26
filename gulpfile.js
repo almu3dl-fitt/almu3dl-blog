@@ -1,21 +1,32 @@
 var gulp = require('gulp'),
+    cleanCSS = require('gulp-minify-css'),
     rename = require('gulp-rename'),
-    postcss = require('gulp-postcss'),
-    rtlcss = require('rtlcss');
+    uglify = require('gulp-uglify');
 
-var rtl_css_files = [
-    './assets/css/admin-style.css',
-];
-
-gulp.task('rtl', function () {
-    return gulp.src(rtl_css_files)
-        .pipe(postcss([rtlcss]))
-        .pipe(rename(function (path) {
-            path.basename += '.rtl'
+gulp.task('styles', function () {
+    return gulp.src(['./assets/css/*.css', '!./assets/css/*.min.css'])
+        .pipe(cleanCSS({
+            keepSpecialComments: 1,
+            level: 2
         }))
+        .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest(function (file) {
             return file.base;
         }));
 });
 
-gulp.task('default', gulp.series('rtl'));
+gulp.task('scripts', function () {
+    return gulp.src(['./assets/js/*.js', '!./assets/js/*.min.js'])
+        .pipe(uglify())
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest(function (file) {
+            return file.base;
+        }));
+});
+
+gulp.task('watch', function () {
+    gulp.watch(['./css/*.css', '!./css/*.min.css'], ['styles']);
+    gulp.watch(['./js/*.js', '!./js/*.min.js'], ['scripts']);
+});
+
+gulp.task('default', ['styles', 'scripts']);

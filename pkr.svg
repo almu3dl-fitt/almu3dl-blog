@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>PKR</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="PKR" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="0" width="33.56" height="19.58"></rect>
+            <rect id="Rectangle-path" fill="#2A680B" x="8.39" y="0" width="25.17" height="19.58"></rect>
+            <g id="Group" transform="translate(14.000000, 3.000000)">
+                <path d="M6.45,0.92 C8.8250992,0.915953829 10.9685814,2.3435652 11.8802975,4.5367105 C12.7920136,6.7298558 12.2922727,9.2562859 10.6142538,10.9371682 C8.93623502,12.6180506 6.41066067,13.1220984 4.21596406,12.214123 C2.02126744,11.3061476 0.590003446,9.16510265 0.59,6.79 C0.589995301,3.55198975 3.21199445,0.925516201 6.45,0.92" id="Shape" fill="#FFFFFF"></path>
+                <path d="M4.38,1.43 C6.60212103,-0.541156127 10.0012645,-0.338443443 11.9733634,1.88284087 C13.9454624,4.10412519 13.7441923,7.50335436 11.5237451,9.47639581 C9.30329786,11.4494373 5.90398358,11.2496097 3.93,9.03 C2.97590083,7.96523348 2.48672537,6.56342137 2.57123047,5.13622417 C2.65573556,3.70902697 3.30691713,2.374736 4.38,1.43" id="Shape" fill="#2A680B"></path>
+                <polygon id="Shape" fill="#FFFFFF" points="10.82 2.89 9.04 3.67 9.43 4.57"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="10.82 2.89 9.84 4.58 8.99 4.08"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="11.05 5.18 9.75 3.71 9.03 4.37"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="11.05 5.18 9.14 4.76 9.35 3.8"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="8.58 2.39 8.78 4.34 9.75 4.25"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="8.58 2.39 9.88 3.86 9.15 4.51"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="8.95 6.1 9.94 4.41 9.09 3.92"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="8.95 6.1 8.75 4.15 9.73 4.05"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="7.42 4.38 9.33 4.8 9.54 3.85"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" points="7.42 4.38 9.21 3.6 9.6 4.5"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

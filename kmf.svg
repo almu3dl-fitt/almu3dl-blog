@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="60px" viewBox="0 0 100 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>KMF</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="KMF" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#3A75C4" x="0" y="0" width="100" height="60"></rect>
+            <rect id="Rectangle-path" fill="#CE1126" x="0" y="0" width="100" height="45"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="0" width="100" height="30"></rect>
+            <rect id="Rectangle-path" fill="#FFC61E" x="0" y="0" width="100" height="15"></rect>
+            <polygon id="Shape" fill="#3D8E33" points="0 60 50 30 0 0"></polygon>
+            <circle id="Oval" fill="#FFFFFF" cx="17" cy="30" r="13.5"></circle>
+            <circle id="Oval" fill="#3D8E33" cx="23" cy="30" r="13.5"></circle>
+            <polygon id="star" fill="#FFFFFF" points="20.00208 17.83992 21.47396 22.35758 17.6225 19.56788 22.3775 19.56788 18.52604 22.3576"></polygon>
+            <g id="star-link" transform="translate(17.600000, 24.241660)" fill="#FFFFFF">
+                <polygon id="star" points="2.40208 0.03992 3.87396 4.55758 0.0225 1.76788 4.7775 1.76788 0.92604 4.5576"></polygon>
+            </g>
+            <g id="star-link" transform="translate(17.600000, 30.683320)" fill="#FFFFFF">
+                <polygon id="star" points="2.40208 0.03992 3.87396 4.55758 0.0225 1.76788 4.7775 1.76788 0.92604 4.5576"></polygon>
+            </g>
+            <g id="star-link" transform="translate(17.600000, 37.125000)" fill="#FFFFFF">
+                <polygon id="star" points="2.40208 0.03992 3.87396 4.55758 0.0225 1.76788 4.7775 1.76788 0.92604 4.5576"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

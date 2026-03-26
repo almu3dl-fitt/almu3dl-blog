@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>MVR</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="MVR" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#C0003B" x="0" y="0" width="33.56" height="19.58"></rect>
+            <rect id="Rectangle-path" fill="#347F3D" x="4.89" y="4.89" width="23.78" height="9.79"></rect>
+            <g id="Group" transform="translate(14.000000, 6.000000)">
+                <path d="M4,0.53 C5.79783285,0.535523335 7.25182402,1.99548269 7.24998291,3.79332308 C7.24814179,5.59116347 5.79116347,7.04814179 3.99332308,7.04998291 C2.19548269,7.05182402 0.735523335,5.59783285 0.73,3.8 C0.727333091,2.93192725 1.07099349,2.09863953 1.68481651,1.48481651 C2.29863953,0.870993485 3.13192725,0.527333091 4,0.53" id="Shape" fill="#FFFFFF"></path>
+                <path d="M5.23,0.53 C6.55120897,0.517841122 7.74909959,1.30435916 8.26315168,2.52152448 C8.77720377,3.7386898 8.50574575,5.14576588 7.57579899,6.08434992 C6.64585223,7.02293396 5.24134585,7.30738851 4.01948024,6.80461083 C2.79761462,6.30183315 2.00005595,5.11126491 2,3.79 C1.99999157,1.98792691 3.45793534,0.525510927 5.26,0.52" id="Shape" fill="#347F3D"></path>
+            </g>
+        </g>
+    </g>
+</svg>

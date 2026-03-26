@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>LAK</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="LAK" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#BC0030" x="0" y="0" width="33.56" height="19.58"></rect>
+            <rect id="Rectangle-path" fill="#192967" x="0" y="4.89" width="33.56" height="9.79"></rect>
+            <path d="M16.78,5.88 C18.3664009,5.88000516 19.7964037,6.83616811 20.4025546,8.30219979 C21.0087056,9.76823147 20.6714901,11.4550751 19.5483035,12.5753964 C18.425117,13.6957177 16.7374175,14.0286234 15.2729389,13.4187298 C13.8084603,12.8088362 12.8559531,11.3763957 12.86,9.79 C12.8599966,8.75126859 13.2733143,7.75522631 14.0087458,7.02167094 C14.7441772,6.28811556 15.741272,5.8773434 16.78,5.88" id="Shape" fill="#FFFFFF"></path>
+        </g>
+    </g>
+</svg>

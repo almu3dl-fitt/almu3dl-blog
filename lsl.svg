@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="67px" viewBox="0 0 100 67" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>LSL</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="LSL">
+            <rect id="Rectangle-path" fill="#009543" fill-rule="nonzero" x="0" y="0" width="100" height="66.6666667"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" fill-rule="nonzero" x="0" y="0" width="100" height="46.6666667"></rect>
+            <rect id="Rectangle-path" fill="#00209F" fill-rule="nonzero" x="0" y="0" width="100" height="20"></rect>
+            <g id="Group" transform="translate(39.333333, 21.111111)">
+                <path d="M10.6133333,0.126444444 C10.2333778,0.134631111 9.86264444,0.555511111 9.86264444,0.555511111 L9.89538222,5.05173333 L8.47587111,6.53884444 L9.62500444,6.53884444 L9.61529333,9.11728889 L2.81729333,18.2712889 L1.81236,17.9239556 L0.0558933333,21.6708444 C0.0558933333,21.6708444 4.40033778,24.3912889 10.7058933,24.3168444 C17.6267822,24.2345444 21.3867822,21.5455111 21.3867822,21.5455111 L19.5717378,17.8468444 L18.6829378,18.2333556 L11.7978267,9.12691111 L11.7881156,6.47157778 L12.9372489,6.47157778 L11.3732933,5.00295556 L11.3825378,0.523177778 C11.3825378,0.523177778 10.9933378,0.118666667 10.61336,0.126844444 L10.6133333,0.126444444 Z" id="Shape" stroke="#000000" fill="#000000" fill-rule="nonzero"></path>
+                <path d="M12.9844444,10.8911111 L8.28377778,10.8911111 C8.28377778,10.8911111 6.57764444,7.29644444 6.8542,4.78333333 C7.1358,2.22444444 8.59826667,1.01377778 10.5426444,0.992444444 C12.8415333,0.966831111 14.0464222,2.11891111 14.4104222,4.68088889 C14.7711111,7.21955556 12.9843778,10.8913333 12.9843778,10.8913333 L12.9844444,10.8911111 Z" id="Shape" stroke="#000000" stroke-width="5"></path>
+                <path d="M2.39777778,19.46 C2.32093333,19.5624578 1.75742222,20.6894667 1.75742222,20.6894667 L2.73075556,20.4845533 L2.39777778,19.4599978 L2.39777778,19.46 Z" id="Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="2.96 20.92 1.93544444 21.2529778 3.16493333 21.7396444 2.96001778 20.92"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="3.42222222 19.4844444 3.93451111 20.9956889 5.1896 20.6370889 4.85662222 19.9198889 3.42222222 19.4844444"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="4.21555556 21.5355556 4.39485556 22.1502889 6.05976667 22.5601111 5.39381111 21.1513333 4.21556667 21.5355556"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="6.06 20.2533333 6.64913333 21.6621111 7.90422222 21.1754444 7.4944 20.5607111"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="6.88 22.1755556 7.08491333 22.7134444 9.03158 22.9952 8.21193556 21.7144889 6.88000222 22.1755333"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="8.74888889 20.6644444 9.46608889 21.9195333 11.2846889 21.2535556 11.0797778 20.7668889 8.74888889 20.6644311"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="9.8 22.38 10.1842222 23.0459778 12.4382222 22.9691333 11.5929556 21.7140444 9.79997778 22.38"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="12.1822222 20.7155556 12.7969556 21.7657333 14.2313556 21.0741556 13.8471333 20.5106444 12.1822222 20.71556"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="14.5377778 21.5088889 13.1033778 22.2260889 13.4876 22.8408222 15.4086667 22.5334444 14.5377778 21.5088667"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="15 20.4066667 15.7428 21.3287778 16.9466667 20.3810444 16.5368444 19.9456"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="17.2022222 20.8933333 16.0495778 21.7642222 16.3569556 22.3021111 17.9450444 21.8922889 17.2022444 20.8933333"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="18.7911111 19.0755556 19.0728667 19.4853778 18.2788222 20.6636222 17.4591778 19.6134444"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="19.3288889 20.1 19.8155556 21.0733333 18.8422222 21.4063111 18.76538 20.9452444 19.3288911 20.0999778"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

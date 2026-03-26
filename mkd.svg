@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>MKD</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="MKD" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#C0001A" x="0" y="0" width="33.56" height="19.58"></rect>
+            <path d="M28.53,19.58 L33.53,19.58 L16.78,9.79 L28.53,19.58 Z M0,0 L16.78,9.79 L5,0 L0,0 Z" id="Shape" fill="#F8E72A"></path>
+            <path d="M15.1,19.58 L18.46,19.58 L16.78,9.79 L15.1,19.58 Z M15.1,0 L16.78,9.79 L18.46,0 L15.1,0 Z" id="Shape" fill="#F8E72A"></path>
+            <path d="M0,19.58 L5,19.58 L16.78,9.79 L0,19.58 Z M28.53,0 L16.78,9.79 L33.56,0 L28.53,0 Z" id="Shape" fill="#F8E72A"></path>
+            <path d="M0,11.75 L16.78,9.75 L0,7.83 L0,11.75 Z M16.78,9.75 L33.56,11.75 L33.56,7.83 L16.78,9.75 Z" id="Shape" fill="#F8E72A"></path>
+            <g id="Group" transform="translate(13.000000, 6.000000)">
+                <path d="M3.78,0.29 C5.71299662,0.29 7.28,1.85700338 7.28,3.79 C7.28,5.72299662 5.71299662,7.29 3.78,7.29 C1.84700338,7.29 0.28,5.72299662 0.28,3.79 C0.277334066,2.86092758 0.64522685,1.96913908 1.30218297,1.31218297 C1.95913908,0.65522685 2.85092758,0.287334066 3.78,0.29" id="Shape" fill="#C0001A"></path>
+                <path d="M3.78,1 C4.9151879,0.991898446 5.94292569,1.67001996 6.38203395,2.71687293 C6.8211422,3.76372591 6.58470983,4.97211056 5.78343276,5.77626992 C4.9821557,6.58042928 3.77462778,6.82119902 2.72620486,6.38585248 C1.67778195,5.95050594 0.995974563,4.92520967 1,3.79 C1.00544209,2.25528055 2.24530999,1.0109527 3.78,1" id="Shape" fill="#F8E72A"></path>
+            </g>
+        </g>
+    </g>
+</svg>

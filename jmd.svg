@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>JMD</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="JMD" fill-rule="nonzero">
+            <polygon id="Shape" fill="#488A30" points="3.13 19.58 30.43 19.58 16.78 11.61"></polygon>
+            <polygon id="Shape" fill="#488A30" points="30.43 0 3.13 0 16.78 7.97"></polygon>
+            <polygon id="Shape" fill="#000000" points="0 17.75 13.65 9.79 0 1.82"></polygon>
+            <polygon id="Shape" fill="#000000" points="33.56 17.75 33.56 1.82 19.91 9.79"></polygon>
+            <polygon id="Shape" fill="#F1DA28" points="0 19.58 0 19.58 3.13 19.58 16.78 11.61 30.43 19.58 33.56 19.58 16.78 9.79"></polygon>
+            <polygon id="Shape" fill="#F1DA28" points="30.43 0 16.78 7.97 3.13 0 0 0 16.78 9.79 33.56 0"></polygon>
+            <polygon id="Shape" fill="#F1DA28" points="33.56 0 16.78 9.79 33.56 19.58 33.56 17.75 19.91 9.79 33.56 1.82"></polygon>
+            <polygon id="Shape" fill="#F1DA28" points="0 1.82 13.65 9.79 0 17.75 0 19.58 16.78 9.79 0 0"></polygon>
+        </g>
+    </g>
+</svg>

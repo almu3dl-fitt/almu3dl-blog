@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="20px" viewBox="0 0 34 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>MYR</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="MYR" fill-rule="nonzero">
+            <rect id="Rectangle-path" fill="#D80031" x="0" y="0" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="1.4" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#D80031" x="0" y="2.8" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="4.2" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#D80031" x="0" y="5.59" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="6.99" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#D80031" x="0" y="8.39" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="9.79" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#D80031" x="0" y="11.19" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="12.59" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#D80031" x="0" y="13.98" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="15.38" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#D80031" x="0" y="16.78" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="18.18" width="33.56" height="1.4"></rect>
+            <rect id="Rectangle-path" fill="#2530A9" x="0" y="0" width="19.58" height="11.19"></rect>
+            <g id="Group" transform="translate(3.000000, 1.000000)" fill="#F5D028">
+                <path d="M2.24,4.59 C2.23916636,3.26073508 2.9571721,2.0349239 4.11699935,1.38550363 C5.2768266,0.736083367 6.69715515,0.76458035 7.83,1.46 C6.1463989,-0.0463945665 3.57280901,0.048860876 2.00517328,1.67559241 C0.437537551,3.30232394 0.437537551,5.87767606 2.00517328,7.50440759 C3.57280901,9.13113912 6.1463989,9.22639457 7.83,7.72 C6.69715515,8.41541965 5.2768266,8.44391663 4.11699935,7.79449637 C2.9571721,7.1450761 2.23916636,5.91926492 2.24,4.59" id="Shape"></path>
+                <polygon id="Shape" points="10.63 4.59 12.64 3.82 10.5 3.99 11.97 2.41 10.11 3.5 10.75 1.44 9.55 3.23 9.24 1.1 9.01 2.63 8.95 3.07 8.93 3.23 7.72 1.44 8.36 3.5 6.5 2.41 7.98 3.99 5.83 3.82 7.84 4.59 5.83 5.37 7.98 5.2 6.5 6.78 8.36 5.69 7.72 7.74 8.93 5.96 8.95 6.13 9.01 6.56 9.24 8.09 9.55 5.96 10.75 7.74 10.11 5.69 11.97 6.78 10.5 5.2 12.64 5.37"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

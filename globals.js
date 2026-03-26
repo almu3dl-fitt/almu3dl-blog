@@ -2,6 +2,7 @@ if (wp && wp.components) {
 
     wp.components.BF_Repeater = require('./fields/repeater')
     wp.components.BF_Hr = require('./fields/hr')
+	wp.components.BF_Button = require('./fields/button')
     wp.components.BF_Info = require('./fields/info')
     wp.components.BF_Heading = require('./fields/heading')
     wp.components.BF_Select_Popup = require('./fields/select_popup')
@@ -11,8 +12,8 @@ if (wp && wp.components) {
     wp.components.BF_Background_Image = require('./fields/background_image')
     wp.components.BF_Code = require('./fields/code')
     wp.components.BF_Editor = require('./fields/editor')
-    wp.components.BF_Image_Preview = require('./fields/‌image_preview')
-    wp.components.BF_Image_Radio = require('./fields/‌image_radio')
+    wp.components.BF_Image_Preview = require('./fields/image_preview')
+    wp.components.BF_Image_Radio = require('./fields/image_radio')
     wp.components.BF_Image_Select = require('./fields/image_select')
     wp.components.BF_Media_Image = require('./fields/media_image')
     wp.components.BF_Slider = require('./fields/slider')

@@ -1,18 +1,14 @@
 {
-  "name": "beter-post-views",
-  "version": "3.0.0",
-  "description": "BetterSudio Post Views Plugin",
-  "main": "gulpfile.js",
-  "author": "BetterStudio",
-  "license": "ISC",
-  "homepage": "https://betterstudio.com/",
-  "dependencies": {
-    "gulp": "^4.0.2",
-    "gulp-clean-css": "^4.2.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-uglify": "^3.0.2",
-    "gulp-util": "^3.0.8",
-    "vinyl-bufferstream": "^1.0.1"
-  }
+ "name": "dev-cgb-guten-block",
+ "version": "1.0.0",
+ "private": true,
+ "scripts": {
+  "start": "cgb-scripts start",
+  "build": "cgb-scripts build && npm run fix",
+  "eject": "cgb-scripts eject",
+  "fix": "sed -i '' 's/$(\"#editor\")/jQuery(\"#editor\")/gI' dist/blocks.build.js"
+ },
+ "devDependencies": {
+  "cgb-scripts": "^1.23.1"
+ }
 }

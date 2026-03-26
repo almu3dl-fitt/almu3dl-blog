@@ -10,12 +10,12 @@ class BF_Switch extends wp.element.Component {
 
     componentDidMount() {
 
-        this.inputField.current.addEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.addEventListener('change', this.onChange.bind(this), false)
     }
 
     componentWillUnmount() {
 
-        this.inputField.current.removeEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.removeEventListener('change', this.onChange.bind(this), false)
 
     }
 
@@ -23,13 +23,26 @@ class BF_Switch extends wp.element.Component {
 
         if (this.props.onChange) {
 
-            this.props.onChange(parseInt(this.inputField.current.value));
+        	let value = parseInt(this.inputField.current.value);
+
+        	if(value && typeof this.props.onValue !== 'undefined') {
+
+				value = this.props.onValue;
+
+			} else if(!value && typeof this.props.offValue !== 'undefined') {
+
+				value = this.props.offValue;
+			}
+
+            this.props.onChange(value);
         }
     }
 
     render() {
 
-        let checked = !!parseInt(this.props.value);
+        const intValue = parseInt(this.props.value),
+			checked = isNaN(intValue) ? !!this.props.value : !!intValue;
+
 
         return (
 
@@ -39,7 +52,7 @@ class BF_Switch extends wp.element.Component {
                 <label
                     className={"cb-disable" + (checked ? '' : ' selected')}><span>{this.props.offLabel}</span></label>
 
-                <input type="hidden" value="0" className="checkbox" ref={this.inputField}/>
+                <input type="hidden" value={Number(checked)} className="checkbox" ref={this.inputField}/>
             </div>
         )
     }

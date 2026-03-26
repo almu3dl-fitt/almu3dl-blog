@@ -418,7 +418,9 @@ var BetterStudio_TinyMCE_View = {
                             body: data.output
                         },
                         buttons: buttons
-                    })
+                    });
+
+                    jQuery(document).trigger("mce-view-fields-loaded", [editorModal]);
                 });
             }
         };

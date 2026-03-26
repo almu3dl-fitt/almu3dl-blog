@@ -1,42 +1,119 @@
-(function () {
+var BFGutenbergAPI = (function () {
 
-    var catExistsCache= {};
+    var valuesStack = {},
+        propsStack = {};
+    var catExistsCache = {};
+    var activeBlockID = '';
 
-    function bfGutenbergBlock() {
+    var activeProps;
+
+    var utils = {
+
+        className: {
+
+            removeAll: function (classes, classes2remove) {
+
+                var remove = this.remove;
+
+                classes2remove.forEach(function (className) {
+
+                    classes = remove(classes, className);
+                });
+
+
+                return classes;
+            },
+            remove: function (classes, remove) {
+
+                if (!classes) {
+
+                    return '';
+                }
+
+                return classes.replace(
+                    new RegExp('\\b' + remove + '\\b', 'g'),
+                    ''
+                ).trim();
+            },
+
+            add: function (classes, add) {
+
+                if (!classes) {
+
+                    return add;
+                }
+
+                var classesList = classes.split(' ');
+
+                classesList.push(add);
+
+                return _.unique(classesList).join(' ');
+            }
+        }
+    }
+
+    function bfGutenbergBlock(props) {
 
         this.element = window.wp && window.wp.element;
         this.blocks = window.wp && window.wp.blocks;
         this.prefix = 'better-studio/';
-        this.props = {};
-        this.attributes = {};
-        //
         this.blockFields = {};
         this.shortcode = {};
-        this.liveTemplate = {};
-        this.liveTemplateAttributes = {};
+
+
+        Object.defineProperty(this, 'props', {
+            get: function() {
+
+                return activeProps || props;
+            }
+        })
+
+        this.attributes = props && props.attributes || {};
+
+        if (props && props.clientId && props.attributes) {
+
+            valuesStack[props.clientId] = props.attributes
+            propsStack[props.clientId] = props
+
+            if (props.isSelected) {
+
+                activeBlockID = props.clientId;
+            }
+        }
     }
 
-    bfGutenbergBlock.prototype.registerBlockType = function (shortcode, blockFields, liveTemplate, liveTemplateAttributes) {
+    bfGutenbergBlock.prototype.overrideBlock = function (settings) {
+
+        this.overrideSettings = settings || {};
+    };
+
+
+    bfGutenbergBlock.prototype.registerBlockType = function (shortcode, blockFields) {
 
         this.shortcode = shortcode;
         this.blockFields = blockFields;
-        this.liveTemplate = liveTemplate;
-        this.liveTemplateAttributes = liveTemplateAttributes;
 
         var blockID = this.shortcode.block_id || this.shortcode.id.replace(/_/g, '-');
         var category = this.shortcode.category || 'betterstudio';
 
         if (this.bfGutenbergCatExists(category)) {
 
-            this.blocks.registerBlockType(this.prefix + blockID, {
-                title: this.shortcode.name || this.shortcode.id,
-                icon: this.blockIcon(),
-                category: category,
-                edit: this.editBlock.bind(this),
-                save: this.saveBlock.bind(this),
-
-                attributes: this.blockAttributes(this.shortcode.id)
-            });
+            this.blocks.registerBlockType(this.prefix + blockID, _.extend(
+                {
+                    title: this.shortcode.name || this.shortcode.id,
+                    icon: this.blockIcon(),
+                    category: category,
+                    save: this.saveBlock.bind(this),
+                    attributes: this.blockAttributes(this.shortcode.id),
+                    example: {
+                        preview: true
+                    }
+                },
+                this.overrideSettings,
+                {
+                    edit: this.editBlock.bind(this),
+                }
+            ));
         }
 
     };
@@ -88,9 +165,11 @@
 
         this.blockFields.forEach(findDeep);
 
-        if (this.liveTemplateAttributes) {
+        ///////// TEST /////////////
 
-            attributes = Object.assign(attributes, this.liveTemplateAttributes);
+        if (this.overrideSettings.filterAttributes) {
+
+            attributes = this.overrideSettings.filterAttributes(attributes);
         }
 
         return attributes;
@@ -104,39 +183,46 @@
             return [];
         }
 
-        if (props.isSelected || !this.props.name) {
+        if (props.isSelected || typeof this.props == 'undefined') {
             this.props = props;
         }
 
-        var edit = [
-            this.buildBlockFields()
-        ];
+        var edit = [];
 
-        if (!this.liveTemplate) {
+        if (typeof this.overrideSettings.defaultAttributes === 'undefined' || this.overrideSettings.defaultAttributes) {
 
-            var isBlockDisabled = !this.shortcode.click_able,
-                previewElement = this.element.createElement(
-                    this.getComponent('ServerSideRender'),
-                    {
-                        block: props.name,
-                        attributes: props.attributes,
-                        key: 'D2'
-                    }
-                );
-
-            if (isBlockDisabled) {
-
-                previewElement = this.element.createElement(
-                    this.getComponent('Disabled'),
-                    {
-                        key: 'D1'
-                    },
-                    previewElement
-                )
-            }
-
-            edit.push(previewElement);
+            edit.push(this.buildBlockFields());
         }
+
+        if (typeof this.overrideSettings.edit === 'function') {
+
+            edit.push(this.overrideSettings.edit(props));
+
+            return edit;
+        }
+
+        var isBlockDisabled = !this.shortcode.click_able,
+            previewElement = this.element.createElement(
+                this.getComponent('ServerSideRender'),
+                {
+                    block: props.name,
+                    attributes: _.extend(props.attributes,{_updated: Date.now()}),
+                    key: 'D2'
+                }
+            );
+
+        if (isBlockDisabled) {
+
+            previewElement = this.element.createElement(
+                this.getComponent('Disabled'),
+                {
+                    key: 'D1'
+                },
+                previewElement
+            )
+        }
+
+        edit.push(previewElement);
 
         return edit;
     };
@@ -187,65 +273,70 @@
             return args;
         }
 
-        var self = this;
+        var self = this,
+            isChangeClass = field.action === 'add_class';
 
-        var prepareClassName = function (currentClasses, appendClass) {
+        args.onChange = args.onChange || function (value) {
 
-            currentClasses = currentClasses || '';
-            currentClasses += ' ';
+            var attributes= {
+                [field.id]: value
+            }, attributeValue = '';
 
-            var attr = BF_Gutenberg.extraAttributes[field.id];
+            if (isChangeClass) {
 
-            if (attr && attr.enum) {
+                var currentClasses = self.props.attributes.className;
 
-                attr.enum.forEach(function (className) {
+                if (field.attribute && field.attribute.enum) {
 
-                    if (className) {
+                    attributeValue = utils.className.removeAll(currentClasses, field.attribute.enum);
+                    attributeValue = utils.className.add(attributeValue, value);
 
-                        currentClasses = currentClasses.replace(
-                            new RegExp('\\b' + className + '\\s+', 'g'),
-                            ''
-                        );
-                    }
-                });
-            } else if (appendClass === 1) {
+                } else if (value === 0 || value === 1) { /// add or remove class
 
-                appendClass = field.id;
+                    var className = field.id;
 
-            } else if (appendClass === 0) {
+                    attributeValue = utils.className[
+                        value === 1 ? 'add' : 'remove'
+                        ](currentClasses, className);
 
-                currentClasses = currentClasses.replace(
-                    new RegExp('\\b' + field.id + '\\s+', 'g'),
-                    ''
-                );
+                } else {
 
-                appendClass = '';
+                    attributeValue = value;
+                }
+
+                if(field.fixed_class) {
+                    
+                    attributeValue = utils.className.add(attributeValue, field.fixed_class);
+                }
+
+                attributes.className = attributeValue;
             }
 
-            currentClasses = currentClasses.trim() + ' ' + appendClass;
+            self.props.setAttributes(attributes);
 
-            if (field.fixed_class && !currentClasses.match(new RegExp('\\b' + field.fixed_class + '\\s+', 'g'))) {
+            var ID = self.props.clientId;
 
-                currentClasses += ' ' + field.fixed_class;
+            if (ID) {
+
+                valuesStack[ID] = _.extend(valuesStack[ID] || {}, attributes);
             }
 
-            return currentClasses.trim();
+            return false;
         };
 
-        if (!args.onChange)
-            args.onChange = function (value) {
+        //// Setup initial value
 
-                var fieldId = field.action === 'add_class' ? 'className' : field.id;
+        args.value = this.props && this.props.attributes[field.id] || field.std;
 
-                var attributes = {};
-                attributes[fieldId] = field.action === 'add_class' ? prepareClassName(self.props.attributes[fieldId], value) : value;
+        if (["block_fragment", "inspector", "edit-panel"].indexOf(args.key) === -1 && typeof args.value === "undefined") {
 
-                self.props.setAttributes(attributes);
-            };
+            args.value = '';
+        }
 
-        var value = this.props.attributes[field.id];
+        if(field.component === "TreeSelect") {
 
-        args.value = typeof value === 'undefined' ? field.std : value;
+            args.selectedId = args.value;
+        }
 
         return args;
     };
@@ -270,10 +361,6 @@
                 ]
             }
         ];
-
-        if (this.liveTemplate) {
-            elements.push(this.liveTemplate);
-        }
 
         return this.buildElement(elements, {
             id: 'block_fragment',
@@ -313,7 +400,11 @@
             )
         }
 
-        return this.shortcode.icon || '';
+        var tabs = 'tabs' == this.shortcode.id ? {
+            icon: 'admin-page'
+        } : 'align-center';
+
+        return this.shortcode.icon || tabs.icon;
     };
 
 
@@ -321,8 +412,21 @@
 
         init: function () {
 
+            if (!wp.hooks || !wp.hooks.addFilter) {
+                return;
+            }
+
+            if (!wp.compose || !wp.compose.createHigherOrderComponent) {
+                return;
+            }
+
             this.registerBlocks();
-            this.registerSharedFields();
+
+            if (BF_Gutenberg.stickyFields) {
+
+                this.registerSharedFields();
+                this.registerSharedAttributes();
+            }
         },
 
         registerBlocks: function () {
@@ -336,43 +440,79 @@
             for (var id in BF_Gutenberg.blocks) {
 
                 generator = new bfGutenbergBlock();
+                generator.overrideBlock(typeof BF_Gutenebrg_Export === 'object' && BF_Gutenebrg_Export[id]);
+
                 generator.registerBlockType(
                     BF_Gutenberg.blocks[id],
-                    BF_Gutenberg.blockFields[id],
-                    BF_Gutenberg.liveEdit[id] && BF_Gutenberg.liveEdit[id]['template'],
-                    BF_Gutenberg.liveEdit[id] && BF_Gutenberg.liveEdit[id]['attributes']
+                    BF_Gutenberg.blockFields[id]
                 );
             }
         },
 
+
+        extraAttributes: function(blockName) {
+
+            var attributes = BF_Gutenberg.extraAttributes;
+            var filtered = {};
+
+            for (var attributeId in attributes) {
+
+                if (!attributes.hasOwnProperty(attributeId)) {
+                    continue;
+                }
+
+                var attribute = attributes[attributeId];
+                var validBlocks = attribute.for_blocks || [];
+
+
+                if (validBlocks.indexOf(blockName) > -1) {
+
+                    filtered[attributeId] = attribute;
+                }
+            }
+
+            return filtered;
+        },
+
+        registerSharedAttributes: function () {
+
+            var self = this;
+
+            wp.hooks.addFilter(
+                'blocks.registerBlockType',
+                'betterstudio/shared_settings',
+                function (settings, name) {
+
+                    var attributes = self.extraAttributes(name);
+
+                    if (!_.isEmpty(attributes)) {
+
+                        settings.attributes = _.extend(settings.attributes, attributes);
+                    }
+
+                    return settings;
+                }
+            );
+
+        },
+
         registerSharedFields: function () {
-
-            if (!wp.hooks || !wp.hooks.addFilter) {
-                return;
-            }
-
-            if (!wp.compose || !wp.compose.createHigherOrderComponent) {
-                return;
-            }
-
-            if (!BF_Gutenberg.stickyFields) {
-                return;
-            }
-            var generator = new bfGutenbergBlock();
 
             wp.hooks.addFilter('editor.BlockEdit', 'betterstudio/shared_settings', wp.compose.createHigherOrderComponent(function (BlockEdit) {
 
                 return function (props) {
 
-                    generator.props = props;
-                    generator.attributes = props.attributes;
+                    if(props.isSelected) {
+                        activeProps = props;
+                    }
+
+                    var generator = new bfGutenbergBlock(props);
 
                     var validFields = BF_Gutenberg.stickyFields.filter(function (field) {
 
                         if (field.exclude_blocks && field.exclude_blocks.indexOf(props.name) > -1) {
                             return false;
                         }
-
 
                         if (field.include_blocks) {
 
@@ -414,6 +554,35 @@
         }
     };
 
-
     gutenbergCompatibility.init();
+
+    return {
+
+        activeBlock: function () {
+
+            return activeBlockID;
+        },
+        blockValues: function (blockID) {
+
+            blockID = blockID || this.activeBlock();
+
+            if (blockID && valuesStack[blockID]) {
+
+                return JSON.parse(JSON.stringify(valuesStack[blockID]));
+            }
+        },
+        blockInstance: function (blockID) {
+
+            blockID = blockID || this.activeBlock();
+
+            if (blockID && propsStack[blockID]) {
+
+                return propsStack[blockID];
+            }
+        },
+        blocksInstances: function(){
+
+            return propsStack;
+        }
+    };
 })();

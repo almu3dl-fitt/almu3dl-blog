@@ -14,12 +14,12 @@ class BF_Icon_Select extends wp.element.Component {
 
     componentDidMount() {
 
-        this.inputs.icon.current.addEventListener('input', this.onChange.bind(this), false)
+        this.inputs.icon.current.addEventListener('change', this.onChange.bind(this), false)
     }
 
     componentWillUnmount() {
 
-        this.inputs.icon.current.removeEventListener('input', this.onChange.bind(this), false)
+        this.inputs.icon.current.removeEventListener('change', this.onChange.bind(this), false)
 
     }
 

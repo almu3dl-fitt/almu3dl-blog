@@ -12,12 +12,12 @@ class BF_Editor extends wp.element.Component {
             new Event('bf-component-did-mount')
         );
 
-        this.inputField.current.addEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.addEventListener('change', this.onChange.bind(this), false)
     }
 
     componentWillUnmount() {
 
-        this.inputField.current.removeEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.removeEventListener('change', this.onChange.bind(this), false)
 
     }
     shouldComponentUpdate(nextProps, nextState) {

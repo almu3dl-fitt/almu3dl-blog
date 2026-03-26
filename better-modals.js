@@ -18,11 +18,62 @@
 
 (function ($) {
 
+    var $document = $(document);
+
     var Better_Framework_Modals = {
 
         loaded: false,
 
+
         init: function () {
+
+            $document.on('click.init-bf-modal','.bf-icon-modal-handler', this.loadTemplate.bind(this));
+        },
+
+        loadTemplate(e) {
+            e.stopPropagation();
+
+            var self =this;
+
+            Better_Framework.panel_loader('loading');
+
+            $.ajax({
+                url: better_framework_loc.bf_ajax_url,
+                data: {
+                    action: 'bf_ajax',
+                    reqID: 'field_template',
+                    nonce: better_framework_loc.nonce,
+                    lang: better_framework_loc.lang,
+                    field: 'icon_select',
+                },
+            })
+                .done(function (res) {
+
+                    if (res.success) {
+
+
+                        $document.off('click.init-bf-modal');
+
+                        $document.find('body').append(res.data);
+
+                        self.setup();
+
+                        setTimeout(function() {
+                            Better_Framework.panel_loader('hide');
+                            $(e.currentTarget).click();
+                        });
+
+                    } else {
+
+                        Better_Framework.panel_loader('error', res.error || "Error loading icons");
+                    }
+                })
+                .fail(function () {
+                    Better_Framework.panel_loader('error');
+                });
+        },
+
+        setup: function () {
 
             var Better_Icon_Modal = $('#better-icon-modal').on('opening', function (a, b, c, d) {
                 var $this = $(this),
@@ -35,7 +86,7 @@
                 closeOnEscape: true
             });
 
-            $(document).on('click', '.bf-icon-modal-handler', function (e) {
+            $document.on('click', '.bf-icon-modal-handler', function (e) {
 
                 e.preventDefault();
 
@@ -68,8 +119,7 @@
 
             });
 
-
-            $(document).on('closing', '.better-modal.icon-modal', function (e) {
+            $document.on('closing', '.better-modal.icon-modal', function (e) {
 
                 // No icon selected
                 if ($('.better-modal.icon-modal .icons-list .icon-select-option.selected').length == 0) {
@@ -122,19 +172,19 @@
                 $input.attr('label', selected.label);
 
                 input = $input_width.val(selected.width).change()[0];
-                input && input.dispatchEvent(new Event('input'));
+                input && input.dispatchEvent(new Event('change',{bubbles: true}));
 
                 input = $input_height.val(selected.height).change()[0];
-                input && input.dispatchEvent(new Event('input'));
+                input && input.dispatchEvent(new Event('change',{bubbles: true}));
 
                 input = $input_type.val(selected.type).change()[0];
-                input && input.dispatchEvent(new Event('input'));
+                input && input.dispatchEvent(new Event('change',{bubbles: true}));
 
                 input = $input_font_code.val(selected.code).change()[0];
-                input && input.dispatchEvent(new Event('input'));
+                input && input.dispatchEvent(new Event('change',{bubbles: true}));
 
                 input = $input.val(selected.id).change()[0];
-                input && input.dispatchEvent(new Event('input'));
+                input && input.dispatchEvent(new Event('change',{bubbles: true}));
 
 
                 custom_icon_hide();
@@ -142,7 +192,7 @@
 
             });
 
-            $(document).on('click', '.better-modal.icon-modal .icons-list .icon-select-option', function () {
+            $document.on('click', '.better-modal.icon-modal .icons-list .icon-select-option', function () {
 
                 $('.better-modal.icon-modal  .icons-list').find('.icon-select-option.selected').removeClass('selected');
 
@@ -169,7 +219,7 @@
                 }
             });
 
-            $(document).on('click', '.better-modal.icon-modal .icons-list .icon-select-option .delete-icon', function (e) {
+            $document.on('click', '.better-modal.icon-modal .icons-list .icon-select-option .delete-icon', function (e) {
                 e.stopPropagation();
                 $.ajax({
                     type: 'POST',
@@ -193,7 +243,7 @@
 
             });
 
-            $(document).on('click', '.better-modal.icon-modal .upload-custom-icon-container .section-footer .bf-button', function () {
+            $document.on('click', '.better-modal.icon-modal .upload-custom-icon-container .section-footer .bf-button', function () {
                 Better_Icon_Modal.close();
             });
 
@@ -204,7 +254,7 @@
             });
 
             // Category Filter
-            $(document).on('click', '.better-icons-category-list .icon-category', function () {
+            $document.on('click', '.better-icons-category-list .icon-category', function () {
 
                 var $this = $(this),
                     $modal = $('#better-icon-modal'),
@@ -250,7 +300,7 @@
 
 
             // Search
-            $(document).on('keyup', '#better-icon-modal .better-icons-search-input', function () {
+            $document.on('keyup', '#better-icon-modal .better-icons-search-input', function () {
 
                 if ($(this).val() != '') {
                     $(this).parent().addClass('show-clean').find('.clean').removeClass('fa-search').addClass('fa-times-circle');
@@ -267,7 +317,7 @@
             });
 
 
-            $(document).on('click', '#better-icon-modal .better-icons-search .clean', function () {
+            $document.on('click', '#better-icon-modal .better-icons-search .clean', function () {
 
                 var $modal = $('#better-icon-modal'),
                     $search_input = $modal.find('input.better-icons-search-input');
@@ -278,7 +328,7 @@
 
             });
 
-            $(document).on('click', '.better-modal.icon-modal .upload-custom-icon', function () {
+            $document.on('click', '.better-modal.icon-modal .upload-custom-icon', function () {
                 var _this = $(this);
 
                 var custom_uploader;
@@ -355,17 +405,17 @@
             });
 
 
-            $(document).on('click', '.better-modal.icon-modal .upload-custom-icon-container .close-custom-icon', function () {
+            $document.on('click', '.better-modal.icon-modal .upload-custom-icon-container .close-custom-icon', function () {
                 custom_icon_hide();
             });
 
-            $(document).on('keyup', '.better-modal.icon-modal .upload-custom-icon-container .custom-icon-fields .icon-fields input[name="icon-width"]', function () {
+            $document.on('keyup', '.better-modal.icon-modal .upload-custom-icon-container .custom-icon-fields .icon-fields input[name="icon-width"]', function () {
                 $('.better-modal.icon-modal .custom-icon-fields .icon-preview').css({
                     'max-width': $(this).val() + 'px'
                 });
             });
 
-            $(document).on('keyup', '.better-modal.icon-modal .upload-custom-icon-container .custom-icon-fields .icon-fields input[name="icon-height"]', function () {
+            $document.on('keyup', '.better-modal.icon-modal .upload-custom-icon-container .custom-icon-fields .icon-fields input[name="icon-height"]', function () {
                 $('.better-modal.icon-modal .custom-icon-fields .icon-preview').css({
                     'max-height': $(this).val() + 'px'
                 });
@@ -437,12 +487,6 @@
             this.loaded = true;
         }
     }
-// load when ready
-    $(function () {
-
-        Better_Framework_Modals.init();
-    });
-
 
     $(window).load(function () {
 

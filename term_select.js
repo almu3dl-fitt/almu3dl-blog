@@ -1,6 +1,8 @@
 class BF_Switch extends wp.element.Component {
 
-    constructor() {
+	wrapper = React.createRef();
+
+	constructor() {
 
         super(...arguments);
 
@@ -10,18 +12,17 @@ class BF_Switch extends wp.element.Component {
 
     componentDidMount() {
 
-        this.inputField.current.addEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.addEventListener('change', this.onChange.bind(this), false)
 
 
-        /// ReactDOM.findDOMNode(this),
         document.dispatchEvent(
-            new CustomEvent('bf-component-did-mount', {detail: ReactDOM.findDOMNode(this),})
+            new CustomEvent('bf-component-did-mount', {detail: this.wrapper.current,})
         );
     }
 
     componentWillUnmount() {
 
-        this.inputField.current.removeEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.removeEventListener('change', this.onChange.bind(this), false)
     }
 
     onChange() {
@@ -35,7 +36,7 @@ class BF_Switch extends wp.element.Component {
 
         return (
 
-            <div className="bf-term-select-field">
+            <div ref={this.wrapper} className="bf-term-select-field">
                 <div className="bf-field-term-select-wrapper bf-field-term-select-deferred loading"
                      data-taxonomy={this.props.taxonomy}>
                     Loading...

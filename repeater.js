@@ -1,102 +1,154 @@
 class BF_Repeater extends wp.element.Component {
 
-    constructor(props) {
+	constructor(props) {
 
-        super(...arguments);
+		super(...arguments);
 
-        let items = [];
+		let items = [];
 
-        if (props.value && Array.isArray(props.value)) {
-            items = props.value;
-        }
+		if (props.value && Array.isArray(props.value)) {
+			items = props.value;
+		}
 
-        this.state = {items};
-    }
+		this.state = {items};
+	}
 
-    shouldComponentUpdate(nextProps, nextState) {
+	isEmpty(object) {
+		if (!object) {
+			return true;
+		}
 
-        return this.state !== nextState;
-    }
+		if (Object.keys) {
+			return !Object.keys(object).length;
+		}
 
-    appendItem() {
+		var i;
 
-        let items = this.state.items.concat([this.props.defaultParams]);
+		for (i in object) {
+			if (object.hasOwnProperty(i)) {
 
-        this.setState({items});
-    }
+				return false;
+			}
+		}
 
-    itemChanged(value) {
+		return true;
+	}
 
-        let items = JSON.parse(JSON.stringify(this.repeater.state.items));
+	appendItem() {
 
-        if (!items[this.i]) {
-            items[this.i] = {};
-        }
+		this.setState({items: this.items().concat([this.props.defaultParams])});
+	}
 
-        items[this.i][this.id] = value;
+	itemChanged(value) {
 
-        this.repeater.setState({items});
+		const items = JSON.parse(JSON.stringify(this.repeater.state.items)) || {};
 
-        this.repeater.onChange(items);
-    }
+		if (!items[this.i]) {
+			items[this.i] = {};
+		}
 
-    onChange(items) {
+		items[this.i][this.id] = value;
 
-        this.props.onChange && this.props.onChange(items||this.state.items);
-    }
+		this.repeater.setState({items});
 
-    prepareChildrenElements(elements, elementsValue, i) {
+		this.repeater.onChange(items);
+	}
 
-        return elements.map((element) => {
+	onChange(items) {
 
-            let id = element.props.id,
-                value = elementsValue && elementsValue[id] ? elementsValue[id] : '';
+		this.props.onChange && this.props.onChange(items || this.items());
+	}
 
-            let key = id + "__" + i;
+	prepareChildrenElements(elements, elementsValue, i) {
 
-            let props = {
-                value,
-                key,
-                i,
-                id,
-                onChange: this.itemChanged.bind({repeater: this, id, i})
-            };
+		return elements.map((element) => {
 
-            if (element.props.children) {
+			const id = element.props.id,
+				value = elementsValue && elementsValue[id] ? elementsValue[id] : '';
 
-                props.children = this.prepareChildrenElements(Array.isArray(element.props.children) ? element.props.children : [element.props.children], elementsValue, i);
-            }
+			const key = id + "__" + i;
 
-            return React.cloneElement(element, props);
-        });
-    }
+			const props = {
+				value,
+				key,
+				i,
+				id,
+				onChange: this.itemChanged.bind({repeater: this, id, i})
+			};
 
-    render() {
+			if (element.props.children) {
 
-        let items = this.state.items.map((values, i) => {
+				props.children = this.prepareChildrenElements(Array.isArray(element.props.children) ? element.props.children : [element.props.children], elementsValue, i);
+			}
 
-            let children = this.prepareChildrenElements(this.props.children, values, i);
+			return React.cloneElement(element, props);
+		});
+	}
 
-            return (
-                <div className="bf-repeater-item" key={i}>
-                    {children}
-                </div>
-            )
-        });
+	items() {
 
-        return (
+		const items = this.state.items,
+			propsValue = Array.isArray(this.props.value) ? this.props.value : [];
 
-            <div className="bf-controls bf-nonrepeater-controls bf-controls-repeater-option no-desc bf-clearfix">
-                <div className="bf-repeater-items-container bf-clearfix">
-                    {items}
-                </div>
-                <button className="bf-clone-repeater-item bf-button bf-main-button"
-                        onClick={this.appendItem.bind(this)}
-                        dangerouslySetInnerHTML={{__html: this.props.addLabel}}>
-                </button>
-            </div>
-        )
-    }
+		propsValue.forEach((value, key) => {
+
+			items[key] = Object.assign(items[key] || {}, value || {});
+		});
+
+		return items.filter((item) => !this.isEmpty(item));
+	}
+
+	removeItem(i) {
+
+		let items = JSON.parse(JSON.stringify(this.state.items)) || {};
+
+		delete items[i];
+
+		items = items.filter((item) => !this.isEmpty(item))
+
+		this.setState({items});
+
+		this.onChange(items);
+
+	}
+
+	render() {
+
+		const itemsEl = this.items().map((values, i) => {
+
+			return (
+				<div className="bf-repeater-item" key={i}>
+					<div className="bf-repeater-item-title ui-sortable-handle">
+						<h5>
+							<span className="handle-repeater-title-label">{this.props.itemTitle}</span>
+							<span className="handle-repeater-item"></span>
+							<span className="bf-remove-repeater-item-btn no-event" onClick={() => this.removeItem(i)}>
+								<span className="dashicons dashicons-trash"></span>
+								{this.props.deleteLabel}
+							</span>
+						</h5>
+					</div>
+
+					<div className="repeater-item-container bf-clearfix">
+						{this.prepareChildrenElements(this.props.children, values, i)}
+					</div>
+				</div>
+			)
+		});
+
+		return (
+
+			<div className="bf-controls bf-nonrepeater-controls bf-controls-repeater-option no-desc bf-clearfix">
+				<div className="bf-repeater-items-container bf-clearfix">
+					{itemsEl}
+				</div>
+				<button className="bf-clone-repeater-item bf-button bf-main-button no-event"
+						onClick={this.appendItem.bind(this)}
+						dangerouslySetInnerHTML={{__html: this.props.addLabel}}>
+				</button>
+			</div>
+		)
+	}
 }
 
 module.exports = BF_Repeater;

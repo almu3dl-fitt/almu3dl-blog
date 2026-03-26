@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
+ *  Our portfolio is here: https://betterstudio.com/
  *
  *  \--> BetterStudio, 2017 <--/
  */
@@ -203,7 +203,7 @@ div.pp_default .pp_description {
     line-height: 14px;
     margin: 16px 10px 5px 180px;
 }
-div.pp_default .pp_loaderIcon { background: url(/wp-content/plugins/better-google-custom-search/includes/libs/better-framework/assets/img/pretty-photo-loader.gif) center center no-repeat; } /* Loader icon */
+div.pp_default .pp_loaderIcon { background: url(/wp-content/plugins/better-playlist/includes/libs/better-framework/assets/img/pretty-photo-loader.gif) center center no-repeat; } /* Loader icon */
 
 
 /* ------------------------------------------------------------------------

@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
+ *  Our portfolio is here: https://betterstudio.com/
  *
  *  \--> BetterStudio, 2017 <--/
  */
@@ -57,6 +57,8 @@ var bf_ignore_reload_notice = false,
             this.setup_deferred_panel_fields();
 
             this.vc_modifications();
+
+            this.customizePage();
 
 
             switch( better_framework_loc.type ){
@@ -1768,7 +1770,6 @@ var bf_ignore_reload_notice = false,
                 filterDataCallback: false
             }, options);
 
-
             if(! settings.el) {
                 throw new Error('Invalid Element');
             }
@@ -1900,9 +1901,25 @@ var bf_ignore_reload_notice = false,
                 return $(document.body).hasClass('widgets_access') ? '.widget-inside' : '.widget';
             };
 
+            var widgetShowOnFix = function() {
+
+                // Fix: show_on initialization on widgets page
+                setTimeout(function() {
+                    $("#widgets-right .widget-inside").each(function(){
+                        $(":input:first",this).trigger('force-change');
+                    });
+                });
+
+                // Fix: Init show_on after widget saved
+                $(document).on( 'widget-updated', function(e,$widget) {
+                    $(".widget-inside :input:first",$widget).trigger('force-change');
+                });
+            }
+
             if($context && ($context.hasClass('widget') || better_framework_loc.type === 'widgets')) {
 
                 parentSelector = widgetParentSelector();
+                widgetShowOnFix();
 
             } else if($context && better_framework_loc.type === 'panel'){
 
@@ -1916,18 +1933,7 @@ var bf_ignore_reload_notice = false,
 
                         parentSelector = widgetParentSelector();
                         $wrapper       = $("#widgets-right",$context);
-
-                        // Fix: show_on initialization on widgets page
-                        setTimeout(function(){
-                            $(parentSelector, $wrapper).each(function(){
-                                $(".widget-inside :input:first",this).trigger('force-change');
-                            });
-                        });
-
-                        // Fix: Init show_on after widget saved
-                        $(document).on( 'widget-updated', function(e,$widget) {
-                            $(".widget-inside :input:first",$widget).trigger('force-change');
-                        });
+                        widgetShowOnFix();
 
                         break;
 
@@ -2746,7 +2752,7 @@ var bf_ignore_reload_notice = false,
                     var widgetIdBase  = $inside.find('input.id_base').val(),
                         widgetNumber = $inside.find('input.multi_number').val();
 
-                    if(! widgetBaseName && "Elementor" === better_framework_loc.page_builder) {
+                    if(! widgetBaseName && better_framework_loc.page_builder.indexOf('Elementor') > -1 ) {
 
                         widgetNumber = 'REPLACE_TO_ID';
                     }
@@ -3395,7 +3401,7 @@ var bf_ignore_reload_notice = false,
 
                         fixWidgetBtn.call(this,event);
 
-                        if(better_framework_loc.page_builder === "Elementor") {
+                        if(better_framework_loc.page_builder.indexOf('Elementor') > -1) {
 
                             // fix elementor save issue
                             setTimeout(function() {
@@ -3489,7 +3495,7 @@ var bf_ignore_reload_notice = false,
 
             var sorterUpdated = function(evt, params) {
 
-                var $this = (this);
+                var $this = $(this);
 
                 if( typeof $this.attr('checked') != "undefined" ){
                     $this.closest('li').addClass('checked-item');
@@ -3547,9 +3553,13 @@ var bf_ignore_reload_notice = false,
 
                 $this.closest('.image-radio-field')
 
-                $parent.find('.image-radio-value')
-                    .val($checked.val()).change()
-                    [0].dispatchEvent(new Event('input'));
+                var $elements = $parent.find('.image-radio-value');
+
+                if ($elements.length) {
+
+                    $elements.val($checked.val()).change()
+                        [0].dispatchEvent(new Event('input'));
+                }
             });
 
         },
@@ -4260,22 +4270,57 @@ var bf_ignore_reload_notice = false,
             }
         },
 
+        customizePage: function(){
+
+            var api = wp.customize;
+
+            if( !api || !api.controlConstructor || !api.controlConstructor.sidebar_widgets) {
+
+                $( document ).on( 'widget-added', this.customizePage.bind(this));
+
+                return;
+            }
+
+            var addWidget = api.controlConstructor.sidebar_widgets.prototype.addWidget;
+
+            api.controlConstructor.sidebar_widgets = api.controlConstructor.sidebar_widgets.extend({
+
+                addWidget: function(widgetId) {
+
+                    // ByPass parseWidgetId Issue
+                    if(widgetId.match(/^bs\-.*?\-\d+$/)) {
+                        widgetId += '-0';
+                    }
+
+                    return addWidget.call(this,widgetId);
+                }
+            });
+        },
+
         pageBuilderCompatibility: {
 
             init: function () {
 
-                if (['KC', 'KCP'].indexOf(better_framework_loc.page_builder) > -1) { // isKingComposer
+                if (
+                    better_framework_loc.page_builder.indexOf('KCP') > -1
+                    ||
+                    better_framework_loc.page_builder.indexOf('KC') > -1
+                ) { // isKingComposer
 
                     this.kingComposer.init();
 
-                } else if('Elementor' === better_framework_loc.page_builder) {
+                }
+                if (better_framework_loc.page_builder.indexOf('Elementor') > -1) {
 
                     this.elementor.init();
 
-                } else if('SiteOrigin' === better_framework_loc.page_builder) {
+                }
+                if (better_framework_loc.page_builder.indexOf('SiteOrigin') > -1) {
 
                     this.siteOrigin.init();
-                } else if('Gutenberg' === better_framework_loc.page_builder) {
+
+                }
+                if (better_framework_loc.page_builder.indexOf('Gutenberg') > -1) {
 
                     this.gutenberg.init();
                 }
@@ -4712,10 +4757,20 @@ var bf_ignore_reload_notice = false,
 
                     $(document).on('bf-component-did-mount', function (e) {
 
-                        var scope = e.detail.parentElement;
+                        if(! e.detail || ! e.detail.parentElement) {
 
-                        Better_Framework._init_editor(scope);
-                        self.intTermSelect($(scope));
+                            return ;
+                        }
+
+                        var $scope = $(e.detail.parentElement);
+
+                        if(! $scope.data('component-initialized')){
+
+                            Better_Framework._init_editor($scope[0]);
+                            self.intTermSelect($scope);
+
+                            $scope.data('component-initialized',true);
+                        }
                     });
 
                     this.setupShowOn();

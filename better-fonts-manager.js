@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
+ *  Our portfolio is here: https://betterstudio.com/
  *
  *  \--> BetterStudio, 2017 <--/
  */
@@ -230,7 +230,9 @@ var Better_Fonts_Manager = (function ($) {
                                 });
 
                                 wp.media.frame.on('select', function () {
-                                    $('.input', $btn.parent()).trigger('keyup');
+                                    $('.input', $btn.parent())
+                                        .val(wp.media.frame.state().get('selection').first().toJSON().url)
+                                        .trigger('keyup');
                                 });
 
                             }, 100);
@@ -546,7 +548,9 @@ var Better_Fonts_Manager = (function ($) {
                                 this.options.content.header =
                                     this.options.content.header.replace('{{btn}}', this.generate_buttons());
                             }
-                        }
+                        },
+
+                        initialZIndex: 15000
                     });
 
                 modalObject.show();
@@ -632,8 +636,8 @@ var Better_Fonts_Manager = (function ($) {
 
                 $(this).closest(".bf-section-typography-option").addClass('have-enable-field');
 
-                if ($(this).attr("checked")) {
-                    $(this).closest(".bf-section-typography-option").addClass('enable-field`');
+                if ($(this).attr("value") === '1') {
+                    $(this).closest(".bf-section-typography-option").addClass('enable-field');
                 } else {
                     $(this).closest(".bf-section-typography-option").addClass('disable-field');
                 }

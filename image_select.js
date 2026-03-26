@@ -10,12 +10,12 @@
     }
 
     componentDidMount() {
-        this.inputField.current.addEventListener('change', this.onChange.bind(this), false)
+        this.inputField.current.addEventListener('input', this.onChange.bind(this), false)
 
     }
 
     componentWillUnmount() {
-        this.inputField.current.removeEventListener('change', this.onChange.bind(this), false)
+        this.inputField.current.removeEventListener('input', this.onChange.bind(this), false)
 
     }
 

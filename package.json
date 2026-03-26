@@ -1,14 +1,15 @@
 {
- "name": "dev-cgb-guten-block",
- "version": "1.0.0",
- "private": true,
- "scripts": {
-  "start": "cgb-scripts start",
-  "build": "cgb-scripts build && npm run fix",
-  "eject": "cgb-scripts eject",
-  "fix": "sed -i '' 's/$(\"#editor\")/jQuery(\"#editor\")/gI' dist/blocks.build.js"
- },
- "devDependencies": {
-  "cgb-scripts": "^1.23.1"
- }
+  "name": "better-framework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^23.5.0"
+  }
 }

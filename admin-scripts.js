@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
+ *  Our portfolio is here: https://betterstudio.com/
  *
  *  \--> BetterStudio, 2017 <--/
  */
@@ -25,6 +25,7 @@ var bf_ignore_reload_notice = false,
 
     // module
     return {
+        loaded: false,
         _interactive_fields_cache: {},
         _doingAjax: false,
         _cuurentAjax: false,
@@ -56,6 +57,8 @@ var bf_ignore_reload_notice = false,
             this.setup_deferred_panel_fields();
 
             this.vc_modifications();
+
+            this.customizePage();
 
 
             switch( better_framework_loc.type ){
@@ -126,7 +129,12 @@ var bf_ignore_reload_notice = false,
 
             }
 
+
+            this.pageBuilderCompatibility.init();
+
             $(document).trigger('bf-loaded');
+
+            this.loaded = true;
         },
 
         /**
@@ -637,7 +645,7 @@ var bf_ignore_reload_notice = false,
         /**
          * @see _get_panel_data
          */
-        handle_editor:function() {
+        handle_editor:function($context) {
             var self = this;
 
             jQuery(document).ready(function($) {
@@ -649,6 +657,10 @@ var bf_ignore_reload_notice = false,
                 // Fix Bug: tinymce update textarea filed with delay
                 // This event change textarea field value immediately
                 tinymce.activeEditor.on('change', function() {
+
+                    if(! this.container) {
+                        return ;
+                    }
                     var container = this.container.closest('.bf-section-container');
 
                     if(container) {
@@ -656,8 +668,13 @@ var bf_ignore_reload_notice = false,
                     }
                 });
             });
+
+            if($context && $context.length) {
+                self._init_editor($context);
+            }
         },
         _init_editor: function (context) {
+
             $('.bf-editor-wrapper', context).each(function() {
                 var $wrapper  = $(this),
                     $editor   = $wrapper.find('.bf-editor'),
@@ -668,6 +685,7 @@ var bf_ignore_reload_notice = false,
 
                     $textarea.hide();
 
+                    $editor.css('min-height', '100px');
                     var
                         lang = $editor.data('lang'),
                         max_lines = $editor.data('max-lines'),
@@ -687,13 +705,14 @@ var bf_ignore_reload_notice = false,
 
                     session.setUseWorker(false);
 
-                    editor.getSession().setValue($textarea
-                        .val());
+                    editor.getSession().setValue($textarea.val());
 
                     session.on('change', function (e, EditSession) {
                         $textarea
                             .val(editor.getSession().getValue())
                             .trigger('bf-changed');
+
+                        $textarea[0].dispatchEvent(new Event('input'));
                     });
 
                 } else {
@@ -874,8 +893,10 @@ var bf_ignore_reload_notice = false,
 
                 if($parentModal.length) {
                     initialZIndex = parseInt($parentModal.css('z-index'));
-                }
+                } else {
 
+                    initialZIndex =1.3e5;
+                }
                 if (data[ 0 ]) {
 
                     $.bs_selector_modal({
@@ -944,7 +965,6 @@ var bf_ignore_reload_notice = false,
 
                                     $btn.attr('class', 'bf-btn-primary disabled').html(data[ 2 ].btn_label_active);
                                     $btn.parent().removeClass('bf-toggle-item-status');
-
                                     $btn.on('click', function (e) {
                                         e.preventDefault();
                                     });
@@ -952,8 +972,12 @@ var bf_ignore_reload_notice = false,
 
                                 function setValue(id,label) {
 
-                                    $select.find('input.select-value').val(id).change();
+                                    var $input = $select.find('input.select-value');
+                                    $input.val(id).change();
                                     $select.find('.active-item-label').html(label);
+
+                                    $input[0].dispatchEvent(new Event('input'));
+
                                 }
                                 function setImage(src) {
                                     $select.find('.select-popup-selected-image img').attr('src', src);
@@ -1436,6 +1460,15 @@ var bf_ignore_reload_notice = false,
 
             var $bf_loading = $('.bf-loading');
 
+            if($bf_loading.length === 0 ) {
+
+                $(document.body)
+                    .append('<div class="bf-loading">\n    <div class="loader">\n        <div class="loader-icon in-loading-icon "><i class="dashicons dashicons-update"></i></div>\n        <div class="loader-icon loaded-icon"><i class="dashicons dashicons-yes"></i></div>\n        <div class="loader-icon not-loaded-icon"><i class="dashicons dashicons-no-alt"></i></div>\n        <div class="message">An Error Occurred!</div>\n    </div>\n</div>')
+                    .append('<style>\n    .bf-loading {\n        position: fixed;\n        top: 0;\n        left: 0;\n        width: 100%;\n        height: 100%;\n        background-color: #636363;\n        background-color: rgba(0, 0, 0, 0.41);\n        display: none;\n        z-index: 99999;\n    }\n\n    .bf-loading .loader {\n        width: 300px;\n        height: 180px;\n        position: absolute;\n        top: 50%;\n        left: 50%;\n        margin-top: -90px;\n        margin-left: -150px;\n        text-align: center;\n    }\n\n    .bf-loading.not-loaded,\n    .bf-loading.loaded,\n    .bf-loading.in-loading {\n        display: block;\n    }\n\n    .bf-loading.in-loading .loader {\n        color: white;\n    }\n\n    .bf-loading.loaded .loader {\n        color: #27c55a;\n    }\n\n    .bf-loading.not-loaded .loader {\n        color: #ff0000;\n    }\n\n    .bf-loading .loader .loader-icon {\n        font-size: 30px;\n        -webkit-transition: all 0.2s ease;\n        -moz-transition: all 0.2s ease;\n        -ms-transition: all 0.2s ease;\n        -o-transition: all 0.2s ease;\n        transition: all .2s ease;\n        opacity: 0;\n        border-radius: 10px;\n        background-color: #333;\n        background-color: rgba(51, 51, 51, 0.86);\n        width: 60px;\n        height: 60px;\n        line-height: 60px;\n        margin-top: 20px;\n        display: none;\n        position: absolute;\n        left: 50%;\n        margin-left: -30px;\n    }\n\n    .bf-loading .loader .loader-icon .dashicons,\n    .bf-loading .loader .loader-icon .dashicons-before:before {\n        font-size: 55px;\n        line-height: 60px;\n        width: 60px;\n        height: 60px;\n        text-align: center;\n    }\n\n    .bf-loading.in-loading .loader .loader-icon.in-loading-icon,\n    .bf-loading.in-loading.loader .loader-icon.in-loading-icon {\n        opacity: 1;\n        display: inline-block;\n    }\n\n    .bf-loading.in-loading .loader .loader-icon.in-loading-icon .dashicons,\n    .bf-loading.in-loading .loader .loader-icon.in-loading-icon .dashicons-before:before {\n        -webkit-animation: spin 1.15s linear infinite;\n        -moz-animation: spin 1.15s linear infinite;\n        animation: spin 1.15s linear infinite;\n        font-size: 30px;\n    }\n\n    .bf-loading.loaded .loader .loader-icon.loaded-icon {\n        opacity: 1;\n        display: inline-block;\n        font-size: 50px;\n    }\n\n    .bf-loading.loaded .loader .loader-icon.loaded .dashicons,\n    .bf-loading.loaded .loader .loader-icon.loaded .dashicons-before:before {\n        width: 57px;\n    }\n\n    .bf-loading.not-loaded .loader .loader-icon.not-loaded-icon {\n        opacity: 1;\n        display: inline-block;\n    }\n\n    .bf-loading.not-loaded .loader .loader-icon.not-loaded-icon .dashicons,\n    .bf-loading.not-loaded .loader .loader-icon.not-loaded-icon .dashicons-before:before {\n        font-size: 50px;\n        line-height: 62px;\n    }\n\n    .bf-loading .loader .message {\n        display: none;\n        color: #ff0000;\n        font-size: 12px;\n        line-height: 24px;\n        min-width: 100px;\n        max-width: 300px;\n        left: auto;\n        right: auto;\n        text-align: center;\n        background-color: #333;\n        background-color: rgba(51, 51, 51, 0.86);\n        border-radius: 5px;\n        padding: 4px 20px;\n        margin-top: 90px;\n    }\n\n    .bf-loading.with-message .loader .message {\n        display: inline-block;\n    }\n\n    .bf-loading.loaded .loader .message {\n        color: #27c55a;\n    }\n\n    .bf-loading.in-loading .loader .message {\n        color: #fff;\n    }\n\n    @-moz-keyframes spin {\n        100% {\n            -moz-transform: rotate(360deg);\n        }\n    }\n\n    @-webkit-keyframes spin {\n        100% {\n            -webkit-transform: rotate(360deg);\n        }\n    }\n\n    @keyframes spin {\n        100% {\n            -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n        }\n    }\n</style>');
+
+                $bf_loading = $('.bf-loading');
+            }
+
             message = typeof message !== 'undefined' ? message : '';
 
             if( status == 'loading'){
@@ -1739,12 +1772,12 @@ var bf_ignore_reload_notice = false,
                 ID: false,
                 $container: false,
                 inputWrapperSelector: false,
+                inputParamsSelector: false,
                 parentSelector: false,
                 paramDataName: 'param-name',
                 paramSettingsName: 'param-settings',
                 filterDataCallback: false
             }, options);
-
 
             if(! settings.el) {
                 throw new Error('Invalid Element');
@@ -1775,10 +1808,12 @@ var bf_ignore_reload_notice = false,
             }
 
             $row.find(settings.inputWrapperSelector).each(function () {
-                var $col        = $(this),
-                    _settings   = $col.data(settings.paramSettingsName),
+                var $col        = $(this);
+
+                var $paramsWrapper = settings.inputParamsSelector ? $(settings.inputParamsSelector,$col) : $col;
+                var _settings   = $paramsWrapper.data(settings.paramSettingsName),
                     $inputs     = $col.find(':input'),
-                    param_name  = $col.data(settings.paramDataName),
+                    param_name  = $paramsWrapper.data(settings.paramDataName),
                     param_value = $inputs.length > 1 ? $inputs.filter(':checked').val() : $inputs.val();
 
                 if( settings.filterDataCallback ) {
@@ -1875,9 +1910,25 @@ var bf_ignore_reload_notice = false,
                 return $(document.body).hasClass('widgets_access') ? '.widget-inside' : '.widget';
             };
 
+            var widgetShowOnFix = function() {
+
+                // Fix: show_on initialization on widgets page
+                setTimeout(function() {
+                    $("#widgets-right .widget-inside").each(function(){
+                        $(":input:first",this).trigger('force-change');
+                    });
+                });
+
+                // Fix: Init show_on after widget saved
+                $(document).on( 'widget-updated', function(e,$widget) {
+                    $(".widget-inside :input:first",$widget).trigger('force-change');
+                });
+            }
+
             if($context && ($context.hasClass('widget') || better_framework_loc.type === 'widgets')) {
 
                 parentSelector = widgetParentSelector();
+                widgetShowOnFix();
 
             } else if($context && better_framework_loc.type === 'panel'){
 
@@ -1891,18 +1942,7 @@ var bf_ignore_reload_notice = false,
 
                         parentSelector = widgetParentSelector();
                         $wrapper       = $("#widgets-right",$context);
-
-                        // Fix: show_on initialization on widgets page
-                        setTimeout(function(){
-                            $(parentSelector, $wrapper).each(function(){
-                                $(".widget-inside :input:first",this).trigger('force-change');
-                            });
-                        });
-
-                        // Fix: Init show_on after widget saved
-                        $(document).on( 'widget-updated', function(e,$widget) {
-                            $(".widget-inside :input:first",$widget).trigger('force-change');
-                        });
+                        widgetShowOnFix();
 
                         break;
 
@@ -2207,8 +2247,6 @@ var bf_ignore_reload_notice = false,
 
                     changeStateAttr($wrapper,nextState);
 
-                    $('.bf-checkbox-status', $wrapper).val(nextState);
-
                     $wrapper.trigger('bf-checkbox-change', [ nextState ].concat(Array.prototype.slice.call(arguments, 1)) );
                 });
 
@@ -2263,6 +2301,7 @@ var bf_ignore_reload_notice = false,
             );
         },
         init_term_select: function ($context) {
+
             var config = {
               autoCheckParent: false // Check parent term if all childrens was checked
             };
@@ -2338,7 +2377,7 @@ var bf_ignore_reload_notice = false,
                         state    = $this.data('state'),
                         isEnable = $.inArray(state, validStatus) > -1;
 
-                    $this[ isEnable ? "removeClass" : 'addClass' ]('disabled');
+                    $this[ isEnable ? 'removeClass' : 'addClass' ]('disabled');
                 })
             }
 
@@ -2377,11 +2416,12 @@ var bf_ignore_reload_notice = false,
             }
 
             function canCollectTermAsDeactivated(checkboxStatusEL) {
-                return checkboxStatusEL.value === 'deactivate';
+                return checkboxStatusEL.parentElement.dataset.currentState === 'deactivate';
             }
 
             function canCollectTermAsActivated(checkboxStatusEL, $checkboxContainer) {
-                return checkboxStatusEL.value === 'active' && (function ($container) {
+
+                return checkboxStatusEL.parentElement.dataset.currentState === 'active' && (function ($container) {
                         return !$container.hasClass('bf-checkbox-skip-collect-active-term-id');
                     })($checkboxContainer || $(checkboxStatusEL).closest('.bf-checkbox-multi-state'));
             }
@@ -2413,6 +2453,7 @@ var bf_ignore_reload_notice = false,
                 var $this       = $(this),
                     $container  = $this.closest('.bf-field-term-select-wrapper'),
                     termsIdList = [];
+
 
                 var $clickedCheckBox  = $this.closest('.bf-checkbox-multi-state'),
                     $childrenUL       = $clickedCheckBox.nextAll('.children'),
@@ -2474,6 +2515,7 @@ var bf_ignore_reload_notice = false,
                         status = 'deactivate';
                     }
                     else if (canCollectTermAsActivated(this, $container)) {
+
                         status = 'active';
                         if (isTermPrimary($label)) {
                             termsIdList.unshift("+" + termID);
@@ -2512,7 +2554,8 @@ var bf_ignore_reload_notice = false,
                     }
                 }).promise().done(function () {
 
-                    $container.nextAll('.bf-vc-term-select-value').val(termsIdList.join(',')).change();
+                    $container.nextAll('.bf-term-select-value').val(termsIdList.join(','))
+                        .change()[0].dispatchEvent(new Event('input'));
                 });
             });
 
@@ -2526,7 +2569,7 @@ var bf_ignore_reload_notice = false,
                 var $this      = $(this),
                     termID     = $this.data('term-id'),
                     $container = $this.closest('.bf-field-term-select-wrapper'),
-                    $vcInputEL = $container.siblings('.bf-vc-term-select-value');
+                    $vcInputEL = $container.siblings('.bf-term-select-value');
 
                 /**
                  * Regenerate terms id and mark primary term with a + sign
@@ -2659,7 +2702,7 @@ var bf_ignore_reload_notice = false,
                     var $this   = $(this),
                         $_group = $this.closest('.fields-group'),
                         groupID = $_group.attr('id').match('^fields\-group\-(.+)$')[ 1 ],
-                        isOpen  = !$_group.hasClass('open');
+                        isOpen  = !$_group.hasClass('bf-open');
 
                     var $form    = $this.closest('form'),
                         inoutVal = isOpen ? 'open' : 'close',
@@ -2701,19 +2744,59 @@ var bf_ignore_reload_notice = false,
             // Clone Repeater Item by click
             // TODO refactor this
             $(document).on( 'click', '.bf-widget-clone-repeater-item', function(e){
+
+
                 e.preventDefault();
-                var name_format = undefined === $(this).data( 'name-format' ) ? '$1[$2][$3][$4][$5]' : $(this).data( 'name-format'), _html = $(this).siblings('script').html();
+                var //name_format = undefined === $(this).data( 'name-format' ) ? '$1[$2][$3][$4][$5]' : $(this).data( 'name-format'),
+                    _html = $(this).siblings('script').html();
+
+                if(! _html) {
+                    return ;
+                }
+                var $inside = $(this).closest('.widget-inside'),
+                    widgetBaseName = '';
+
+                if($inside.length) {
+
+                    var widgetIdBase  = $inside.find('input.id_base').val(),
+                        widgetNumber = $inside.find('input.multi_number').val();
+
+                    if(! widgetBaseName && better_framework_loc.page_builder.indexOf('Elementor') > -1 ) {
+
+                        widgetNumber = 'REPLACE_TO_ID';
+                    }
+
+                    widgetBaseName = "widget-"+widgetIdBase+"["+widgetNumber+"]";
+
+                } else {
+
+
+                    var $wrapper = $(this).closest('.bf-controls'),
+                        inputName = $(":input:first",$wrapper).attr('name');
+
+                    if(inputName) {
+
+                        var match = inputName.match(/(.*?)\[\d+\]\[.*?\]$/);
+
+                        if(match && match[1]) {
+                            widgetBaseName = match[1];
+                        }
+                    }
+                }
+
+                if(! widgetBaseName) {
+                    return ;
+                }
 
                 var _new = $(this).siblings('.bf-repeater-items-container').find('>*').size();
                 var new_num = _new + 1;
+
                 $(this).siblings('.bf-repeater-items-container').append(
-                    _html
-                       .replace( /([\"\'])(\|)(_to_clone_)(.+)?-num-(.+)?(\|)(\1)/g, '$1$2$3$4-num-'+new_num+'-$5$6$7$8')
-                       .replace( /[\"\']\|_to_clone_(.+)?-(\d+)-(.+)?-num-(\d+)-(.+)\|[\"\']/g, '"'+name_format+'"' )
+                    _html.replace(/\|_to_clone_(.*?)-num-(.*?)\|/g,widgetBaseName + '[$1]['+new_num+'][$2]')
                 );
-                bf_color_picker_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-color-picker') );
-                bf_date_picker_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-date-picker-input') );
-                bf_image_upload_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-image-upload-choose-file') );
+                // bf_color_picker_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-color-picker') );
+                // bf_date_picker_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-date-picker-input') );
+                // bf_image_upload_plugin( $(this).siblings('.bf-repeater-items-container').find('.bf-image-upload-choose-file') );
             });
 
             saveGroupStatus();
@@ -2859,6 +2942,8 @@ var bf_ignore_reload_notice = false,
 
             Better_Framework.setup_ajax_action();
 
+            this.handle_editor($context);
+
             $(document).on('bf-loaded', function() {
 
                 Better_Framework.setup_interactive_fields_for_bf($context);
@@ -2876,23 +2961,23 @@ var bf_ignore_reload_notice = false,
         // Setup Fields Group
         setup_fields_group: function(){
 
-            $( document ).off( 'click', '.fields-group-title-container' );
-
-            $( document ).on( 'click', '.fields-group-title-container', function() {
+            $( document )
+                .off( 'click', '.fields-group-title-container' )
+                .on( 'click', '.fields-group-title-container', function() {
 
                 var $_group = $(this).closest( '.fields-group'),
                     $_button = $(this).find( '.collapse-button' );
 
-                if( $_group.hasClass( 'open' ) ){
+                if( $_group.hasClass( 'bf-open' ) ){
 
                     $_group.children('.bf-group-inner').slideUp(400);
 
-                    $_group.removeClass('open').addClass('close');
+                    $_group.removeClass('bf-open').addClass('bf-close');
                     $_button.find('.fa').removeClass('fa-minus').addClass('fa-plus');
 
                 }else{
 
-                    $_group.removeClass('close').addClass('open');
+                    $_group.removeClass('bf-close').addClass('bf-open');
                     $_button.find('.fa').removeClass('fa-plus').addClass('fa-minus');
 
                     $_group.children('.bf-group-inner').slideDown(400);
@@ -2922,9 +3007,24 @@ var bf_ignore_reload_notice = false,
             });
 
             // Remove Repeater Item
-            $(document).on( 'click', '.bf-remove-repeater-item-btn', function( e ){
+            $(document)
+                .off( 'click', '.bf-remove-repeater-item-btn')
+                .on( 'click', '.bf-remove-repeater-item-btn', function( e ){
 
-                var $section =  $(this).closest('.bf-section');
+                    var $this = $(this);
+
+                    if($this.hasClass('no-event')) {
+
+                        return ;
+                    }
+                var $section =  $this.closest('.bf-section');
+
+                if($(".bf-repeater-items-container>.bf-repeater-item",$section).length === 1){
+
+                    alert("Can not remove last item!");
+                    return ;
+                }
+
                 if( confirm( 'Are you sure?' ) ){
 
                     /**
@@ -2955,8 +3055,9 @@ var bf_ignore_reload_notice = false,
             });
 
             // Collapse
-            $(document).on( 'click', '.handle-repeater-item', function(){
-                $(this).toggleClass('closed').closest('.bf-repeater-item').find('.repeater-item-container').slideToggle(400);
+            $(document).off('click', '.handle-repeater-item')
+                .on( 'click', '.handle-repeater-item', function(){
+                $(this).toggleClass('bf-closed').closest('.bf-repeater-item').find('.repeater-item-container').slideToggle(400);
             });
 
             // Clone Repeater Item by click
@@ -2964,6 +3065,12 @@ var bf_ignore_reload_notice = false,
                 e.preventDefault();
 
                 var $this = $(this);
+
+                if($this.hasClass('no-event')) {
+
+                    return ;
+                }
+
                 var $repeater_items_container = $(this).siblings('.bf-repeater-items-container'),
                     name_format = undefined === $(this).data( 'name-format' ) ? '$1[$2][$3]' : $(this).data( 'name-format'),
                     _html = $this.siblings('script').html(),
@@ -2971,6 +3078,10 @@ var bf_ignore_reload_notice = false,
                     index = count + 1;
 
                 // Retrieve script tags
+
+                if(! _html) {
+                    return ;
+                }
 
                 _html = _html.replace(/<\s*\!\-\-\s*SCRIPT\s*TAG\s*START\s*--\s*>\s*<\s*div\s*((.|\n)*)style=(([^>]+))/ig,'<script $1') // open script tag
                         .replace(/<\s*\/\s*div\s*>\s*<\s*\!\-\-\s*SCRIPT\s*TAG\s*END\s*--\s*>/ig,'</script>');  // open script tag
@@ -3133,37 +3244,33 @@ var bf_ignore_reload_notice = false,
         setup_field_image_select: function(){
 
             // Open Close Select Options Box
-            $(document).on('click', '.better-select-image' ,function(e){
+            var $doc = $(document);
+
+            $doc.off('click.image-select', '.better-select-image').off('click.image-select');
+
+            $doc.on('click.image-select', '.better-select-image' ,function(e){
                 var $_target = $(e.target);
 
-                if ( $_target.hasClass('selected-option')  ) {
+                if ( $_target.hasClass('selected-option') || $_target.hasClass('select-options')  ) {
                     // close All Other open boxes
-                    $(this).toggleClass('opened');
-                    return;
-                }
-                if( $_target.hasClass('select-options') ){
-                    $(this).toggleClass('opened');
-                    return;
-                }
-
-                if( $_target.hasClass('image-select-option') ){
+                    $(this).toggleClass('bf-opened');
                     return;
                 }
 
             });
 
             // Close Everywhere clicked
-            $(document).on('click',function( e ){
+            $doc.on('click.image-select',function( e ){
                 if (e.target.class !== 'better-select-image' && $(e.target).parents('.better-select-image').length === 0) {
                     $('.better-select-image').each(function(){
-                        if($(this).hasClass('opened')){
-                            $(this).removeClass('opened');
+                        if($(this).hasClass('bf-opened')){
+                            $(this).removeClass('bf-opened');
                         }
                     });
                 }
             });
             // Select when clicked
-            $(document).on('click', '.better-select-image .image-select-option' ,function(e){
+            $doc.on('click.image_select', '.better-select-image .image-select-option' ,function(e){
                 var $this = $(this);
                 var $parent = $this.closest('.better-select-image');
                 var $input = $parent.find('input[type=hidden]');
@@ -3171,18 +3278,16 @@ var bf_ignore_reload_notice = false,
 
                 if($this.hasClass('selected')){
                     e.preventDefault();
-                    $parent.find('.select-options').toggleClass('opened');
+                    $parent.find('.select-options').toggleClass('bf-opened');
                 }
                 else{
                     $input.attr('value',$this.data('value')).trigger('change');
                     $parent.find('.image-select-option.selected').removeClass('selected');
                     $this.addClass('selected');
                     $selected_label.html($this.data('label'));
-                    $parent.toggleClass('opened');
+                    $parent.toggleClass('bf-opened');
                 }
             });
-
-
         },
 
 
@@ -3216,11 +3321,7 @@ var bf_ignore_reload_notice = false,
                 $('.cb-disable', parent).removeClass('selected');
                 $(this).addClass('selected');
 
-                if ($('.checkbox', parent).hasClass('bf_switchery_field')) {
-                    $('.checkbox', parent).attr('value', 1).trigger('change');
-                } else {
-                    $('.checkbox', parent).attr('value', 1).trigger('change');
-                }
+                $('.checkbox', parent).attr('value', 1).trigger('change')[0].dispatchEvent(new Event('input'));
             });
 
             $doc.on('click', ".cb-disable", function () {
@@ -3228,11 +3329,7 @@ var bf_ignore_reload_notice = false,
                 $('.cb-enable', parent).removeClass('selected');
                 $(this).addClass('selected');
 
-                if ($('.checkbox', parent).hasClass('bf_switchery_field')) {
-                    $('.checkbox', parent).attr('value', 0).trigger('change');
-                } else {
-                    $('.checkbox', parent).attr('value', 0).trigger('change');
-                }
+                $('.checkbox', parent).attr('value', 0).trigger('change')[0].dispatchEvent(new Event('input'));
             });
 
 
@@ -3246,7 +3343,7 @@ var bf_ignore_reload_notice = false,
 
             // prepare selector
             if( better_framework_loc.type == 'widgets' ){
-                selector = '#widgets-right .bf-slider-slider';
+                selector = '#widgets-right .bf-slider-slider,#elementor-panel .bf-slider-slider';
             }
             else{
                 selector = '.bf-slider-slider';
@@ -3271,7 +3368,7 @@ var bf_ignore_reload_notice = false,
                     max: _max,
                     slide: function( event, ui ) {
                         _this.find(".ui-slider-handle").html( '<span>'+ui.value+_dimension+'</span>' );
-                        _this.siblings('.bf-slider-input').val( ui.value );
+                        _this.siblings('.bf-slider-input').val( ui.value ).change();
                     },
                     create: function( event, ui ) {
                         _this.find(".ui-slider-handle").html( '<span>'+_val+_dimension+'</span>' );
@@ -3324,18 +3421,24 @@ var bf_ignore_reload_notice = false,
                     change: function( event, ui ) {
 
                         fixWidgetBtn.call(this,event);
+
+                        if(better_framework_loc.page_builder.indexOf('Elementor') > -1) {
+
+                            // fix elementor save issue
+                            setTimeout(function() {
+                                $(event.target).change()
+                            });
+                        }
                     },
                     clear: function(event, ui) {
 
                         fixWidgetBtn.call(this,event);
+
                     }
                 });
-
             };
 
             // FIX: performance
-
-
 
             initColorPicker($context);
 
@@ -3411,13 +3514,38 @@ var bf_ignore_reload_notice = false,
                 });
             }
 
-            $('.bf-section-container li input').on('change', function(evt, params) {
+            var sorterUpdated = function(evt, params) {
 
-                if( typeof $(this).attr('checked') != "undefined" ){
-                    $(this).closest('li').addClass('checked-item');
+                var $this = $(this);
+
+                if( typeof $this.attr('checked') != "undefined" ){
+                    $this.closest('li').addClass('checked-item');
                 }else{
-                    $(this).closest('li').removeClass('checked-item');
+                    $this.closest('li').removeClass('checked-item');
                 }
+
+            };
+
+            $( ".bf-sorter-list" ).sortable({
+                placeholder: "placeholder-item",
+                cancel: "li.disable-item"
+            });
+
+            $('.bf-section-container li input')
+                .off('change', sorterUpdated)
+                .on('change', sorterUpdated);
+
+
+            jQuery(document).on('bf-component-did-mount', function(e,target) {
+
+                $( ".bf-sorter-list" ).sortable({
+                    placeholder: "placeholder-item",
+                    cancel: "li.disable-item"
+                });
+
+                $('.bf-section-container li input')
+                    .off('change', sorterUpdated)
+                    .on('change', sorterUpdated);
 
             });
         },
@@ -3429,18 +3557,30 @@ var bf_ignore_reload_notice = false,
 
                 var $this = $(this);
 
+                var $parent = $this.parent();
                 // Uncheck all radio button for this field
-                $this.parent().find(':radio').prop("checked", false);
+                $parent.find(':radio').prop("checked", false);
 
                 // Checked the clicked radio button
                 // Fires change for third party code usage
-                $this.find(':radio').prop("checked", true).change();
+                var $checked = $this.find(':radio');
+                $checked.prop("checked", true).change();
 
                 // Remove checked class from field options and add checked class to clicked option
                 $this.siblings().removeClass('checked').end().addClass('checked');
 
                 // Prevent Browser Default Bahavior
                 e.preventDefault();
+
+                $this.closest('.image-radio-field')
+
+                var $elements = $parent.find('.image-radio-value');
+
+                if ($elements.length) {
+
+                    $elements.val($checked.val()).change()
+                        [0].dispatchEvent(new Event('input'));
+                }
             });
 
         },
@@ -3475,12 +3615,13 @@ var bf_ignore_reload_notice = false,
                 // when select pressed in uploader popup
                 custom_uploader.on('select', function() {
 
-
                     var attachment = custom_uploader.state().get('selection').first().toJSON();
 
                     _this.siblings('.bf-background-image-preview').find("img").attr( "src", attachment.url );
 
-                    _this.siblings('.bf-background-image-input').val( attachment.url );
+                    var $input = _this.siblings('.bf-background-image-input');
+                    $input.val( attachment.url ).change();
+                    $input[0].dispatchEvent(new Event('input'));
 
                     _this.siblings('.bf-background-image-preview').show(100);
                     _this.siblings('.bf-background-image-uploader-select-container').removeClass('hidden').show(100);
@@ -3495,9 +3636,11 @@ var bf_ignore_reload_notice = false,
                 return false;
             });
             $('body').on( 'click', '.bf-background-image-remove-btn' ,function() {
-                var _this = $(this);
+                var _this = $(this),
+                    $input = _this.siblings('.bf-background-image-input');
 
-                _this.siblings('.bf-background-image-input').val( '' );
+                $input.val('').change();
+                $input[0].dispatchEvent(new Event('input'));
 
                 // hide remove button, select and preview
                 _this.hide( 100 );
@@ -3638,6 +3781,10 @@ var bf_ignore_reload_notice = false,
                         $_input.val( attachment.url ).trigger('change');
                     }
 
+                    $_input.change();
+
+                    $_input[0].dispatchEvent(new Event('input'));
+
                     var preview = '';
 
                     if( typeof _this.data('size') != "undefined" ){
@@ -3722,7 +3869,9 @@ var bf_ignore_reload_notice = false,
             $(document).on( 'click', '.bf-media-image-remove-btn' ,function() {
                 var _this = $(this);
 
-                _this.siblings('.bf-media-image-input').val( '' ).change();
+                var $input = _this.siblings('.bf-media-image-input').val( '' ).change();
+
+                $input[0].dispatchEvent(new Event('input'));
 
                 // hide remove button, select and preview
                 _this.hide();
@@ -3764,7 +3913,9 @@ var bf_ignore_reload_notice = false,
 
             var bf_ajax_input_interval = 850;
 
-            $(document).on( 'keyup', '.bf-ajax-suggest-input', function(e){
+            $(document)
+                .off( 'keyup.ajaxselect', '.bf-ajax-suggest-input')
+                .on( 'keyup.ajaxselect', '.bf-ajax-suggest-input', function(e){
 
                 var _this   =   $(e.target),
                     _s      =   bf_ajax_generate_options_object( _this );
@@ -3847,6 +3998,10 @@ var bf_ignore_reload_notice = false,
                                 });
 
                                 _s_.hidden_field.val( value.replace( ',,', ',' ).replace( /^,+/ ,'' ).replace( /,+$/, '' ) );
+                                _s_.hidden_field.change();
+
+                                _s_.hidden_field[0].dispatchEvent(new Event('input'));
+
                             }
 
                         });
@@ -3868,7 +4023,9 @@ var bf_ignore_reload_notice = false,
                 }, bf_ajax_input_interval);
             });
 
-            $(document).on( 'blur', '.bf-ajax-suggest-input', function(){
+            $(document)
+                .off('blur.ajaxselect', '.bf-ajax-suggest-input')
+                .on( 'blur.ajaxselect', '.bf-ajax-suggest-input', function(){
 
                 var _s = bf_ajax_generate_options_object($(this));
 
@@ -3876,7 +4033,9 @@ var bf_ignore_reload_notice = false,
 
             });
 
-            $(document).on( 'focus', '.bf-ajax-suggest-input', function(){
+            $(document)
+                .off('focus.ajaxselect', '.bf-ajax-suggest-input')
+                .on( 'focus.ajaxselect', '.bf-ajax-suggest-input', function(){
 
                 var _s = bf_ajax_generate_options_object($(this));
 
@@ -3885,7 +4044,9 @@ var bf_ignore_reload_notice = false,
 
             });
 
-            $(document).on( 'click', '.bf-ajax-suggest-search-results li', function(e){
+            $(document)
+                .off('click.ajaxselect', '.bf-ajax-suggest-search-results li')
+                .on( 'click.ajaxselect', '.bf-ajax-suggest-search-results li', function(e){
                 var _this   = $( e.target ),
                     _s      = bf_ajax_generate_options_object( _this.parent().siblings('.bf-ajax-suggest-input') );
 
@@ -3901,6 +4062,10 @@ var bf_ignore_reload_notice = false,
                 _s.controls_box.append( e.target.outerHTML );
 
                 _s.hidden_field.val($.array_unique( value ).join(',').replace(',,',',').replace(/^,+/,'').replace(/,+$/,''));
+                _s.hidden_field.change();
+
+                _s.hidden_field[0].dispatchEvent(new Event('input'));
+
 
                 $(this).remove();
 
@@ -3908,7 +4073,9 @@ var bf_ignore_reload_notice = false,
 
             });
 
-            $(document).on( 'click', '.bf-ajax-suggest-controls li .del', function(e){
+            $(document)
+                .off('click.ajaxselect', '.bf-ajax-suggest-controls li .del')
+                .on( 'click.ajaxselect', '.bf-ajax-suggest-controls li .del', function(e){
 
                 if( confirm('Are You Sure?') ){
                     var _new,
@@ -3925,7 +4092,10 @@ var bf_ignore_reload_notice = false,
                         return value != ID;
                     });
 
-                    _s.hidden_field.val( _new.join( ',' ).replace( ',,', ',' ).replace( /^,+/, '' ).replace( /,+$/, '' ) );
+                    _s.hidden_field.val( _new.join( ',' ).replace( ',,', ',' ).replace( /^,+/, '' ).replace( /,+$/, '' ) ).change();
+
+                    _s.hidden_field[0].dispatchEvent(new Event('input'));
+
                 }
             });
 
@@ -3940,10 +4110,11 @@ var bf_ignore_reload_notice = false,
                     });
 
                     _s_.hidden_field.val( value.replace( ',,', ',' ).replace( /^,+/ ,'' ).replace( /,+$/, '' ) );
+                    _s_.hidden_field.change();
 
+                    _s.hidden_field[0].dispatchEvent(new Event('input'));
                 }
             });
-
         },
         init_mega_menus: function() {
 
@@ -4070,7 +4241,7 @@ var bf_ignore_reload_notice = false,
                         .append(
                             '<div class="bf-notice-message-collapse">'
                             + '<a class="bf-notice-message-toggle title" href="#">' + label + '</a></div>')
-                        .addClass('close');
+                        .addClass('bf-close');
                 }
             }).on('click', '.bf-notice-message-toggle', function () {
 
@@ -4082,9 +4253,9 @@ var bf_ignore_reload_notice = false,
                 $('.bf-notice-text', $content).css('max-height', 'none');
 
                 $content.css('max-height', '3000px').delay(animTime).queue(function (n) {
-                    $content.find('.bf-notice-text-container').removeClass('close').css('max-height', 'none');
+                    $content.find('.bf-notice-text-container').removeClass('bf-close').css('max-height', 'none');
 
-                    $this.closest('.bf-notice-message-collapse').remove()
+                    $this.closest('.bf-notice-message-collapse').remove();
 
                     n();
                 });
@@ -4118,16 +4289,613 @@ var bf_ignore_reload_notice = false,
                     }
                 });
             }
+        },
+
+        customizePage: function(){
+
+            var api = wp.customize;
+
+            if( !api || !api.controlConstructor || !api.controlConstructor.sidebar_widgets) {
+
+                $( document ).on( 'widget-added', this.customizePage.bind(this));
+
+                return;
+            }
+
+            var addWidget = api.controlConstructor.sidebar_widgets.prototype.addWidget;
+
+            api.controlConstructor.sidebar_widgets = api.controlConstructor.sidebar_widgets.extend({
+
+                addWidget: function(widgetId) {
+
+                    // ByPass parseWidgetId Issue
+                    if(widgetId.match(/^bs\-.*?\-\d+$/)) {
+                        widgetId += '-0';
+                    }
+
+                    return addWidget.call(this,widgetId);
+                }
+            });
+        },
+
+        pageBuilderCompatibility: {
+
+            init: function () {
+
+                if (
+                    better_framework_loc.page_builder.indexOf('KCP') > -1
+                    ||
+                    better_framework_loc.page_builder.indexOf('KC') > -1
+                ) { // isKingComposer
+
+                    this.kingComposer.init();
+
+                }
+                if (better_framework_loc.page_builder.indexOf('Elementor') > -1) {
+
+                    this.elementor.init();
+
+                }
+                if (better_framework_loc.page_builder.indexOf('SiteOrigin') > -1) {
+
+                    this.siteOrigin.init();
+
+                }
+                if (better_framework_loc.page_builder.indexOf('Gutenberg') > -1) {
+
+                    this.gutenberg.init();
+                }
+            },
+
+            kingComposer: {
+
+                loadedFields : [],
+
+                init: function() {
+
+                    if(! window.kc || ! window.kc.backbone) {
+                        return ;
+                    }
+
+                    var main = this;
+
+                    window.kc.backbone.settings = function( e, atts,p ) {
+
+                        if (e === undefined)
+                            return;
+
+
+                        var el = ( typeof( e.tagName ) != 'undefined' ) ? e : this;
+
+                        var mid = kc.get.model(el),
+                            data = kc.storage[mid],
+                            popup = kc.tools.popup;
+
+                        if (kc.maps[data.name] === undefined)
+                            return false;
+
+                        var map = $().extend({}, kc.maps['_std']);
+                        map = $().extend(map, kc.maps[data.name]);
+
+
+                        if (map.title === undefined)
+                            map.title = map.name + ' Settings';
+
+                        var attz = {
+                            title: map.title,
+                            width: map.pop_width,
+                            scrollBack: false,
+                            scrollTo: false,
+                            class: data.name + '_wrpop kc-elm-settings-popup',
+                        };
+
+                        if (atts !== undefined)
+                            attz = $.extend(attz, atts);
+
+                        var pop = popup.render(el, attz);
+
+                        var fixPopupWidth = function() {
+                            var totalWidth = 40;
+                            pop.find('.kc-pop-tabs>li').each(function() {
+                                totalWidth+= this.width ? this.with : this.offsetWidth;
+                            }).promise().done(function() {
+
+                                if(popup.el.width()<totalWidth)
+                                popup.el.width(totalWidth);
+                            });
+                        };
+
+                        var triggerLoadedEvent = function() {
+
+                            $(document).trigger('bf-kc-tab-loaded', [pop.find('.form-active')]);
+                        };
+
+                        pop.data({model: mid, callback: kc.backbone.save});
+
+                        var renderPopup = function () {
+
+                            var form = $('<form class="fields-edit-form kc-pop-tab form-active"></form>'),
+                                tab_icon = 'et-puzzle';
+
+                            if (map.params[0] !== undefined) {
+
+                                kc.params.fields.render(form, map.params, data.args);
+
+                            } else {
+
+                                for (var n in map.params) {
+
+
+                                    popup.add_tab(pop, {
+                                        title: n,
+                                        class: 'kc-tab-general-' + kc.tools.esc_slug(n),
+                                        cfg: n + '|' + mid + '|' + data.name,
+                                        callback: kc.params.fields.tabs
+                                    });
+                                }
+
+                                pop.find('.m-p-wrap>.kc-pop-tabs>li').first().trigger('click');
+
+                            }
+
+                            pop.find('.m-p-body').append(form);
+
+                             /***  /
+                            /**** /	Add presets tab for every element
+                           /*****/
+
+                            popup.add_tab(pop, {
+
+                                title: 'Presets',
+                                class: 'kc-tab-general-presets',
+                                cfg: 'presets|' + mid + '|' + data.name,
+
+                                callback: kc.backbone.presets
+                            });
+                        };
+
+                        kc.ui.fix_position_popup(pop);
+
+                        function appendTemplate(templateId, html) {
+
+                            var elementId = 'tmpl-kc-field-type-' + templateId + '-template',
+                                element = document.getElementById(elementId);
+
+                            element && element.remove();
+
+                            var template = document.createElement('script');
+                            template.id = elementId;
+                            template.type = 'text/html';
+                            template.appendChild(document.createTextNode(html));
+
+                            document.body.appendChild(template);
+
+                            return true;
+                        }
+
+                        data.deferred = main.getDeferredFieldsType(data.name);
+
+                        if ('kc_wp_widget' === data.name) {
+
+                            // load widgets kc_admin_footer()
+
+                        } else if (data.deferred) {
+
+                            var ajaxData = {
+                                token: $("#bf_kc_ajax_field").val(),
+                                shortcode: data.name,
+                            };
+
+                            if('always' === data.deferred) {
+                                var shortcodeArgs = {};
+                                for (var key in data.args) {
+                                    if (data.args.hasOwnProperty(key)) {
+                                        shortcodeArgs[key] = data.args[key];
+                                    }
+                                }
+                                ajaxData.shortcode_atts = shortcodeArgs;
+                            }
+
+                            // Append Loading
+                            pop.find('.m-p-body').append('<div class="bs-modal-loading">\n\t<div class="la-line-scale-pulse-out-rapid la-2x">\n\t\t<div></div>\n\t\t<div></div>\n\t\t<div></div>\n\t\t<div></div>\n\t\t<div></div>\n\t</div>\n</div>\n')
+
+                            var ajax = wp.ajax.post('bf_load_kc_fields', ajaxData);
+
+                            ajax.done(function (res) {
+
+                                // Remove loading
+                                pop.find('.bs-modal-loading').remove();
+
+                                res.global_fields && res.global_fields.forEach(function (tpl) {
+
+                                    appendTemplate(tpl.id, tpl.html);
+
+                                    if (kc_param_types_support.indexOf(tpl.id) === -1)
+                                        kc_param_types_support.push(tpl.id);
+                                });
+
+                                res.dedicated_fields && res.dedicated_fields.forEach(function (tpl) {
+
+                                    appendTemplate(tpl.id, '<div class="bf-deferred-kc-field {{data.name}}"></div>');
+
+                                    if (kc_param_types_support.indexOf(tpl.id) === -1)
+                                        kc_param_types_support.push(tpl.id);
+                                });
+
+                                main.mapFieldsLoaded(data.name);
+
+                                renderPopup.call(this);
+
+                                var initDynamicFields = function () {
+
+                                    res.dedicated_fields && res.dedicated_fields.forEach(function (tpl) {
+
+                                        pop.find('.bf-deferred-kc-field.' + tpl.name).replaceWith(tpl.html);
+                                    })
+                                };
+
+                                var setupFields = function(){
+
+                                    var $context = pop.find('.form-active');
+
+                                    Better_Framework.setup_field_color_picker($context);
+                                    Better_Framework.setup_field_switch();
+                                    Better_Framework.setup_field_slider();
+                                    Better_Framework.setup_field_ajax_select();
+                                    //  Better_Framework.setup_vc_field_sorter();
+                                    Better_Framework.setup_term_select(
+                                        $context
+                                    );
+                                    //  $(document).trigger('bf-ajax-tab-loaded', [$context])
+
+                                };
+
+                                pop.find(".kc-pop-tabs>li").one('click', function () {
+
+                                    setTimeout(function () {
+
+                                        initDynamicFields();
+                                        setupFields();
+
+                                        var $tab = pop.find('.form-active');
+
+                                        main.setupShowOn($tab);
+
+                                        $(":input:first", $tab).trigger('force-change');
+
+                                        triggerLoadedEvent();
+                                    });
+                                });
+
+                                setTimeout(function () {
+                                    initDynamicFields();
+                                    fixPopupWidth();
+
+                                    setupFields();
+                                    triggerLoadedEvent();
+                                });
+
+                            });
+
+                        } else {
+
+                            renderPopup.call(this);
+                            setTimeout(function() {
+                                fixPopupWidth();
+                                triggerLoadedEvent();
+                            });
+                        }
+
+                        return pop;
+                    };
+
+                    window.kc.ui.verify_tmpl = function(refresh) {
+
+                        var cfg = $().extend( kc.cfg, kc.backbone.stack.get('KC_Configs') );
+
+                        if( cfg.version != kc_version || refresh || localStorage['KC_TMPL_CACHE'] === undefined || localStorage['KC_TMPL_CACHE'] === ''){
+
+                            if( !refresh) kc.msg( 'KingComposer is initializing', 'loading' );
+
+                            $.post(
+
+                                kc_ajax_url, {
+                                    'action': 'bf_kc_tmpl_storage',
+                                    'security': kc_ajax_nonce
+                                },
+
+                                function (result) {
+
+                                    $('#kc-preload').remove();
+
+                                    if( result != -1 && result != 0 ){
+
+                                        kc.ui.upgrade_notice( parseFloat(cfg.version) );
+
+                                        cfg.version = kc_version;
+
+                                        localStorage.clear();
+
+                                        kc.backbone.stack.set( 'KC_Configs', cfg );
+                                        kc.backbone.stack.set( 'KC_TMPL_CACHE', result );
+
+                                        kc.init();
+
+                                    }
+                                }
+                            );
+
+                        }else if( !kc.ui.check_tmpl() ){
+                            return false;
+                        } else return true;
+                    }
+                },
+
+                getDeferredFieldsType: function(map) {
+
+                    if (!kc_maps[map]) {
+                        return false;
+                    }
+
+                    if (kc_maps[map].always_fetch_fields) {
+                        return 'always';
+                    }
+
+                    if (!kc_maps[map].deferred_fields) {
+                        return false;
+                    }
+
+                    var def = kc_maps[map].deferred_fields;
+
+                    for (var i = 0; i < def.length; i++) {
+
+                        if (!this.isFieldLoaded(def[i])) {
+                            return 'once';
+                        }
+                    }
+
+                    return false;
+                },
+
+                isFieldLoaded: function(field) {
+
+                    return this.loadedFields.indexOf(field) > -1;
+                },
+
+                mapFieldsLoaded: function(map) {
+
+                    if(! kc_maps[map] || ! kc_maps[map].deferred_fields) {
+                        return false;
+                    }
+
+                    var self = this;
+
+                    kc_maps[map].deferred_fields.forEach(function(field) {
+
+                        self.loadedFields.push(field);
+                    });
+                },
+
+                setupShowOn: function($wrapper){
+
+                    $wrapper.on('change force-change', ':input', function(e){
+
+                        Better_Framework._interactive_field_change(e,{
+                            el:this,
+                            ID: false,
+                            containerSelector: false,
+                            inputWrapperSelector: '.kc-param-row',
+                            inputParamsSelector: '.bf-section-container',
+                            parentSelector:  '.kc-pop-tab',
+                        });
+                    });
+                }
+            },
+
+            elementor: {
+
+                init: function() {
+
+                    var self = this;
+
+                    var interval = setInterval(function() {
+
+                        if(! window.elementorFrontend) {
+                            return ;
+                        }
+
+                        if( !elementorFrontend.hooks || !elementorFrontend.hooks.addAction) {
+                            return ;
+                        }
+
+                        clearInterval(interval);
+
+                        self.bindEvents();
+
+                    },100);
+                },
+
+                bindEvents: function() {
+
+                    if(! better_framework_loc.shortcodes_id) {
+                        return ;
+                    }
+
+                    var self = this;
+
+                    better_framework_loc.shortcodes_id.forEach( function(widgetId) {
+
+                        elementor.hooks.addAction( 'panel/widgets/wp-widget-' + widgetId + '/controls/wp_widget/loaded', function( view ) {
+                            self.widgetLoaded(view);
+                        } );
+                    });
+                },
+
+                widgetLoaded: function(view) {
+
+                    Better_Framework.setup_fields(view.$el);
+                }
+            },
+
+            siteOrigin: {
+
+                init: function () {
+
+                    this.bindEvents();
+
+                    Better_Framework.setup_widget_fields();
+                    Better_Framework.sort_widgets();
+
+                },
+
+                bindEvents: function() {
+
+                    var self = this;
+
+                    $(document).ajaxSuccess(function (e, xhr, settings) {
+                        var data = $.unserialize(settings.data);
+
+                        if(data.action === 'so_panels_widget_form') {
+
+                            var $scope = $(".so-panels-dialog-wrapper .so-content");
+
+                            self.widgetLoaded($scope);
+                        }
+                    });
+                },
+
+                widgetLoaded: function($scope) {
+
+                    Better_Framework.setup_fields($scope);
+                }
+            },
+
+            gutenberg: {
+
+                init: function () {
+
+                    var self = this;
+
+                    $(document).on('bf-component-did-mount', function (e) {
+
+                        if(! e.detail || ! e.detail.parentElement) {
+
+                            return ;
+                        }
+
+                        var $scope = $(e.detail.parentElement);
+
+                        if(! $scope.data('component-initialized')){
+
+                            Better_Framework._init_editor($scope[0]);
+                            self.intTermSelect($scope);
+
+                            $scope.data('component-initialized',true);
+                        }
+                    });
+
+                    this.setupShowOn();
+                },
+
+                setupShowOn: function(){
+
+                    $(document).on('bf-edit-gutenberg-block', function (e) {
+
+                        var $scope = $(e.detail);
+
+                        $scope.on('change force-change', ':input', function (e) {
+
+                            Better_Framework._interactive_field_change(e,{
+                                el:this,
+                                inputWrapperSelector: '.bf-section-container',
+                                parentSelector: '.bf-edit-gutenberg-block'
+                            })
+                        });
+
+                        $scope.find(':hidden:first').trigger('force-change');
+                    });
+
+
+                    // if(! wp.hooks ||! wp.hooks.addFilter) {
+                    //     return ;
+                    // }
+                    //
+                    // wp.hooks.addFilter('editor.BlockEdit', 'betterstudio/textsettings', function (BlockEdit) {
+                    //
+                    //     return BlockEdit;
+                    //     return function (props) {
+                    //         return wp.element.createElement(BlockEdit, props);
+                    //     };
+                    // });
+                },
+
+                intTermSelect: function ($scope) {
+
+                    var list = [];
+
+                    var $fields = $(".bf-field-term-select-deferred", $scope);
+
+                    $fields.each(function () {
+
+                        var $this = $(this);
+
+                        list.push({
+                            taxonomy: $this.data('taxonomy'),
+                            value: $this.closest('.bf-term-select-field').find('.bf-term-select-value').val()
+                        });
+
+                    }).promise().done(function () {
+
+                        if (list.length === 0) {
+                            return;
+                        }
+
+                        $.ajax({
+                            type: 'POST',
+                            dataType: 'json',
+                            url: better_framework_loc.bf_ajax_url,
+                            data: {
+                                action: 'bf_ajax',
+                                reqID: 'term_select_items',
+                                nonce: better_framework_loc.nonce,
+                                data: list
+                            },
+                            success: function (res) {
+
+                                res.data.forEach(function (markup, index) {
+
+                                    $($fields.get(index)).html('<ul>' + markup + '</ul>')
+                                        .removeClass('bf-field-term-select-deferred')
+                                        .removeClass('loading');
+                                });
+
+                                Better_Framework.init_term_select($scope);
+                            },
+                            error: function (MLHttpRequest) {
+                            }
+                        });
+                    });
+                }
+            }
         }
     };
 
 })(jQuery);
 
 // load when ready
+
 jQuery(function($) {
 
     Better_Framework.init();
+});
 
+
+jQuery(window).load(function() {
+
+    if(! Better_Framework.loaded) {
+
+        Better_Framework.init();
+    }
 });
 
 
@@ -4217,12 +4985,17 @@ jQuery(function($) {
     }
 
     // Custom Serializer
-    $.fn.bf_serialize = function (asObject) {
+    $.fn.bf_serialize = function (asObject,options) {
         var results = {}, value;
+
+        options = $.extend({
+            nameAttribute:'name'
+        },options);
 
         $(this).find(':input').each(function () {
             var $this = $(this),
-                name = $this.attr('name');
+                name = $this.attr(options.nameAttribute);
+
             if (name && !this.disabled) {
                 var type = $this.attr('type'),
                     name = encodeURIComponent(name);

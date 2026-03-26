@@ -5,8 +5,6 @@ var BFGutenbergAPI = (function () {
     var catExistsCache = {};
     var activeBlockID = '';
 
-    var activeProps;
-
     var utils = {
 
         className: {
@@ -57,18 +55,15 @@ var BFGutenbergAPI = (function () {
         this.element = window.wp && window.wp.element;
         this.blocks = window.wp && window.wp.blocks;
         this.prefix = 'better-studio/';
+        this.props = {};
+        this.attributes = {};
+        //
         this.blockFields = {};
         this.shortcode = {};
 
-
-        Object.defineProperty(this, 'props', {
-            get: function() {
-
-                return activeProps || props;
-            }
-        })
-
+        this.props = props;
         this.attributes = props && props.attributes || {};
+
 
         if (props && props.clientId && props.attributes) {
 
@@ -206,7 +201,7 @@ var BFGutenbergAPI = (function () {
                 this.getComponent('ServerSideRender'),
                 {
                     block: props.name,
-                    attributes: _.extend(props.attributes,{_updated: Date.now()}),
+                    attributes: props.attributes,
                     key: 'D2'
                 }
             );
@@ -223,6 +218,7 @@ var BFGutenbergAPI = (function () {
         }
 
         edit.push(previewElement);
+
 
         return edit;
     };
@@ -278,9 +274,8 @@ var BFGutenbergAPI = (function () {
 
         args.onChange = args.onChange || function (value) {
 
-            var attributes= {
-                [field.id]: value
-            }, attributeValue = '';
+
+            var attributeKey, attributeValue;
 
             if (isChangeClass) {
 
@@ -298,45 +293,56 @@ var BFGutenbergAPI = (function () {
                     attributeValue = utils.className[
                         value === 1 ? 'add' : 'remove'
                         ](currentClasses, className);
-
-                } else {
-
-                    attributeValue = value;
                 }
 
-                if(field.fixed_class) {
-                    
-                    attributeValue = utils.className.add(attributeValue, field.fixed_class);
-                }
+                attributeKey = 'className';
 
-                attributes.className = attributeValue;
+            } else {
+
+                attributeKey = field.id;
+                attributeValue = value;
             }
 
-            self.props.setAttributes(attributes);
+            if (attributeKey) {
+
+                self.props.setAttributes({[attributeKey]: attributeValue});
+            }
 
             var ID = self.props.clientId;
 
-            if (ID) {
+            if (ID && valuesStack[ID] && valuesStack[ID][attributeKey]) {
 
-                valuesStack[ID] = _.extend(valuesStack[ID] || {}, attributes);
+                valuesStack[ID][attributeKey] = attributeValue;
             }
 
             return false;
         };
 
-        //// Setup initial value
 
-        args.value = this.props && this.props.attributes[field.id] || field.std;
+        //// Setup initial value
+        var value = '';
+
+        if (isChangeClass) {
+
+            if (field.attribute && this.props.attributes.className) {
+
+                value = _.intersection(
+                    field.attribute.enum || [field.id],
+                    this.props.attributes.className.split(' ')
+                ).shift();
+            }
+        } else {
+
+            value = this.props.attributes[field.id];
+        }
+
+        args.value = value || field.std;
 
         if (["block_fragment", "inspector", "edit-panel"].indexOf(args.key) === -1 && typeof args.value === "undefined") {
 
             args.value = '';
         }
 
-        if(field.component === "TreeSelect") {
-
-            args.selectedId = args.value;
-        }
 
         return args;
     };
@@ -502,10 +508,6 @@ var BFGutenbergAPI = (function () {
 
                 return function (props) {
 
-                    if(props.isSelected) {
-                        activeProps = props;
-                    }
-
                     var generator = new bfGutenbergBlock(props);
 
                     var validFields = BF_Gutenberg.stickyFields.filter(function (field) {
@@ -579,10 +581,6 @@ var BFGutenbergAPI = (function () {
 
                 return propsStack[blockID];
             }
-        },
-        blocksInstances: function(){
-
-            return propsStack;
         }
     };
 })();

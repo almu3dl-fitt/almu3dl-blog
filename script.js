@@ -1,52 +1,36 @@
-(function () {
+var Better_Social_Counter = (function($) {
+    "use strict";
 
-    function appendFbScript() {
-        var js, id = 'facebook-jssdk',
-            fjs = document.getElementsByTagName('script')[0];
+    return {
 
-        if (document.getElementById(id)) return;
-        js = document.createElement('script');
-        js.id = id;
-        js.src = "//connect.facebook.net/%%LOCALE%%/sdk.js#xfbml=1&appId=%%APP-ID%%&version=v2.0";
-        fjs.parentNode.insertBefore(js, fjs);
+        init: function(){
+            // Define elements that use elementQuery
+            this.fix_element_query();
+        },
 
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: '%%APP-ID%%',
-                xfbml: true,
-                version: 'v2.0'
-            });
-            FB.Event.subscribe('comment.create', function (comment_data) {
-                console.log(comment_data);
-                update_comments_count();
-            });
-            FB.Event.subscribe('comment.remove', function (comment_data) {
-                update_comments_count();
+        /**
+         * Define elements that use elementQuery on local/cross domain
+         */
+        fix_element_query: function(){
+
+            if( typeof elementQuery != 'function' ){
+                return;
+            }
+
+            elementQuery({
+                ".better-social-counter": { "max-width": [ "358px","199px","230px",'900px', '530px', '750px' ] },
+                ".better-social-banner": { "max-width":  ["250px"] }
             });
 
-            function update_comments_count(comment_data, comment_action) {
-                jQuery.ajax({
-                        type: 'GET',
-                        dataType: 'json',
-                        url: '%%ADMIN-AJAX%%',
-                        data: {
-                            action: 'clear_better_facebook_comments',
-                            post_id: '%%POST-ID%%'
-                        },
-                        success: function (data) {
-                            // todo sync comments count here! data have the counts
-                        },
-                        error: function (i, b) {
-                            // todo
-                        }
-                    }
-                )
-            };
-        };
+        }
 
-        //%%TYPE%%
-    }
 
-    appendFbScript();
+    };// /return
+})(jQuery);
 
-})();
+// Load when ready
+jQuery(function($) {
+
+    Better_Social_Counter.init();
+
+});

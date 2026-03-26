@@ -329,12 +329,6 @@
 /**
  * 1.4. =>General Classes
  **************************************************************/
-.bf-items-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-    align-items: center;
-    grid-gap: 10px;
-}
 .bf-item-container {
     background: rgb(252, 252, 252);
     -webkit-box-shadow: 0 1px 1px -1px rgba(0, 0, 0, .1);

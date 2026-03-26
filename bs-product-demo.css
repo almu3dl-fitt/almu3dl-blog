@@ -134,6 +134,12 @@
     color: #fff;
     font-weight: 700;
 }
+.bs-modal-image img {
+    max-width:330px;
+}
+.bf-item-container figure img {
+    max-height: 240px;
+}
 
 
 /**

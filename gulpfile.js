@@ -1,44 +1,27 @@
-var gulp = require('gulp'),
-    cleanCSS = require('gulp-minify-css'),
-    rename = require('gulp-rename'),
-    uglify = require('gulp-uglify');
+var elixir = require('laravel-elixir');
 
+elixir.config.publicDir = 'assets';
+elixir.config.publicPath = 'assets';
+elixir.config.assetsPath = '';
+elixir.config.js.folder = '';
+elixir.config.css.folder = '';
+Elixir.inProduction = true;
 
-var css_files = [
-    './css/*.css',
-    '!css/*.min.css'
-];
+elixir(function (mix) {
 
-var js_files = [
-    './js/*.js',
-    '!js/*.min.js'
-];
+    var suffix = Elixir.inProduction ? '.min' : '';
 
-
-gulp.task('styles', function () {
-    return gulp.src(css_files)
-        .pipe(cleanCSS({
-            keepSpecialComments: 1,
-            level: 2
-        }))
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest(function (file) {
-            return file.base;
-        }));
+    mix.scripts(getJsList(), 'assets/js/better-smart-thumbnails' + suffix + '.js');
+    mix.styles(getCssList(), 'assets/css/better-smart-thumbnails' + suffix + '.css');
 });
 
-gulp.task('scripts', function () {
-    return gulp.src(js_files)
-        .pipe(uglify())
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest(function (file) {
-            return file.base;
-        }));
-});
 
-gulp.task('watch', function () {
-    gulp.watch(css_files, ['styles']);
-    gulp.watch(js_files, ['scripts']);
-});
+function getJsList() {
 
-gulp.task('default', gulp.series('styles', 'scripts'));
+    return ['assets/js/.before-concat.txt'].concat(require('./assets/js/list.js')).concat('assets/js/.after-concat.txt');
+}
+
+function getCssList() {
+
+    return require('./assets/css/list.js');
+}

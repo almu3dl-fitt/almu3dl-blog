@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: https://betterstudio.com/
+ *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
  *
  *  \--> BetterStudio, 2017 <--/
  */
@@ -3131,15 +3131,12 @@ span.label[data-status="active"] .bf-make-term-primary {
 .bssm-style-1 .bssm-item.bssm-selected .bssm-styles {
     color: #fff !important;
 }
-
 .bssm-item:nth-child(3n) {
     margin-right: 0;
 }
-
 body.rtl .bssm-item:nth-child(3n) {
     margin-left: 0;
 }
-
 .bssm-content {
     background: #eee;
     margin-right: 260px;
@@ -4970,7 +4967,6 @@ body.rtl .bssm-item:nth-child(3n) {
     clear: left;
 }
 
-.bf-section-tree-select select,
 .bf-select-option-container select,
 .bf-section-container .bf-section .bf-controls textarea,
 .bf-section-container .bf-section .bf-controls input[type=text],
@@ -5010,7 +5006,6 @@ body.rtl .bssm-item:nth-child(3n) {
     -moz-transition: all .3s ease;
     -o-transition: all .3s ease;
     transition: all .3s ease;
-    border-radius: 0;
 }
 
 .bf-section-container .bf-section .bf-controls input[type=text],
@@ -5028,7 +5023,6 @@ body.rtl .bf-section-container .bf-controls-term_select-option {
     float: right !important;
 }
 
-.bf-section-tree-select:hover select,
 .bf-select-option-container:hover select,
 .bf-section-container .bf-section .bf-controls textarea:hover,
 .bf-section-container .bf-section .bf-controls input[type=text]:hover,
@@ -5057,21 +5051,19 @@ body.rtl .bf-section-container .bf-controls-term_select-option {
     box-shadow: none;
 }
 
-.bf-section-tree-select .components-base-control__field,
 .bf-section-container .bf-controls-background_image-option .bf-background-image-uploader-select-container,
 .bf-section-container .bf-select-option-container {
     position: relative;
 }
 
 .bf-section-container .bf-controls-background_image-option .bf-background-image-uploader-select-container:before,
-.bf-section-tree-select .components-base-control__field:before,
 .bf-section-container .bf-select-option-container:before {
     position: absolute;
     right: 0;
     top: 0;
-    width: 34px;
-    height: 34px;
-    line-height: 34px;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
     border: 1px solid #d6d6d6;
     display: inline-block;
     content: '\f107';
@@ -5086,7 +5078,6 @@ body.rtl .bf-section-container .bf-controls-term_select-option {
     -moz-transition: all .3s ease;
     -o-transition: all .3s ease;
     transition: all .3s ease;
-    box-sizing: border-box;
 }
 
 .bf-section-container .bf-controls-background_image-option .bf-background-image-uploader-select-container:hover:before,
@@ -5775,11 +5766,9 @@ body.gutenberg-editor-page .edit-post-meta-boxes-area #poststuff h2.hndle {
 .gutenberg-editor-page .edit-post-sidebar .select-popup-field .active-item-label {
     float: left;
 }
-
 .gutenberg-editor-page .edit-post-sidebar .select-popup-field .button {
     float: right;
 }
-
 .gutenberg-editor-page .edit-post-sidebar .select-popup-field .active-item-text {
     margin-bottom: 0;
 }
@@ -5795,7 +5784,7 @@ body.gutenberg-editor-page .edit-post-meta-boxes-area #poststuff h2.hndle {
     margin-right: -3px;
 }
 
-.gutenberg-editor-page .edit-post-sidebar .bf-section-bf-image-radio .bf-image-radio-option > label {
+.gutenberg-editor-page .edit-post-sidebar .bf-section-bf-image-radio .bf-image-radio-option>label {
     display: none;
 }
 
@@ -5808,9 +5797,4 @@ body.gutenberg-editor-page .edit-post-meta-boxes-area #poststuff h2.hndle {
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
-}
-
-.components-panel .bf-section-container {
-    padding-right: 0;
-    padding-left: 0;
 }

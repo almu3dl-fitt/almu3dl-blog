@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: https://betterstudio.com/
+ *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
  *
  *  \--> BetterStudio, 2017 <--/
  */

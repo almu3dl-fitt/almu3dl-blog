@@ -1,10 +1,10 @@
 @font-face {
     font-family: "bs-icons";
-    src:url("/wp-content/plugins/better-facebook-chat/includes/libs/better-framework/assets/fonts/bs-icons.eot");
-    src:url("/wp-content/plugins/better-facebook-chat/includes/libs/better-framework/assets/fonts/bs-icons.eot#iefix") format("embedded-opentype"),
-    url("/wp-content/plugins/better-facebook-chat/includes/libs/better-framework/assets/fonts/bs-icons.woff") format("woff"),
-    url("/wp-content/plugins/better-facebook-chat/includes/libs/better-framework/assets/fonts/bs-icons.ttf") format("truetype"),
-    url("/wp-content/plugins/better-facebook-chat/includes/libs/better-framework/assets/fonts/bs-icons.svg#bs-icons") format("svg");
+    src:url("/wp-content/plugins/better-google-custom-search/includes/libs/better-framework/assets/fonts/bs-icons.eot");
+    src:url("/wp-content/plugins/better-google-custom-search/includes/libs/better-framework/assets/fonts/bs-icons.eot#iefix") format("embedded-opentype"),
+    url("/wp-content/plugins/better-google-custom-search/includes/libs/better-framework/assets/fonts/bs-icons.woff") format("woff"),
+    url("/wp-content/plugins/better-google-custom-search/includes/libs/better-framework/assets/fonts/bs-icons.ttf") format("truetype"),
+    url("/wp-content/plugins/better-google-custom-search/includes/libs/better-framework/assets/fonts/bs-icons.svg#bs-icons") format("svg");
     font-weight: normal;
     font-style: normal;
 }
@@ -17,11 +17,6 @@
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-
-[class^="bsfii"],
-[class*=" bsfii"] {
-    font: normal normal normal 14px/1 "bs-icons" !important;
 }
 
 /* Icons */

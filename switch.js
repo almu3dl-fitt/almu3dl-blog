@@ -10,12 +10,12 @@ class BF_Switch extends wp.element.Component {
 
     componentDidMount() {
 
-        this.inputField.current.addEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.addEventListener('change', this.onChange.bind(this), false)
     }
 
     componentWillUnmount() {
 
-        this.inputField.current.removeEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.removeEventListener('change', this.onChange.bind(this), false)
 
     }
 
@@ -52,7 +52,7 @@ class BF_Switch extends wp.element.Component {
                 <label
                     className={"cb-disable" + (checked ? '' : ' selected')}><span>{this.props.offLabel}</span></label>
 
-                <input type="hidden" value="0" className="checkbox" ref={this.inputField}/>
+                <input type="hidden" value={Number(checked)} className="checkbox" ref={this.inputField}/>
             </div>
         )
     }

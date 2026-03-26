@@ -14,12 +14,12 @@ class BF_Image_Radio extends wp.element.Component {
 
     componentDidMount() {
 
-        this.inputField.current.addEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.addEventListener('change', this.onChange.bind(this), false)
     }
 
     componentWillUnmount() {
 
-        this.inputField.current.removeEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.removeEventListener('change', this.onChange.bind(this), false)
 
     }
 
@@ -33,17 +33,13 @@ class BF_Image_Radio extends wp.element.Component {
 
     onChange() {
 
-        console.log("#CHANGE");
-
-        let active = this.inputField.current.value;
+        const active = this.inputField.current.value;
 
         if (this.props.onChange) {
             this.props.onChange(active);
         }
 
-
         this.setState({active});
-
     }
 
     render() {

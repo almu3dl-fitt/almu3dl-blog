@@ -12,7 +12,7 @@ class BF_Switch extends wp.element.Component {
 
     componentDidMount() {
 
-        this.inputField.current.addEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.addEventListener('change', this.onChange.bind(this), false)
 
 
         document.dispatchEvent(
@@ -22,7 +22,7 @@ class BF_Switch extends wp.element.Component {
 
     componentWillUnmount() {
 
-        this.inputField.current.removeEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.removeEventListener('change', this.onChange.bind(this), false)
     }
 
     onChange() {

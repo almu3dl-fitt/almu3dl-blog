@@ -9,12 +9,12 @@ class BF_Media_Image extends wp.element.Component {
 
     componentDidMount() {
 
-        this.inputField.current.addEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.addEventListener('change', this.onChange.bind(this), false)
     }
 
     componentWillUnmount() {
 
-        this.inputField.current.removeEventListener('input', this.onChange.bind(this), false)
+        this.inputField.current.removeEventListener('change', this.onChange.bind(this), false)
 
     }
 
@@ -34,7 +34,7 @@ class BF_Media_Image extends wp.element.Component {
             <div className="bf-media-image-field">
 
                 <a href="#"
-                   className={'bf-button bf-main-button bf-media-image-upload-btn' + (this.props.dataType === 'id' ? 'bf-media-type-id' : '')}
+                   className={'bf-button bf-main-button bf-media-image-upload-btn ' + (this.props.dataType === 'id' ? 'bf-media-type-id' : '')}
                    data-media-title={this.props.mediaTitle} data-button-text={this.props.mediaButton}
                    data-size={this.props.size}
 

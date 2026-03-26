@@ -183,6 +183,7 @@ var bf_ignore_reload_notice = false,
 
     // module
     return {
+        Hooks:Hooks,
         loaded: false,
         _doingAjax: false,
         _cuurentAjax: false,
@@ -191,6 +192,7 @@ var bf_ignore_reload_notice = false,
         init: function(){
 
             var $context = $(document.body);
+            var self = this;
 
             if(better_framework_loc.type === 'panel') {
                 $context = $("#bf-panel");
@@ -286,12 +288,18 @@ var bf_ignore_reload_notice = false,
 
             }
 
+            $(document).on("mce-view-fields-loaded", function(e,editorModal) {
+
+                self.setup_fields(editorModal.$modal);
+            });
+
             this.pageBuilderCompatibility.init();
 
             $(document).trigger('bf-loaded');
 
             this.loaded = true;
         },
+
 
         /**
          *
@@ -1940,7 +1948,7 @@ var bf_ignore_reload_notice = false,
                     return true;
                 },
 
-                initContainers(containers) {
+                initContainers: function(containers) {
 
                     for (var id in containers) {
 
@@ -1950,7 +1958,7 @@ var bf_ignore_reload_notice = false,
                     }
                 },
 
-                attachEvents(showOn) {
+                attachEvents: function(showOn) {
 
                     this.repeaterSupport(showOn);
                 },
@@ -1978,7 +1986,7 @@ var bf_ignore_reload_notice = false,
                         submodule = this.submodule(),
                         showOn = submodule.find(el);
 
-                    showOn && showOn.shortInit(el);
+                    showOn && showOn.setup(el);
                 },
 
                 submodule: function () {
@@ -2018,6 +2026,9 @@ var bf_ignore_reload_notice = false,
                 metabox: {
 
                     wrapperSelector: '.bf-metabox-wrap',
+                    overrideOptions: {
+                        groupSelector: '.bf-group-inner,.group,.bf-metabox-wrap',
+                    },
 
                     setup: function () {
 
@@ -2040,7 +2051,7 @@ var bf_ignore_reload_notice = false,
                             return;
                         }
 
-                        var id = wrapper.dataset.metaboxId || wrapper.id;
+                        var id = wrapper.dataset.metaboxId || wrapper.id || wrapper.dataset.id;
 
                         return instances[id];
                     },
@@ -2048,13 +2059,16 @@ var bf_ignore_reload_notice = false,
                     containers: function () {
 
                         var containers = {};
+                        var self = this;
 
                         document.querySelectorAll(this.wrapperSelector)
                             .forEach(function (metabox) {
 
-                                containers[metabox.dataset.metaboxId || metabox.id] = {
+                                var id = metabox.dataset.metaboxId || metabox.id || metabox.dataset.id ;
+
+                                containers[id] = {
                                     element: metabox,
-                                    options: {}
+                                    options: self.overrideOptions
                                 };
                             });
 
@@ -2098,7 +2112,7 @@ var bf_ignore_reload_notice = false,
                         $(document).on('menu-item-added', this.onMenuItemAdded.bind(this));
                     },
 
-                    onMenuItemAdded(e, $wrapper) {
+                    onMenuItemAdded:function (e, $wrapper) {
 
                         var containers = {};
 
@@ -2170,6 +2184,7 @@ var bf_ignore_reload_notice = false,
                     widgetSelector: "#widgets-right .widget",
                     wrapperSelector: '.fields-group',
                     overrideOptions: {
+                        groupSelector: '.bf-group-inner,.group,.widget',
                         showOnLocation: {
                             selector: ".bf-widgets",
                             optionsDataset: "paramSettings",
@@ -2181,14 +2196,17 @@ var bf_ignore_reload_notice = false,
 
                     setup: function () {
 
-                        $(document).on('widget-added', this.onWidgetAdded.bind(this));
+                        $(document).on('widget-added widget-updated', this.onWidgetChanged.bind(this));
                     },
 
-                    onWidgetAdded(e, $widget) {
+                    onWidgetChanged: function(e, $widget) {
 
                         var containers = {};
 
-                        this.showOnContainers($widget[0],containers);
+                        containers[$widget[0].id] = {
+                            element: $widget[0],
+                            options: this.overrideOptions
+                        };
 
                         showOnModule.initContainers(
                             containers
@@ -2226,26 +2244,14 @@ var bf_ignore_reload_notice = false,
 
                         document.querySelectorAll(this.widgetSelector)
                             .forEach(function (widget) {
-                                self.showOnContainers(widget, containers)
-                            });
 
-                        return containers;
-                    },
-
-                    showOnContainers: function (widgetEl, containers) {
-
-                        var self = this;
-
-                        widgetEl.querySelectorAll(this.wrapperSelector)
-                            .forEach(function (group) {
-
-                                var groupID = group.dataset.paramName || group.id;
-
-                                containers[widgetEl.id + "-" + groupID] = {
-                                    element: group,
+                                containers[widget.id] = {
+                                    element: widget,
                                     options: self.overrideOptions
                                 };
                             });
+
+                        return containers;
                     }
                 },
 
@@ -2656,7 +2662,7 @@ var bf_ignore_reload_notice = false,
                 }
             }
 
-            $('.bf-checkbox-multi-state', $context).on('bf-checkbox-change', function (e, state, calledFrom) {
+            $context.on('bf-checkbox-change','.bf-checkbox-multi-state', function (e, state, calledFrom) {
                 var $this       = $(this),
                     $container  = $this.closest('.bf-field-term-select-wrapper'),
                     termsIdList = [];
@@ -2909,7 +2915,7 @@ var bf_ignore_reload_notice = false,
                     var $this   = $(this),
                         $_group = $this.closest('.fields-group'),
                         groupID = $_group.attr('id').match('^fields\-group\-(.+)$')[ 1 ],
-                        isOpen  = !$_group.hasClass('bf-open');
+                        isOpen  = !$_group.hasClass('open');
 
                     var $form    = $this.closest('form'),
                         inoutVal = isOpen ? 'open' : 'close',
@@ -3121,7 +3127,7 @@ var bf_ignore_reload_notice = false,
 
             Better_Framework.setup_field_switch();
 
-            Better_Framework.setup_field_slider();
+            Better_Framework.setup_field_slider($context);
             Better_Framework.setup_field_sorter();
 
             Better_Framework.setup_field_color_picker($context);
@@ -3558,7 +3564,7 @@ var bf_ignore_reload_notice = false,
         },
 
         // Set up Slider filed
-        setup_field_slider: function(){
+        setup_field_slider: function(context){
 
             var selector = '';
 
@@ -3570,7 +3576,8 @@ var bf_ignore_reload_notice = false,
                 selector = '.bf-slider-slider';
             }
 
-            $(selector).each( function(){
+
+            $(selector,context).each( function(){
 
                 var _min = $(this).data('min');
                 var _max = $(this).data('max');

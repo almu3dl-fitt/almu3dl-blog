@@ -1,48 +1,8 @@
 (function () {
 
-    var catExistsCache = {};
+    var catExistsCache= {};
 
-    var utils = {
-
-        className: {
-
-            removeAll: function (classes, classes2remove) {
-
-                var remove = this.remove;
-
-                classes2remove.forEach(function (className) {
-
-                    classes = remove(classes, className);
-                });
-
-
-                return classes;
-            },
-            remove: function (classes, remove) {
-
-                if(! classes) {
-
-                    return '';
-                }
-
-                return classes.replace(
-                    new RegExp('\\b' + remove + '\\b', 'g'),
-                    ''
-                ).trim();
-            },
-
-            add: function (classes, add) {
-
-                var classesList = classes.split(' ');
-
-                classesList.push(add);
-
-                return _.unique(classesList).join(' ');
-            }
-        }
-    }
-
-    function bfGutenbergBlock(props) {
+    function bfGutenbergBlock() {
 
         this.element = window.wp && window.wp.element;
         this.blocks = window.wp && window.wp.blocks;
@@ -54,10 +14,6 @@
         this.shortcode = {};
         this.liveTemplate = {};
         this.liveTemplateAttributes = {};
-
-        this.props = props;
-        this.attributes = props && props.attributes || {};
-
     }
 
     bfGutenbergBlock.prototype.registerBlockType = function (shortcode, blockFields, liveTemplate, liveTemplateAttributes) {
@@ -231,64 +187,65 @@
             return args;
         }
 
-        var self = this,
-            isChangeClass = field.action === 'add_class';
+        var self = this;
 
-        args.onChange = args.onChange || function (value) {
+        var prepareClassName = function (currentClasses, appendClass) {
 
-            var attributeKey, attributeValue;
+            currentClasses = currentClasses || '';
+            currentClasses += ' ';
 
-            if (isChangeClass) {
+            var attr = BF_Gutenberg.extraAttributes[field.id];
 
-                var currentClasses = self.props.attributes.className;
+            if (attr && attr.enum) {
 
-                if (field.attribute && field.attribute.enum) {
+                attr.enum.forEach(function (className) {
 
-                    attributeValue = utils.className.removeAll(currentClasses, field.attribute.enum);
-                    attributeValue = utils.className.add(attributeValue, value);
+                    if (className) {
 
-                } else if(value === 0 || value === 1) { /// add or remove class
+                        currentClasses = currentClasses.replace(
+                            new RegExp('\\b' + className + '\\s+', 'g'),
+                            ''
+                        );
+                    }
+                });
+            } else if (appendClass === 1) {
 
-                    var className = field.id;
+                appendClass = field.id;
 
-                    attributeValue = utils.className[
-                        value === 1 ? 'add' : 'remove'
-                        ](currentClasses, className);
-                }
+            } else if (appendClass === 0) {
 
-                attributeKey = 'className';
+                currentClasses = currentClasses.replace(
+                    new RegExp('\\b' + field.id + '\\s+', 'g'),
+                    ''
+                );
 
-            } else {
-
-                attributeKey = field.id;
-                attributeValue = value;
+                appendClass = '';
             }
 
-            self.props.attributes[attributeKey] = attributeValue;
-            self.props.setAttributes({[attributeKey]: attributeValue});
+            currentClasses = currentClasses.trim() + ' ' + appendClass;
 
-            return false;
+            if (field.fixed_class && !currentClasses.match(new RegExp('\\b' + field.fixed_class + '\\s+', 'g'))) {
+
+                currentClasses += ' ' + field.fixed_class;
+            }
+
+            return currentClasses.trim();
         };
 
+        if (!args.onChange)
+            args.onChange = function (value) {
 
-        //// Setup initial value
-        var value = '';
+                var fieldId = field.action === 'add_class' ? 'className' : field.id;
 
-        if (isChangeClass) {
+                var attributes = {};
+                attributes[fieldId] = field.action === 'add_class' ? prepareClassName(self.props.attributes[fieldId], value) : value;
 
-            if (field.attribute && this.props.attributes.className) {
+                self.props.setAttributes(attributes);
+            };
 
-                value = _.intersection(
-                    field.attribute.enum || [field.id],
-                    this.props.attributes.className.split(' ')
-                ).shift();
-            }
-        } else {
+        var value = this.props.attributes[field.id];
 
-            value = this.props.attributes[field.id];
-        }
-
-        args.value = value || field.std;
+        args.value = typeof value === 'undefined' ? field.std : value;
 
         return args;
     };
@@ -364,21 +321,8 @@
 
         init: function () {
 
-            if (!wp.hooks || !wp.hooks.addFilter) {
-                return;
-            }
-
-            if (!wp.compose || !wp.compose.createHigherOrderComponent) {
-                return;
-            }
-
-            if (!BF_Gutenberg.stickyFields) {
-                return;
-            }
-
             this.registerBlocks();
             this.registerSharedFields();
-            this.registerSharedAttributes();
         },
 
         registerBlocks: function () {
@@ -401,66 +345,34 @@
             }
         },
 
+        registerSharedFields: function () {
 
-        extraAttributes(blockName) {
-
-            var attributes = BF_Gutenberg.extraAttributes;
-            var filtered = {};
-
-            for (var attributeId in attributes) {
-
-                if (!attributes.hasOwnProperty(attributeId)) {
-                    continue;
-                }
-
-                var attribute = attributes[attributeId];
-                var validBlocks = attribute.for_blocks || [];
-
-
-                if (validBlocks.indexOf(blockName) > -1) {
-
-                    filtered[attributeId] = attribute;
-                }
+            if (!wp.hooks || !wp.hooks.addFilter) {
+                return;
             }
 
-            return filtered;
-        },
+            if (!wp.compose || !wp.compose.createHigherOrderComponent) {
+                return;
+            }
 
-        registerSharedAttributes: function () {
-
-            var self = this;
-
-            wp.hooks.addFilter(
-                'blocks.registerBlockType',
-                'betterstudio/shared_settings',
-                function (settings, name) {
-
-                    var attributes = self.extraAttributes(name);
-
-                    if (!_.isEmpty(attributes)) {
-
-                        settings.attributes = _.extend(settings.attributes, attributes);
-                    }
-
-                    return settings;
-                }
-            );
-
-        },
-
-        registerSharedFields: function () {
+            if (!BF_Gutenberg.stickyFields) {
+                return;
+            }
+            var generator = new bfGutenbergBlock();
 
             wp.hooks.addFilter('editor.BlockEdit', 'betterstudio/shared_settings', wp.compose.createHigherOrderComponent(function (BlockEdit) {
 
                 return function (props) {
 
-                    var generator = new bfGutenbergBlock(props);
+                    generator.props = props;
+                    generator.attributes = props.attributes;
 
                     var validFields = BF_Gutenberg.stickyFields.filter(function (field) {
 
                         if (field.exclude_blocks && field.exclude_blocks.indexOf(props.name) > -1) {
                             return false;
                         }
+
 
                         if (field.include_blocks) {
 

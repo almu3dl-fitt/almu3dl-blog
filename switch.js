@@ -23,26 +23,13 @@ class BF_Switch extends wp.element.Component {
 
         if (this.props.onChange) {
 
-        	let value = parseInt(this.inputField.current.value);
-
-        	if(value && typeof this.props.onValue !== 'undefined') {
-
-				value = this.props.onValue;
-
-			} else if(!value && typeof this.props.offValue !== 'undefined') {
-
-				value = this.props.offValue;
-			}
-
-            this.props.onChange(value);
+            this.props.onChange(parseInt(this.inputField.current.value));
         }
     }
 
     render() {
 
-        const intValue = parseInt(this.props.value),
-			checked = isNaN(intValue) ? !!this.props.value : !!intValue;
-
+        let checked = !!parseInt(this.props.value);
 
         return (
 

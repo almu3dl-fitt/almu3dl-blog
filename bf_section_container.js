@@ -1,11 +1,9 @@
 class BF_Section_Container extends wp.element.Component {
 
-	wrapper = React.createRef();
-
-	componentDidMount() {
+    componentDidMount() {
 
         document.dispatchEvent(
-            new CustomEvent('bf-component-did-mount', {detail: this.wrapper.current,})
+            new CustomEvent('bf-component-did-mount', {detail: ReactDOM.findDOMNode(this),})
         );
     }
 
@@ -17,8 +15,7 @@ class BF_Section_Container extends wp.element.Component {
 
         return (
 
-            <div ref={this.wrapper}
-				 className={"bf-section-container bf-gutenberg bf-clearfix " + classes}
+            <div className={"bf-section-container bf-gutenberg bf-clearfix " + classes}
                  data-param-name={this.props.name}
                  data-param-settings={this.props.show_on ? JSON.stringify(this.props.show_on) : ''}
             >

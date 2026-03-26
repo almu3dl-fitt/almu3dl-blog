@@ -58,8 +58,6 @@ var bf_ignore_reload_notice = false,
 
             this.vc_modifications();
 
-            this.customizePage();
-
 
             switch( better_framework_loc.type ){
 
@@ -3495,7 +3493,7 @@ var bf_ignore_reload_notice = false,
 
             var sorterUpdated = function(evt, params) {
 
-                var $this = $(this);
+                var $this = (this);
 
                 if( typeof $this.attr('checked') != "undefined" ){
                     $this.closest('li').addClass('checked-item');
@@ -3553,13 +3551,9 @@ var bf_ignore_reload_notice = false,
 
                 $this.closest('.image-radio-field')
 
-                var $elements = $parent.find('.image-radio-value');
-
-                if ($elements.length) {
-
-                    $elements.val($checked.val()).change()
-                        [0].dispatchEvent(new Event('input'));
-                }
+                $parent.find('.image-radio-value')
+                    .val($checked.val()).change()
+                    [0].dispatchEvent(new Event('input'));
             });
 
         },
@@ -4270,33 +4264,6 @@ var bf_ignore_reload_notice = false,
             }
         },
 
-        customizePage: function(){
-
-            var api = wp.customize;
-
-            if( !api || !api.controlConstructor || !api.controlConstructor.sidebar_widgets) {
-
-                $( document ).on( 'widget-added', this.customizePage.bind(this));
-
-                return;
-            }
-
-            var addWidget = api.controlConstructor.sidebar_widgets.prototype.addWidget;
-
-            api.controlConstructor.sidebar_widgets = api.controlConstructor.sidebar_widgets.extend({
-
-                addWidget: function(widgetId) {
-
-                    // ByPass parseWidgetId Issue
-                    if(widgetId.match(/^bs\-.*?\-\d+$/)) {
-                        widgetId += '-0';
-                    }
-
-                    return addWidget.call(this,widgetId);
-                }
-            });
-        },
-
         pageBuilderCompatibility: {
 
             init: function () {
@@ -4757,16 +4724,17 @@ var bf_ignore_reload_notice = false,
 
                     $(document).on('bf-component-did-mount', function (e) {
 
-                        if(! e.detail || ! e.detail.parentElement) {
+                        var scope = e.detail.parentElement;
 
+                        if(! scope) {
                             return ;
                         }
 
-                        var $scope = $(e.detail.parentElement);
+                        var $scope = $(scope);
 
                         if(! $scope.data('component-initialized')){
 
-                            Better_Framework._init_editor($scope[0]);
+                            Better_Framework._init_editor(scope);
                             self.intTermSelect($scope);
 
                             $scope.data('component-initialized',true);

@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: https://betterstudio.com/
+ *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
  *
  *  \--> BetterStudio, 2017 <--/
  */
@@ -230,9 +230,7 @@ var Better_Fonts_Manager = (function ($) {
                                 });
 
                                 wp.media.frame.on('select', function () {
-                                    $('.input', $btn.parent())
-                                        .val(wp.media.frame.state().get('selection').first().toJSON().url)
-                                        .trigger('keyup');
+                                    $('.input', $btn.parent()).trigger('keyup');
                                 });
 
                             }, 100);
@@ -550,7 +548,7 @@ var Better_Fonts_Manager = (function ($) {
                             }
                         },
 
-                        initialZIndex: 15000
+                        initialZIndex: 2e5
                     });
 
                 modalObject.show();

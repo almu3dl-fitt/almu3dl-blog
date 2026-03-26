@@ -11,7 +11,7 @@
  *  Copyright © 2017 Better Studio
  *
  *
- *  Our portfolio is here: https://betterstudio.com/
+ *  Our portfolio is here: http://themeforest.net/user/Better-Studio/portfolio
  *
  *  \--> BetterStudio, 2017 <--/
  */
@@ -1768,6 +1768,7 @@ var bf_ignore_reload_notice = false,
                 filterDataCallback: false
             }, options);
 
+
             if(! settings.el) {
                 throw new Error('Invalid Element');
             }
@@ -1899,25 +1900,9 @@ var bf_ignore_reload_notice = false,
                 return $(document.body).hasClass('widgets_access') ? '.widget-inside' : '.widget';
             };
 
-            var widgetShowOnFix = function() {
-
-                // Fix: show_on initialization on widgets page
-                setTimeout(function() {
-                    $("#widgets-right .widget-inside").each(function(){
-                        $(":input:first",this).trigger('force-change');
-                    });
-                });
-
-                // Fix: Init show_on after widget saved
-                $(document).on( 'widget-updated', function(e,$widget) {
-                    $(".widget-inside :input:first",$widget).trigger('force-change');
-                });
-            }
-
             if($context && ($context.hasClass('widget') || better_framework_loc.type === 'widgets')) {
 
                 parentSelector = widgetParentSelector();
-                widgetShowOnFix();
 
             } else if($context && better_framework_loc.type === 'panel'){
 
@@ -1931,7 +1916,18 @@ var bf_ignore_reload_notice = false,
 
                         parentSelector = widgetParentSelector();
                         $wrapper       = $("#widgets-right",$context);
-                        widgetShowOnFix();
+
+                        // Fix: show_on initialization on widgets page
+                        setTimeout(function(){
+                            $(parentSelector, $wrapper).each(function(){
+                                $(".widget-inside :input:first",this).trigger('force-change');
+                            });
+                        });
+
+                        // Fix: Init show_on after widget saved
+                        $(document).on( 'widget-updated', function(e,$widget) {
+                            $(".widget-inside :input:first",$widget).trigger('force-change');
+                        });
 
                         break;
 
@@ -2750,7 +2746,7 @@ var bf_ignore_reload_notice = false,
                     var widgetIdBase  = $inside.find('input.id_base').val(),
                         widgetNumber = $inside.find('input.multi_number').val();
 
-                    if(! widgetBaseName && better_framework_loc.page_builder.indexOf('Elementor') > -1 ) {
+                    if(! widgetBaseName && "Elementor" === better_framework_loc.page_builder) {
 
                         widgetNumber = 'REPLACE_TO_ID';
                     }
@@ -3399,7 +3395,7 @@ var bf_ignore_reload_notice = false,
 
                         fixWidgetBtn.call(this,event);
 
-                        if(better_framework_loc.page_builder.indexOf('Elementor') > -1) {
+                        if(better_framework_loc.page_builder === "Elementor") {
 
                             // fix elementor save issue
                             setTimeout(function() {
@@ -4268,24 +4264,18 @@ var bf_ignore_reload_notice = false,
 
             init: function () {
 
-                //
-                if (
-                    better_framework_loc.page_builder.indexOf('KCP') > -1
-                    ||
-                    better_framework_loc.page_builder.indexOf('KC') > -1
-                ) { // isKingComposer
+                if (['KC', 'KCP'].indexOf(better_framework_loc.page_builder) > -1) { // isKingComposer
 
                     this.kingComposer.init();
 
-                } else if(better_framework_loc.page_builder.indexOf('Elementor') > -1 ) {
+                } else if('Elementor' === better_framework_loc.page_builder) {
 
                     this.elementor.init();
 
-                } else if(better_framework_loc.page_builder.indexOf('SiteOrigin') > -1) {
+                } else if('SiteOrigin' === better_framework_loc.page_builder) {
 
                     this.siteOrigin.init();
-
-                } else if(better_framework_loc.page_builder.indexOf('Gutenberg') > -1) {
+                } else if('Gutenberg' === better_framework_loc.page_builder) {
 
                     this.gutenberg.init();
                 }

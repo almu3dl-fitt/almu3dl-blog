@@ -1,5 +1,7 @@
 var gulp = require('gulp'),
+    postcss = require('gulp-postcss')
     cleanCSS = require('gulp-minify-css'),
+    rtlCSS = require('rtlcss'),
     rename = require('gulp-rename'),
     uglify = require('gulp-uglify');
 
@@ -29,4 +31,12 @@ gulp.task('watch', function () {
     gulp.watch(['./js/*.js', '!./js/*.min.js'], ['scripts']);
 });
 
-gulp.task('default', ['styles', 'scripts']);
+gulp.task('rtl', function () {
+    return gulp.src('css/better-playlist.css')
+        .pipe(postcss([rtlCSS]))
+
+        .pipe(rename({basename: 'better-playlist-rtl'}))
+        .pipe(gulp.dest('css/'));
+});
+
+gulp.task('default', gulp.series('rtl', 'styles', 'scripts'));

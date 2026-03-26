@@ -1,7 +1,5 @@
 (function () {
 
-    var catExistsCache= {};
-
     function bfGutenbergBlock() {
 
         this.element = window.wp && window.wp.element;
@@ -12,59 +10,29 @@
         //
         this.blockFields = {};
         this.shortcode = {};
-        this.liveTemplate = {};
-        this.liveTemplateAttributes = {};
     }
 
-    bfGutenbergBlock.prototype.registerBlockType = function (shortcode, blockFields, liveTemplate, liveTemplateAttributes) {
+    bfGutenbergBlock.prototype.registerBlockType = function (shortcode, blockFields) {
 
         this.shortcode = shortcode;
         this.blockFields = blockFields;
-        this.liveTemplate = liveTemplate;
-        this.liveTemplateAttributes = liveTemplateAttributes;
 
         var blockID = this.shortcode.block_id || this.shortcode.id.replace(/_/g, '-');
-        var category = this.shortcode.category || 'betterstudio';
 
-        if (this.bfGutenbergCatExists(category)) {
+        this.blocks.registerBlockType(this.prefix + blockID, {
+            title: this.shortcode.name || this.shortcode.id,
+            icon: this.blockIcon(),
+            category: this.shortcode.category || 'betterstudio',
+            edit: this.editBlock.bind(this),
+            save: this.saveBlock.bind(this),
 
-            this.blocks.registerBlockType(this.prefix + blockID, {
-                title: this.shortcode.name || this.shortcode.id,
-                icon: this.blockIcon(),
-                category: category,
-                edit: this.editBlock.bind(this),
-                save: this.saveBlock.bind(this),
-
-                attributes: this.blockAttributes(this.shortcode.id)
-            });
-        }
-
+            attributes: this.blockAttributes(this.shortcode.id)
+        });
     };
 
-    bfGutenbergBlock.prototype.saveBlock = function (props) {
+    bfGutenbergBlock.prototype.saveBlock = function () {
 
         return null;
-    };
-
-    bfGutenbergBlock.prototype.bfGutenbergCatExists = function (category) {
-
-        if (typeof catExistsCache[category] === "undefined") {
-
-            catExistsCache[category] = false;
-
-            var cats = this.blocks.getCategories() || [];
-
-            for (var i = 0; i < cats.length; i++) {
-
-                if (cats[i].slug === category) {
-
-                    catExistsCache[category] = true;
-                    break;
-                }
-            }
-        }
-
-        return catExistsCache[category];
     };
 
     bfGutenbergBlock.prototype.blockAttributes = function (blockId) {
@@ -88,11 +56,6 @@
 
         this.blockFields.forEach(findDeep);
 
-        if (this.liveTemplateAttributes) {
-
-            attributes = Object.assign(attributes, this.liveTemplateAttributes);
-        }
-
         return attributes;
     };
 
@@ -104,41 +67,35 @@
             return [];
         }
 
-        if (props.isSelected || !this.props.name) {
+        if(props.isSelected || !this.props.name) {
             this.props = props;
         }
 
-        var edit = [
-            this.buildBlockFields()
-        ];
+        var isBlockDisabled = !this.shortcode.click_able,
+            previewElement = this.element.createElement(
+                this.getComponent('ServerSideRender'),
+                {
+                    block: props.name,
+                    attributes: props.attributes,
+                    key: 'D2'
+                }
+            );
 
-        if (!this.liveTemplate) {
+        if (isBlockDisabled) {
 
-            var isBlockDisabled = !this.shortcode.click_able,
-                previewElement = this.element.createElement(
-                    this.getComponent('ServerSideRender'),
-                    {
-                        block: props.name,
-                        attributes: props.attributes,
-                        key: 'D2'
-                    }
-                );
-
-            if (isBlockDisabled) {
-
-                previewElement = this.element.createElement(
-                    this.getComponent('Disabled'),
-                    {
-                        key: 'D1'
-                    },
-                    previewElement
-                )
-            }
-
-            edit.push(previewElement);
+            previewElement = this.element.createElement(
+                this.getComponent('Disabled'),
+                {
+                    key: 'D1'
+                },
+                previewElement
+            )
         }
 
-        return edit;
+        return [
+            this.buildBlockFields(),
+            previewElement
+        ]
     };
 
     bfGutenbergBlock.prototype.buildElement = function (fields, parentField) {
@@ -166,15 +123,9 @@
 
     bfGutenbergBlock.prototype.createElement = function (field, childElements) {
 
-        var inner = [];
-
-        if (childElements && childElements.length) {
-            inner = childElements;
-        } else if (field.args && field.args.innerText) {
-            inner = field.args.innerText;
-        }
-
-        var params = [this.getComponent(field.component), this.componentArgs(field)].concat(inner);
+        var params = [this.getComponent(field.component), this.componentArgs(field)].concat(
+            childElements || []
+        );
 
         return this.element.createElement.apply(this.element, params);
     };
@@ -183,10 +134,9 @@
 
         var args = field.args || {};
 
-        if (field.component === 'Fragment' || field.component.match(/tag_(.+)/)) {
+        if (field.component === 'Fragment') {
             return args;
         }
-
         var self = this;
 
         var prepareClassName = function (currentClasses, appendClass) {
@@ -199,25 +149,16 @@
             if (attr && attr.enum) {
 
                 attr.enum.forEach(function (className) {
-
-                    if (className) {
-
-                        currentClasses = currentClasses.replace(
-                            new RegExp('\\b' + className + '\\s+', 'g'),
-                            ''
-                        );
-                    }
+                    currentClasses = currentClasses.replace(
+                        new RegExp('\\b' + className + '\\s+', 'g'),
+                        ''
+                    );
                 });
             } else if (appendClass === 1) {
 
                 appendClass = field.id;
 
             } else if (appendClass === 0) {
-
-                currentClasses = currentClasses.replace(
-                    new RegExp('\\b' + field.id + '\\s+', 'g'),
-                    ''
-                );
 
                 appendClass = '';
             }
@@ -229,7 +170,7 @@
                 currentClasses += ' ' + field.fixed_class;
             }
 
-            return currentClasses.trim();
+            return currentClasses;
         };
 
         if (!args.onChange)
@@ -252,7 +193,13 @@
 
     bfGutenbergBlock.prototype.buildBlockFields = function () {
 
-        var elements = [
+        // return this._buildFields(this.blockFields, {
+        //     id: 'inspector',
+        //     component: 'InspectorControls',
+        //     args: {key: 'inspector'}
+        // });
+
+        return this.buildElement([
             {
                 id: 'inspector',
                 component: 'InspectorControls',
@@ -268,14 +215,9 @@
                         children: this.blockFields
                     }
                 ]
+
             }
-        ];
-
-        if (this.liveTemplate) {
-            elements.push(this.liveTemplate);
-        }
-
-        return this.buildElement(elements, {
+        ], {
             id: 'block_fragment',
             component: 'Fragment',
             args: {key: 'block_fragment'},
@@ -283,12 +225,6 @@
     };
 
     bfGutenbergBlock.prototype.getComponent = function (component) {
-
-        var match = component.match(/tag_(.+)/);
-
-        if (match) {
-            return match[1];
-        }
 
         if (wp.editor[component]) {
 
@@ -325,6 +261,7 @@
             this.registerSharedFields();
         },
 
+
         registerBlocks: function () {
 
             if (!BF_Gutenberg || !BF_Gutenberg.blocks) {
@@ -338,9 +275,7 @@
                 generator = new bfGutenbergBlock();
                 generator.registerBlockType(
                     BF_Gutenberg.blocks[id],
-                    BF_Gutenberg.blockFields[id],
-                    BF_Gutenberg.liveEdit[id] && BF_Gutenberg.liveEdit[id]['template'],
-                    BF_Gutenberg.liveEdit[id] && BF_Gutenberg.liveEdit[id]['attributes']
+                    BF_Gutenberg.blockFields[id]
                 );
             }
         },
@@ -362,7 +297,9 @@
 
             wp.hooks.addFilter('editor.BlockEdit', 'betterstudio/shared_settings', wp.compose.createHigherOrderComponent(function (BlockEdit) {
 
+
                 return function (props) {
+
 
                     generator.props = props;
                     generator.attributes = props.attributes;
@@ -372,7 +309,6 @@
                         if (field.exclude_blocks && field.exclude_blocks.indexOf(props.name) > -1) {
                             return false;
                         }
-
 
                         if (field.include_blocks) {
 

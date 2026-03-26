@@ -1,0 +1,12 @@
+{
+  "require-dev": {
+    "phpcompatibility/php-compatibility": "*"
+  },
+  "scripts": {
+    "phpcheck": "./vendor/bin/phpcs -p .",
+
+    "post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
+    "post-update-cmd" : "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility"
+  },
+  "prefer-stable" : true
+}

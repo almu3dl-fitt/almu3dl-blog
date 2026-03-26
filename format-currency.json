@@ -1,0 +1,2685 @@
+{
+    "EUR": {
+        "DE": {
+            "position": "after",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "AD": {
+            "position": "after",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "AT": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac\u00a0",
+            "decimal_digits": 2
+        },
+        "AX": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ":"
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "BE": {
+            "position": "after",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "BL": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "CY": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "EE": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "ES": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "FI": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "FR": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "GF": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "GP": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "GR": {
+            "position": "after",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "IE": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "IT": {
+            "position": "after",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "LV": {
+            "position": "before",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "MC": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "ME": {
+            "position": "after",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "MF": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "MQ": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "MT": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "NL": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac\u00a0",
+            "decimal_digits": 2
+        },
+        "PM": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "PT": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "RE": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "SI": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "SK": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "SM": {
+            "position": "after",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "TF": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "VA": {
+            "position": "after",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "XK": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        },
+        "YT": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20ac",
+            "decimal_digits": 2
+        }
+    },
+    "XCD": {
+        "AG": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "EC$",
+            "decimal_digits": 2
+        },
+        "AI": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "EC$",
+            "decimal_digits": 2
+        },
+        "DM": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "EC$",
+            "decimal_digits": 2
+        },
+        "GD": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "EC$",
+            "decimal_digits": 2
+        },
+        "KN": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "EC$",
+            "decimal_digits": 2
+        },
+        "LC": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "EC$",
+            "decimal_digits": 2
+        },
+        "MS": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "EC$",
+            "decimal_digits": 2
+        },
+        "VC": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "EC$",
+            "decimal_digits": 2
+        }
+    },
+    "IRR": {
+        "IR": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                ""
+            ],
+            "numbers": [
+                "\u06f0",
+                "\u06f1",
+                "\u06f2",
+                "\u06f3",
+                "\u06f4",
+                "\u06f5",
+                "\u06f6",
+                "\u06f7",
+                "\u06f8",
+                "\u06f9"
+            ],
+            "currency_symbol": "\u0631\u06cc\u0627\u0644"
+        }
+    },
+    "MAD": {
+        "MA": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u062f.\u0645.\u200f\u00a0",
+            "decimal_digits": 2
+        },
+        "EH": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "MAD",
+            "decimal_digits": 2
+        }
+    },
+    "AED": {
+        "AE": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                "\u066b"
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u062f.\u0625.\u200f ",
+            "decimal_digits": 2
+        }
+    },
+    "AFN": {
+        "AF": {
+            "position": "after",
+            "separators": [
+                "\u066c",
+                ""
+            ],
+            "numbers": [
+                "\u06f0",
+                "\u06f1",
+                "\u06f2",
+                "\u06f3",
+                "\u06f4",
+                "\u06f5",
+                "\u06f6",
+                "\u06f7",
+                "\u06f8",
+                "\u06f9"
+            ],
+            "currency_symbol": "\u060b"
+        }
+    },
+    "ALL": {
+        "AL": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "Lek\u00eb"
+        }
+    },
+    "AMD": {
+        "AM": {
+            "position": "after",
+            "separators": [
+                "2",
+                "."
+            ],
+            "currency_symbol": "\u058f."
+        }
+    },
+    "AOA": {
+        "AO": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "Kz",
+            "decimal_digits": 2
+        }
+    },
+    "ARS": {
+        "AR": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "USD": {
+        "AS": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "BQ": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "$\u00a0",
+            "decimal_digits": 2
+        },
+        "EC": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "FM": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "US$",
+            "decimal_digits": 2
+        },
+        "GU": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "IO": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "MH": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "MP": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "PR": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "PW": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "US$",
+            "decimal_digits": 2
+        },
+        "SV": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "TC": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "US$",
+            "decimal_digits": 2
+        },
+        "TL": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "US$",
+            "decimal_digits": 2
+        },
+        "UM": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "US": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "VG": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "VI": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "AUD": {
+        "AU": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "CC": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "CX": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "HM": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "A$",
+            "decimal_digits": 2
+        },
+        "KI": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "NF": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "NR": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "TV": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "AWG": {
+        "AW": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "Afl.\u00a0",
+            "decimal_digits": 2
+        }
+    },
+    "AZN": {
+        "AZ": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "man.\u00a0",
+            "decimal_digits": 2
+        }
+    },
+    "BAM": {
+        "BA": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "KM\u00a0",
+            "decimal_digits": 2
+        }
+    },
+    "BBD": {
+        "BB": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "BDT": {
+        "BD": {
+            "position": "after",
+            "separators": [
+                ",",
+                "\u09e6"
+            ],
+            "numbers": [
+                "\u09e6",
+                "\u09e7",
+                "\u09e8",
+                "\u09e9",
+                "\u09ea",
+                "\u09eb",
+                "\u09ec",
+                "\u09ed",
+                "\u09ee",
+                "\u09ef"
+            ],
+            "currency_symbol": "\u09f3",
+            "decimal_digits": 3
+        }
+    },
+    "XOF": {
+        "BF": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "CFA"
+        },
+        "BJ": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "CFA"
+        },
+        "CI": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "CFA"
+        },
+        "GW": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "CFA"
+        },
+        "ML": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "CFA"
+        },
+        "NE": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "CFA"
+        },
+        "SN": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "CFA"
+        },
+        "TG": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "CFA"
+        }
+    },
+    "BGN": {
+        "BG": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u043b\u0432.",
+            "decimal_digits": 2
+        }
+    },
+    "BHD": {
+        "BH": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                "\u066b"
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u062f.\u0628.\u200f ",
+            "decimal_digits": 3
+        }
+    },
+    "BIF": {
+        "BI": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "FBu"
+        }
+    },
+    "BMD": {
+        "BM": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "BND": {
+        "BN": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "$\u00a0",
+            "decimal_digits": 2
+        }
+    },
+    "BOB": {
+        "BO": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "Bs",
+            "decimal_digits": 2
+        }
+    },
+    "BRL": {
+        "BR": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "R$",
+            "decimal_digits": 2
+        }
+    },
+    "BSD": {
+        "BS": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "BTN": {
+        "BT": {
+            "position": "before",
+            "separators": [
+                ",",
+                "\u0f20"
+            ],
+            "numbers": [
+                "\u0f20",
+                "\u0f21",
+                "\u0f22",
+                "\u0f23",
+                "\u0f24",
+                "\u0f25",
+                "\u0f26",
+                "\u0f27",
+                "\u0f28",
+                "\u0f29"
+            ],
+            "currency_symbol": "Nu.",
+            "decimal_digits": 3
+        }
+    },
+    "INR": {
+        "BT": {
+            "position": "before",
+            "separators": [
+                ",",
+                "\u0f20"
+            ],
+            "numbers": [
+                "\u0f20",
+                "\u0f21",
+                "\u0f22",
+                "\u0f23",
+                "\u0f24",
+                "\u0f25",
+                "\u0f26",
+                "\u0f27",
+                "\u0f28",
+                "\u0f29"
+            ],
+            "currency_symbol": "\u20b9",
+            "decimal_digits": 3
+        },
+        "IN": {
+            "position": "before",
+            "separators": [
+                ",",
+                "0"
+            ],
+            "currency_symbol": "\u20b9",
+            "decimal_digits": 3
+        }
+    },
+    "BWP": {
+        "BW": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "P",
+            "decimal_digits": 2
+        }
+    },
+    "BYR": {
+        "BY": {
+            "position": "before",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "\u0440."
+        }
+    },
+    "BZD": {
+        "BZ": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "CAD": {
+        "CA": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "CDF": {
+        "CD": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "FC",
+            "decimal_digits": 2
+        }
+    },
+    "XAF": {
+        "CF": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "FCFA"
+        },
+        "CG": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "FCFA"
+        },
+        "CM": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "FCFA"
+        },
+        "GA": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "FCFA"
+        },
+        "GQ": {
+            "position": "before",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "FCFA"
+        },
+        "TD": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "FCFA"
+        }
+    },
+    "NZD": {
+        "CK": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "NU": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "NZ": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "PN": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        },
+        "TK": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "CLP": {
+        "CL": {
+            "position": "before",
+            "separators": [
+                ".",
+                ""
+            ],
+            "currency_symbol": "$"
+        }
+    },
+    "CNY": {
+        "CN": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\uffe5\u00a0",
+            "decimal_digits": 2
+        }
+    },
+    "COP": {
+        "CO": {
+            "position": "before",
+            "separators": [
+                ".",
+                ""
+            ],
+            "currency_symbol": "$"
+        }
+    },
+    "CRC": {
+        "CR": {
+            "position": "before",
+            "separators": [
+                ".",
+                ""
+            ],
+            "currency_symbol": "\u20a1"
+        }
+    },
+    "CUP": {
+        "CU": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "CVE": {
+        "CV": {
+            "position": "after",
+            "separators": [
+                " ",
+                "$"
+            ],
+            "currency_symbol": "CVE",
+            "decimal_digits": 2
+        }
+    },
+    "ANG": {
+        "CW": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "NAf.\u00a0",
+            "decimal_digits": 2
+        },
+        "SX": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "NAf.\u00a0",
+            "decimal_digits": 2
+        }
+    },
+    "CZK": {
+        "CZ": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "K\u010d",
+            "decimal_digits": 2
+        }
+    },
+    "DJF": {
+        "DJ": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "Fdj"
+        }
+    },
+    "DKK": {
+        "DK": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "kr.",
+            "decimal_digits": 5
+        },
+        "FO": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "kr",
+            "decimal_digits": 2
+        },
+        "GL": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "kr",
+            "decimal_digits": 2
+        }
+    },
+    "DOP": {
+        "DO": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "DZD": {
+        "DZ": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u062f.\u062c.\u200f\u00a0",
+            "decimal_digits": 2
+        },
+        "EH": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "DZD",
+            "decimal_digits": 2
+        }
+    },
+    "EGP": {
+        "EG": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                "\u066b"
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u062c.\u0645.\u200f ",
+            "decimal_digits": 2
+        }
+    },
+    "MRO": {
+        "EH": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "MRO"
+        },
+        "MR": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                ""
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u0623.\u0645.\u200f "
+        }
+    },
+    "ERN": {
+        "ER": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "Nfk",
+            "decimal_digits": 2
+        }
+    },
+    "ETB": {
+        "ET": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u1265\u122d",
+            "decimal_digits": 2
+        }
+    },
+    "FJD": {
+        "FJ": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "FKP": {
+        "FK": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u00a3",
+            "decimal_digits": 2
+        }
+    },
+    "GEL": {
+        "GE": {
+            "position": "before",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20be",
+            "decimal_digits": 6
+        }
+    },
+    "GBP": {
+        "GG": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u00a3",
+            "decimal_digits": 2
+        },
+        "GS": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u00a3",
+            "decimal_digits": 2
+        },
+        "IM": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u00a3",
+            "decimal_digits": 2
+        },
+        "JE": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u00a3",
+            "decimal_digits": 2
+        }
+    },
+    "GHS": {
+        "GH": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "GH\u20b5",
+            "decimal_digits": 2
+        }
+    },
+    "GIP": {
+        "GI": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u00a3",
+            "decimal_digits": 2
+        }
+    },
+    "GMD": {
+        "GM": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "D",
+            "decimal_digits": 2
+        }
+    },
+    "GNF": {
+        "GN": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "FG"
+        }
+    },
+    "GTQ": {
+        "GT": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "Q",
+            "decimal_digits": 2
+        }
+    },
+    "GYD": {
+        "GY": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "$"
+        }
+    },
+    "HKD": {
+        "HK": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "HNL": {
+        "HN": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "L",
+            "decimal_digits": 2
+        }
+    },
+    "HRK": {
+        "HR": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "HRK",
+            "decimal_digits": 5
+        }
+    },
+    "HTG": {
+        "HT": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "G",
+            "decimal_digits": 2
+        }
+    },
+    "HUF": {
+        "HU": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "Ft"
+        }
+    },
+    "IDR": {
+        "ID": {
+            "position": "before",
+            "separators": [
+                ".",
+                ""
+            ],
+            "currency_symbol": "Rp"
+        }
+    },
+    "ILS": {
+        "IL": {
+            "position": "after",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u20aa",
+            "decimal_digits": 2
+        },
+        "PS": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                "\u066b"
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u20aa ",
+            "decimal_digits": 2
+        }
+    },
+    "IQD": {
+        "IQ": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                ""
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u062f.\u0639.\u200f "
+        }
+    },
+    "ISK": {
+        "IS": {
+            "position": "after",
+            "separators": [
+                ".",
+                "\u00a0"
+            ],
+            "currency_symbol": "kr"
+        }
+    },
+    "JMD": {
+        "JM": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "JOD": {
+        "JO": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                "\u066b"
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u062f.\u0623.\u200f ",
+            "decimal_digits": 3
+        }
+    },
+    "JPY": {
+        "JP": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "\uffe5"
+        }
+    },
+    "KES": {
+        "KE": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "Ksh",
+            "decimal_digits": 2
+        }
+    },
+    "KGS": {
+        "KG": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u0441\u043e\u043c",
+            "decimal_digits": 2
+        }
+    },
+    "KHR": {
+        "KH": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u17db",
+            "decimal_digits": 2
+        }
+    },
+    "KMF": {
+        "KM": {
+            "position": "before",
+            "separators": [
+              "\u066c",
+               ""
+            ],
+            "numbers": [
+              "\u0660",
+              "\u0661",
+              "\u0662",
+              "\u0663",
+              "\u0664",
+              "\u0665",
+              "\u0666",
+              "\u0667",
+              "\u0668",
+              "\u0669"
+            ],
+            "currency_symbol": "\u0641.\u062c.\u0642. "
+        }
+    },
+    "KPW": {
+        "KP": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "KPW"
+        }
+    },
+    "KRW": {
+        "KR": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "\u20a9"
+        }
+    },
+    "KWD": {
+        "KW": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                "\u066b"
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u062f.\u0643.\u200f ",
+            "decimal_digits": 3
+        }
+    },
+    "KYD": {
+        "KY": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "KZT": {
+        "KZ": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20b8",
+            "decimal_digits": 2
+        }
+    },
+    "LAK": {
+        "LA": {
+            "position": "before",
+            "separators": [
+                ".",
+                ""
+            ],
+            "currency_symbol": "\u20ad"
+        }
+    },
+    "LKR": {
+        "LK": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u0dbb\u0dd4.",
+            "decimal_digits": 2
+        }
+    },
+    "LRD": {
+        "LR": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "ZAR": {
+        "LS": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "ZAR",
+            "decimal_digits": 2
+        },
+        "ZA": {
+            "position": "before",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "R",
+            "decimal_digits": 2
+        }
+    },
+    "LTL": {
+        "LT": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "Lt",
+            "decimal_digits": 2
+        }
+    },
+    "LYD": {
+        "LY": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u062f.\u0644.\u200f\u00a0",
+            "decimal_digits": 3
+        }
+    },
+    "MDL": {
+        "MD": {
+            "position": "after",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "L",
+            "decimal_digits": 2
+        }
+    },
+    "MGA": {
+        "MG": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "Ar"
+        }
+    },
+    "MKD": {
+        "MK": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u0434\u0435\u043d\u00a0",
+            "decimal_digits": 2
+        }
+    },
+    "MMK": {
+        "MM": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "numbers": [
+                "\u1040",
+                "\u1041",
+                "\u1042",
+                "\u1043",
+                "\u1044",
+                "\u1045",
+                "\u1046",
+                "\u1047",
+                "\u1048",
+                "\u1049"
+            ],
+            "currency_symbol": "K "
+        }
+    },
+    "MNT": {
+        "MN": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "\u20ae\u00a0"
+        }
+    },
+    "MOP": {
+        "MO": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "MOP$",
+            "decimal_digits": 2
+        }
+    },
+    "MUR": {
+        "MU": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "Rs"
+        }
+    },
+    "MWK": {
+        "MW": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "MK",
+            "decimal_digits": 2
+        }
+    },
+    "MXN": {
+        "MX": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "MZN": {
+        "MZ": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "MTn",
+            "decimal_digits": 2
+        }
+    },
+    "NAD": {
+        "NA": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "XPF": {
+        "NC": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "FCFP"
+        },
+        "PF": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "FCFP"
+        },
+        "WF": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "FCFP"
+        }
+    },
+    "NGN": {
+        "NG": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u20a6",
+            "decimal_digits": 2
+        }
+    },
+    "NIO": {
+        "NI": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "C$",
+            "decimal_digits": 2
+        }
+    },
+    "NOK": {
+        "NO": {
+            "position": "before",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "kr\u00a0",
+            "decimal_digits": 2
+        },
+        "SJ": {
+            "position": "before",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "kr\u00a0",
+            "decimal_digits": 2
+        }
+    },
+    "NPR": {
+        "NP": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "numbers": [
+                "\u0966",
+                "\u0967",
+                "\u0968",
+                "\u0969",
+                "\u096a",
+                "\u096b",
+                "\u096c",
+                "\u096d",
+                "\u096e",
+                "\u096f"
+            ],
+            "currency_symbol": "\u0928\u0947\u0930\u0942",
+            "decimal_digits": 2
+        }
+    },
+    "OMR": {
+        "OM": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                "\u066b"
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u0631.\u0639.\u200f ",
+            "decimal_digits": 3
+        }
+    },
+    "PAB": {
+        "PA": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "B\/.",
+            "decimal_digits": 2
+        }
+    },
+    "PEN": {
+        "PE": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "S\/.",
+            "decimal_digits": 2
+        }
+    },
+    "PGK": {
+        "PG": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "K",
+            "decimal_digits": 2
+        }
+    },
+    "PHP": {
+        "PH": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u20b1",
+            "decimal_digits": 2
+        }
+    },
+    "PKR": {
+        "PK": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "Rs"
+        }
+    },
+    "PLN": {
+        "PL": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "z\u0142",
+            "decimal_digits": 2
+        }
+    },
+    "PYG": {
+        "PY": {
+            "position": "before",
+            "separators": [
+                ".",
+                ""
+            ],
+            "currency_symbol": "\u20b2\u00a0"
+        }
+    },
+    "QAR": {
+        "QA": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                "\u066b"
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u0631.\u0642.\u200f ",
+            "decimal_digits": 2
+        }
+    },
+    "RON": {
+        "RO": {
+            "position": "after",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "RON",
+            "decimal_digits": 2
+        }
+    },
+    "RSD": {
+        "RS": {
+            "position": "after",
+            "separators": [
+                ".",
+                "\u00a0"
+            ],
+            "currency_symbol": "\u0434\u0438\u043d."
+        }
+    },
+    "RUB": {
+        "RU": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u0440\u0443\u0431.",
+            "decimal_digits": 2
+        }
+    },
+    "RWF": {
+        "RW": {
+            "position": "before",
+            "separators": [
+                ".",
+                ""
+            ],
+            "currency_symbol": "RF\u00a0"
+        }
+    },
+    "SAR": {
+        "SA": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                "\u066b"
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u0631.\u0633.\u200f ",
+            "decimal_digits": 2
+        }
+    },
+    "SBD": {
+        "SB": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "SCR": {
+        "SC": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "SR",
+            "decimal_digits": 2
+        }
+    },
+    "SDG": {
+        "SD": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                "\u066b"
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u062c.\u0633. ",
+            "decimal_digits": 2
+        }
+    },
+    "SEK": {
+        "SE": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ":"
+            ],
+            "currency_symbol": "kr",
+            "decimal_digits": 2
+        }
+    },
+    "SGD": {
+        "SG": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "SHP": {
+        "SH": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u00a3",
+            "decimal_digits": 2
+        }
+    },
+    "SLL": {
+        "SL": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "Le"
+        }
+    },
+    "SOS": {
+        "SO": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "S"
+        }
+    },
+    "SRD": {
+        "SR": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "$\u00a0",
+            "decimal_digits": 2
+        }
+    },
+    "SSP": {
+        "SS": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u00a3",
+            "decimal_digits": 2
+        }
+    },
+    "STD": {
+        "ST": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "Db"
+        }
+    },
+    "SYP": {
+        "SY": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                ""
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u0644.\u0633.\u200f "
+        }
+    },
+    "SZL": {
+        "SZ": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "E",
+            "decimal_digits": 2
+        }
+    },
+    "THB": {
+        "TH": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "\u0e3f",
+            "decimal_digits": 2
+        }
+    },
+    "TJS": {
+        "TJ": {
+            "position": "before",
+            "separators": [
+                "",
+                "."
+            ],
+            "currency_symbol": "TJS\u00a0",
+          "decimal_digits": 2
+        }
+    },
+    "TND": {
+        "TN": {
+            "position": "before",
+            "separators": [
+                "",
+                ","
+            ],
+            "currency_symbol": "\u062f.\u062a.\u200f",
+            "decimal_digits": 3
+        }
+    },
+    "TOP": {
+        "TO": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "T$",
+            "decimal_digits": 2
+        }
+    },
+    "TRY": {
+        "TR": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "\u20ba",
+            "decimal_digits": 2
+        }
+    },
+    "TTD": {
+        "TT": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "$",
+            "decimal_digits": 2
+        }
+    },
+    "TWD": {
+        "TW": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "NT$",
+            "decimal_digits": 2
+        }
+    },
+    "TZS": {
+        "TZ": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "TSh"
+        }
+    },
+    "UAH": {
+        "UA": {
+            "position": "after",
+            "separators": [
+                "\u00a0",
+                ","
+            ],
+            "currency_symbol": "\u20b4",
+            "decimal_digits": 2
+        }
+    },
+    "UGX": {
+        "UG": {
+            "position": "before",
+            "separators": [
+                ",",
+                ""
+            ],
+            "currency_symbol": "USh"
+        }
+    },
+    "USN": {
+        "US": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "USN",
+            "decimal_digits": 2
+        }
+    },
+    "USS": {
+        "US": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "USS",
+            "decimal_digits": 2
+        }
+    },
+    "UYU": {
+        "UY": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "$\u00a0",
+            "decimal_digits": 2
+        }
+    },
+    "UZS": {
+        "UZ": {
+            "position": "before",
+            "separators": [
+                "\u00a0",
+                ""
+            ],
+            "currency_symbol": "so\u02bbm\u00a0"
+        }
+    },
+    "VEF": {
+        "VE": {
+            "position": "before",
+            "separators": [
+                ".",
+                ","
+            ],
+            "currency_symbol": "Bs.",
+            "decimal_digits": 2
+        }
+    },
+    "VND": {
+        "VN": {
+            "position": "after",
+            "separators": [
+                ".",
+                ""
+            ],
+            "currency_symbol": "\u20ab"
+        }
+    },
+    "YER": {
+        "YE": {
+            "position": "before",
+            "separators": [
+                "\u066c",
+                ""
+            ],
+            "numbers": [
+                "\u0660",
+                "\u0661",
+                "\u0662",
+                "\u0663",
+                "\u0664",
+                "\u0665",
+                "\u0666",
+                "\u0667",
+                "\u0668",
+                "\u0669"
+            ],
+            "currency_symbol": "\u0631.\u064a.\u200f "
+        }
+    },
+    "ZWL": {
+        "ZW": {
+            "position": "before",
+            "separators": [
+                ",",
+                "."
+            ],
+            "currency_symbol": "ZWL",
+            "decimal_digits": 2
+        }
+    }
+}

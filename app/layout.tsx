@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -8,6 +9,7 @@ import {
   SITE_NAME,
   SITE_URL,
 } from "@/lib/site";
+import { resolveTheme, THEME_COOKIE_NAME } from "@/lib/theme";
 
 import "./globals.css";
 
@@ -58,16 +60,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const theme = resolveTheme(cookieStore.get(THEME_COOKIE_NAME)?.value);
+
   return (
-    <html lang="ar" dir="rtl" className="h-full">
+    <html
+      lang="ar"
+      dir="rtl"
+      className="h-full"
+        data-theme={theme}
+        suppressHydrationWarning
+    >
       <body className="min-h-full antialiased">
         <div className="flex min-h-screen flex-col">
-          <SiteHeader />
+          <SiteHeader theme={theme} />
           <div className="flex-1">{children}</div>
           <SiteFooter />
         </div>

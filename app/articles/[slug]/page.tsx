@@ -53,7 +53,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <main className="page-main">
       <div className="site-container space-y-8">
-        <div className="flex flex-wrap items-center gap-3 text-sm text-[#A8A191]">
+        <div className="theme-breadcrumb flex flex-wrap items-center gap-3 text-sm">
           <Link href="/" className="hover:text-[#F3D98C]">
             الرئيسية
           </Link>
@@ -62,13 +62,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             المقالات
           </Link>
           <span>/</span>
-          <span className="text-[#F5F1E8]">{post.title}</span>
+          <span className="theme-text-main">{post.title}</span>
         </div>
 
         <article className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-6">
             <section className="panel-surface overflow-hidden rounded-[34px]">
-              <div className="relative h-[300px] overflow-hidden md:h-[400px] xl:h-[460px]">
+              <div className="relative h-[300px] overflow-hidden bg-[var(--panel-plain-soft)] md:h-[400px] xl:h-[460px]">
                 <Image
                   src={post.coverImageUrl}
                   alt={post.title}
@@ -82,23 +82,23 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </section>
 
             <section className="panel-surface rounded-[34px] p-6 md:p-8 xl:p-10">
-              <div className="rounded-[28px] border border-[#D4AF37]/15 bg-[#0D0D0D] p-5 md:p-6">
-                <div className="mb-5 flex flex-wrap items-center gap-2 text-xs text-[#A7A29A]">
+              <div className="theme-inset-card-strong rounded-[28px] p-5 md:p-6">
+                <div className="theme-text-muted mb-5 flex flex-wrap items-center gap-2 text-xs">
                   <span className="rounded-full bg-[#D4AF37] px-3 py-1 font-bold text-[#080808]">
                     {post.category.name}
                   </span>
-                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                  <span className="theme-pill rounded-full px-3 py-1">
                     {post.publishedLabel}
                   </span>
-                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                  <span className="theme-pill rounded-full px-3 py-1">
                     {post.readingTime}
                   </span>
                 </div>
-                <h1 className="display-heading max-w-5xl text-3xl font-black leading-[1.35] text-white md:text-4xl xl:text-5xl">
+                <h1 className="display-heading theme-text-main max-w-5xl text-3xl font-black leading-[1.35] md:text-4xl xl:text-5xl">
                   {post.title}
                 </h1>
-                <div className="mt-5 mb-2 text-sm text-[#F0D36A]">ملخص المقال</div>
-                <p className="text-base leading-8 text-[#E8E1D6] md:text-lg">
+                <div className="mt-5 mb-2 text-sm text-[var(--gold-soft)]">ملخص المقال</div>
+                <p className="theme-text-soft text-base leading-8 md:text-lg">
                   {post.excerpt}
                 </p>
               </div>
@@ -108,9 +108,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   <section
                     key={section.id}
                     id={section.anchor}
-                    className="scroll-mt-28 rounded-[26px] border border-white/10 bg-black/20 p-5 md:p-6"
+                    className="theme-inset-card scroll-mt-28 rounded-[26px] p-5 md:p-6"
                   >
-                    <h2 className="display-heading text-2xl font-black leading-[1.5] text-white">
+                    <h2 className="display-heading theme-text-main text-2xl font-black leading-[1.5]">
                       {section.heading}
                     </h2>
                     {/<[a-z][\s\S]*>/i.test(section.content) ? (
@@ -119,7 +119,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                         dangerouslySetInnerHTML={{ __html: section.content }}
                       />
                     ) : (
-                      <p className="mt-4 whitespace-pre-line text-lg leading-9 text-[#E8E1D6]">
+                      <p className="theme-text-soft mt-4 whitespace-pre-line text-lg leading-9">
                         {section.content}
                       </p>
                     )}
@@ -131,13 +131,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
           <aside className="space-y-5 xl:sticky xl:top-24">
             <section className="panel-surface rounded-[28px] p-5">
-              <div className="mb-4 text-lg font-black text-white">داخل المقال</div>
+              <div className="theme-text-main mb-4 text-lg font-black">داخل المقال</div>
               <div className="space-y-2">
                 {post.sections.map((section, index) => (
                   <a
                     key={section.id}
                     href={`#${section.anchor}`}
-                    className="block rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-[#D7D1C6] transition hover:border-[#D4AF37]/30 hover:text-[#F0D36A]"
+                    className="theme-pill block rounded-2xl px-4 py-3 text-sm"
                   >
                     {index + 1}. {section.heading}
                   </a>
@@ -145,14 +145,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </div>
             </section>
 
-            <section className="rounded-[28px] border border-[#3DDC84]/20 bg-[linear-gradient(135deg,rgba(61,220,132,0.12),rgba(212,175,55,0.12))] p-6">
-              <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9EAC7]">
+            <section className="theme-store-card rounded-[28px] p-6">
+              <div className="theme-store-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.18em]">
                 {storeHighlight.eyebrow}
               </div>
-              <div className="mb-3 text-2xl font-black text-white">
+              <div className="theme-text-main mb-3 text-2xl font-black">
                 {storeHighlight.title}
               </div>
-              <p className="mb-5 leading-8 text-[#D7E8DD]">
+              <p className="theme-store-copy mb-5 leading-8">
                 {storeHighlight.description}
               </p>
               <div className="flex flex-col gap-3">
@@ -166,7 +166,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 </a>
                 <Link
                   href="/articles"
-                  className="inline-flex w-full items-center justify-center rounded-full border border-white/15 bg-black/20 px-5 py-3 font-semibold text-white"
+                  className="theme-button-secondary inline-flex w-full items-center justify-center rounded-full px-5 py-3 font-semibold"
                 >
                   استكشف الأرشيف
                 </Link>
@@ -175,7 +175,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
             {post.relatedPosts.length > 0 ? (
               <section className="panel-surface rounded-[28px] p-5">
-                <div className="mb-4 text-lg font-black text-white">
+                <div className="theme-text-main mb-4 text-lg font-black">
                   مقالات ذات صلة
                 </div>
                 <div className="space-y-3">
@@ -183,12 +183,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     <Link
                       key={relatedPost.id}
                       href={relatedPost.href}
-                      className="block rounded-2xl border border-white/10 bg-white/5 p-4 text-right transition hover:border-[#D4AF37]/30"
+                      className="theme-pill block rounded-2xl p-4 text-right transition hover:border-[#D4AF37]/30"
                     >
-                      <div className="mb-2 text-xs text-[#F0D36A]">
+                      <div className="mb-2 text-xs text-[var(--gold-soft)]">
                         مقال مرتبط {index + 1}
                       </div>
-                      <div className="font-bold leading-7 text-white">
+                      <div className="theme-text-main font-bold leading-7">
                         {relatedPost.title}
                       </div>
                     </Link>
@@ -198,23 +198,23 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             ) : null}
 
             <section className="panel-surface rounded-[28px] p-5">
-              <div className="mb-3 text-lg font-black text-white">بيانات المقال</div>
-              <div className="space-y-3 text-sm text-[#D7D1C6]">
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="text-xs text-[#8E8677]">التصنيف</div>
-                  <div className="mt-2 font-semibold text-white">
+              <div className="theme-text-main mb-3 text-lg font-black">بيانات المقال</div>
+              <div className="theme-text-soft space-y-3 text-sm">
+                <div className="theme-pill rounded-2xl p-4">
+                  <div className="theme-text-muted text-xs">التصنيف</div>
+                  <div className="theme-text-main mt-2 font-semibold">
                     {post.category.name}
                   </div>
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="text-xs text-[#8E8677]">النشر</div>
-                  <div className="mt-2 font-semibold text-white">
+                <div className="theme-pill rounded-2xl p-4">
+                  <div className="theme-text-muted text-xs">النشر</div>
+                  <div className="theme-text-main mt-2 font-semibold">
                     {post.publishedLabel}
                   </div>
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="text-xs text-[#8E8677]">مدة القراءة</div>
-                  <div className="mt-2 font-semibold text-white">
+                <div className="theme-pill rounded-2xl p-4">
+                  <div className="theme-text-muted text-xs">مدة القراءة</div>
+                  <div className="theme-text-main mt-2 font-semibold">
                     {post.readingTime}
                   </div>
                 </div>

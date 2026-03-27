@@ -37,30 +37,28 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <div className="section-kicker mb-4">الأرشيف</div>
-              <h1 className="display-heading text-4xl font-black leading-[1.25] text-white md:text-5xl">
+              <h1 className="display-heading theme-text-main text-4xl font-black leading-[1.25] md:text-5xl">
                 أرشيف المعضّل
               </h1>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#C8C2B7] md:text-lg">
+              <p className="theme-text-soft mt-4 max-w-3xl text-base leading-8 md:text-lg">
                 استعرض جميع المقالات المنشورة، صفِّها حسب التصنيف، وابحث داخل
                 العناوين والمقتطفات والمحتوى للوصول الأسرع لما تحتاجه.
               </p>
             </div>
 
-            <div className="rounded-full border border-white/10 bg-[#111111] px-4 py-3 text-sm text-[#A7A29A]">
-              <span className="display-heading font-black text-white">
+            <div className="theme-card-soft rounded-full px-4 py-3 text-sm theme-text-muted">
+              <span className="display-heading theme-text-main font-black">
                 {posts.length}
               </span>{" "}
               مقال
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 rounded-[30px] border border-white/10 bg-[#111111] p-5 md:p-6">
+          <div className="theme-card-soft flex flex-wrap gap-2 rounded-[30px] p-5 md:p-6">
             <Link
               href={query ? `/articles?q=${encodeURIComponent(query)}` : "/articles"}
               className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                !categorySlug
-                  ? "bg-[#D4AF37] text-[#080808]"
-                  : "border border-white/10 bg-white/5 text-[#D7D1C6] hover:border-[#D4AF37]/30 hover:text-[#F3D98C]"
+                !categorySlug ? "theme-pill-active" : "theme-pill"
               }`}
             >
               الكل
@@ -74,9 +72,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                   key={category.slug}
                   href={`/articles?${chipParams.toString()}`}
                   className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                    categorySlug === category.slug
-                      ? "bg-[#D4AF37] text-[#080808]"
-                      : "border border-white/10 bg-white/5 text-[#D7D1C6] hover:border-[#D4AF37]/30 hover:text-[#F3D98C]"
+                    categorySlug === category.slug ? "theme-pill-active" : "theme-pill"
                   }`}
                 >
                   {category.name}
@@ -87,14 +83,14 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
         </section>
 
         {(query || selectedCategoryName) && (
-          <section className="flex flex-wrap items-center gap-3 rounded-[28px] border border-white/8 bg-black/20 p-4 text-sm text-[#D7D1C6]">
+          <section className="theme-inset-card theme-text-soft flex flex-wrap items-center gap-3 rounded-[28px] p-4 text-sm">
             {selectedCategoryName ? (
-              <span className="rounded-full border border-[#D4AF37]/25 bg-[#D4AF37]/12 px-4 py-2 text-[#F3D98C]">
+              <span className="theme-pill-active rounded-full px-4 py-2">
                 التصنيف: {selectedCategoryName}
               </span>
             ) : null}
             {query ? (
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2">
+              <span className="theme-pill rounded-full px-4 py-2">
                 البحث: {query}
               </span>
             ) : null}
@@ -106,18 +102,18 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
             <aside className="panel-surface h-fit rounded-[26px] p-5">
               <form action="/articles" method="get" className="space-y-5">
                 <div>
-                  <div className="mb-3 text-sm text-[#A7A29A]">بحث</div>
+                  <div className="theme-text-muted mb-3 text-sm">بحث</div>
                   <input
                     type="search"
                     name="q"
                     defaultValue={query}
                     placeholder="ابحث في المقالات"
-                    className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none placeholder:text-[#7D766D] focus:border-[#D4AF37]/40"
+                    className="theme-input w-full rounded-2xl px-4 py-3"
                   />
                 </div>
 
                 <div>
-                  <div className="mb-3 text-sm text-[#A7A29A]">التصنيف</div>
+                  <div className="theme-text-muted mb-3 text-sm">التصنيف</div>
                   <div className="space-y-2">
                     <label className="block">
                       <input
@@ -127,7 +123,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                         defaultChecked={!categorySlug}
                         className="peer sr-only"
                       />
-                      <span className="block w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-right text-sm text-[#D7D0C5] transition peer-checked:border-[#D4AF37] peer-checked:bg-[#D4AF37] peer-checked:font-bold peer-checked:text-black hover:border-[#D4AF37]/35">
+                      <span className="theme-pill block w-full rounded-2xl px-4 py-3 text-right text-sm transition peer-checked:border-[#D4AF37]/40 peer-checked:bg-[#D4AF37] peer-checked:font-bold peer-checked:text-black hover:border-[#D4AF37]/35">
                         الكل
                       </span>
                     </label>
@@ -140,7 +136,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                           defaultChecked={categorySlug === category.slug}
                           className="peer sr-only"
                         />
-                        <span className="block w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-right text-sm text-[#D7D0C5] transition peer-checked:border-[#D4AF37] peer-checked:bg-[#D4AF37] peer-checked:font-bold peer-checked:text-black hover:border-[#D4AF37]/35">
+                        <span className="theme-pill block w-full rounded-2xl px-4 py-3 text-right text-sm transition peer-checked:border-[#D4AF37]/40 peer-checked:bg-[#D4AF37] peer-checked:font-bold peer-checked:text-black hover:border-[#D4AF37]/35">
                           {category.name}
                         </span>
                       </label>
@@ -151,34 +147,34 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                 <div className="flex gap-3">
                   <button
                     type="submit"
-                    className="flex-1 rounded-full bg-[#D4AF37] px-5 py-3 text-sm font-bold text-black"
+                    className="theme-button-primary flex-1 rounded-full px-5 py-3 text-sm font-bold"
                   >
                     تطبيق
                   </button>
                   <Link
                     href="/articles"
-                    className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-[#F5F1E8]"
+                    className="theme-button-secondary rounded-full px-5 py-3 text-sm font-semibold"
                   >
                     إعادة
                   </Link>
                 </div>
               </form>
 
-              <div className="mt-5 rounded-[24px] border border-[#D4AF37]/15 bg-[linear-gradient(135deg,rgba(212,175,55,0.13),rgba(17,17,17,0.92))] p-5">
-                <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#F0D36A]">
+              <div className="theme-inset-card-strong mt-5 rounded-[24px] p-5">
+                <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold-soft)]">
                   {storeHighlight.eyebrow}
                 </div>
-                <div className="mb-3 text-xl font-black text-white">
+                <div className="theme-text-main mb-3 text-xl font-black">
                   {storeHighlight.title}
                 </div>
-                <p className="text-sm leading-7 text-[#D8D2C7]">
+                <p className="theme-text-soft text-sm leading-7">
                   {storeHighlight.description}
                 </p>
                 <a
                   href={STORE_URL}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-5 inline-flex w-full items-center justify-center rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-5 py-3 text-sm font-bold text-[#F3D98C] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37] hover:text-black"
+                  className="theme-pill-active mt-5 inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-bold hover:bg-[var(--gold)] hover:text-black"
                 >
                   {storeHighlight.ctaLabel}
                 </a>
@@ -189,10 +185,10 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
               {posts.map((post) => (
                 <article
                   key={post.id}
-                  className="overflow-hidden rounded-[28px] border border-white/10 bg-[#0F0F0F] transition hover:border-[#D4AF37]/25"
+                  className="theme-card-soft-alt overflow-hidden rounded-[28px] transition hover:border-[#D4AF37]/25"
                 >
                   <div className="grid gap-0 md:grid-cols-[280px_1fr]">
-                    <div className="relative min-h-[220px] bg-black">
+                    <div className="relative min-h-[220px] bg-[var(--panel-plain-soft)]">
                       <Image
                         src={post.coverImageUrl}
                         alt={post.title}
@@ -204,18 +200,18 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
 
                     <div className="flex flex-col justify-between gap-4 p-5 md:p-6">
                       <div>
-                        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-[#A7A29A]">
+                        <div className="theme-text-muted mb-3 flex flex-wrap items-center gap-2 text-xs">
                           <span className="rounded-full bg-[#D4AF37]/90 px-3 py-1 font-bold text-black">
                             {post.category.name}
                           </span>
                           <span>{post.publishedLabel}</span>
-                          <span className="h-1 w-1 rounded-full bg-[#6F6A63]" />
+                          <span className="h-1 w-1 rounded-full bg-[var(--muted)]" />
                           <span>{post.readingTime}</span>
                         </div>
-                        <h2 className="display-heading mb-3 text-2xl font-black leading-9 text-white transition hover:text-[#F0D36A]">
+                        <h2 className="display-heading theme-text-main mb-3 text-2xl font-black leading-9 transition hover:text-[var(--gold-soft)]">
                           {post.title}
                         </h2>
-                        <p className="max-w-3xl leading-8 text-[#B8B2A8]">
+                        <p className="theme-text-soft max-w-3xl leading-8">
                           {post.excerpt}
                         </p>
                       </div>
@@ -223,7 +219,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                       <div className="flex justify-end">
                         <Link
                           href={post.href}
-                          className="rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold transition hover:border-[#D4AF37]/40 hover:text-[#F0D36A]"
+                          className="theme-button-secondary rounded-full px-5 py-2.5 text-sm font-semibold"
                         >
                           اقرأ المقال
                         </Link>
@@ -236,17 +232,17 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
           </section>
         ) : (
           <section className="panel-surface rounded-[32px] p-8 text-center">
-            <h2 className="display-heading text-2xl font-black text-white">
+            <h2 className="display-heading theme-text-main text-2xl font-black">
               لا توجد نتائج مطابقة حاليًا
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-[#B8B2A8]">
+            <p className="theme-text-soft mx-auto mt-4 max-w-2xl text-base leading-8">
               جرّب تقليل كلمات البحث أو إزالة الفلتر الحالي للوصول إلى نطاق أوسع
               من المقالات.
             </p>
             <div className="mt-6">
               <Link
                 href="/articles"
-                className="inline-flex rounded-full bg-[#D4AF37] px-6 py-3 text-sm font-bold text-[#080808] hover:bg-[#E5C25B]"
+                className="theme-button-primary inline-flex rounded-full px-6 py-3 text-sm font-bold"
               >
                 عرض جميع المقالات
               </Link>

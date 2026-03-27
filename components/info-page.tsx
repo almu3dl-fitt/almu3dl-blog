@@ -27,17 +27,17 @@ export function InfoPage({
       <div className="site-container space-y-8">
         <section className="panel-surface rounded-[34px] p-8 md:p-10">
           <div className="section-kicker mb-4">{eyebrow}</div>
-          <h1 className="display-heading text-4xl font-black leading-[1.2] text-white md:text-5xl">
+          <h1 className="display-heading theme-text-main text-4xl font-black leading-[1.2] md:text-5xl">
             {title}
           </h1>
-          <p className="mt-5 max-w-4xl text-lg leading-8 text-[#B8B2A8]">
+          <p className="theme-text-soft mt-5 max-w-4xl text-lg leading-8">
             {description}
           </p>
           {ctaLabel && ctaHref ? (
             <div className="mt-8">
               <Link
                 href={ctaHref}
-                className="inline-flex rounded-full bg-[#D4AF37] px-6 py-3 text-sm font-bold text-black transition hover:translate-y-[-1px] hover:bg-[#E5C25B]"
+                className="theme-button-primary inline-flex rounded-full px-6 py-3 text-sm font-bold"
               >
                 {ctaLabel}
               </Link>
@@ -51,10 +51,10 @@ export function InfoPage({
               key={block.title}
               className="panel-surface rounded-[28px] p-6 md:p-7"
             >
-              <h2 className="display-heading text-2xl font-black text-white">
+              <h2 className="display-heading theme-text-main text-2xl font-black">
                 {block.title}
               </h2>
-              <p className="mt-4 text-base leading-8 text-[#B8B2A8]">
+              <p className="theme-text-soft mt-4 text-base leading-8">
                 {block.text}
               </p>
             </article>

@@ -59,7 +59,7 @@ export function SiteFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-12 border-t border-white/10 bg-black/40">
+    <footer className="theme-footer mt-12">
       <div className="site-container space-y-8 py-10">
         <div className="grid gap-8 md:grid-cols-[1.15fr_0.85fr_1fr]">
           <div className="space-y-4">
@@ -69,7 +69,7 @@ export function SiteFooter() {
                 <div className="display-heading brand-gradient-text text-lg font-black">
                   {SITE_NAME}
                 </div>
-                <p className="mt-2 max-w-xl text-sm leading-7 text-[#B8B2A7]">
+                <p className="theme-text-soft mt-2 max-w-xl text-sm leading-7">
                   {SITE_DESCRIPTION}
                 </p>
               </div>
@@ -84,7 +84,7 @@ export function SiteFooter() {
                   rel="noreferrer"
                   aria-label={link.label}
                   title={link.label}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#DDD6CA] transition hover:border-[#D4AF37]/40 hover:bg-[#D4AF37] hover:text-black"
+                  className="theme-pill inline-flex h-11 w-11 items-center justify-center rounded-full text-[var(--fg)] hover:bg-[var(--gold)] hover:text-black"
                 >
                   <SocialIcon label={link.label} />
                 </a>
@@ -93,15 +93,15 @@ export function SiteFooter() {
           </div>
 
           <div className="space-y-4">
-            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#8E8677]">
+            <div className="theme-text-muted text-sm font-semibold uppercase tracking-[0.18em]">
               الصفحات
             </div>
-            <div className="flex flex-col gap-3 text-sm text-[#D7D1C6]">
+            <div className="theme-text-soft flex flex-col gap-3 text-sm">
               {FOOTER_LINKS.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="transition hover:text-[#F3D98C]"
+                  className="transition hover:text-[var(--gold-soft)]"
                 >
                   {item.label}
                 </Link>
@@ -110,7 +110,7 @@ export function SiteFooter() {
                 href={STORE_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="transition hover:text-[#F3D98C]"
+                className="transition hover:text-[var(--gold-soft)]"
               >
                 المتجر
               </a>
@@ -118,7 +118,7 @@ export function SiteFooter() {
           </div>
 
           <div className="space-y-4">
-            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#8E8677]">
+            <div className="theme-text-muted text-sm font-semibold uppercase tracking-[0.18em]">
               التصنيفات
             </div>
             <div className="flex flex-wrap gap-2">
@@ -126,20 +126,20 @@ export function SiteFooter() {
                 <Link
                   key={category.slug}
                   href={`/articles?category=${category.slug}`}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-[#D7D1C6] transition hover:border-[#D4AF37]/35 hover:text-[#F3D98C]"
+                  className="theme-pill rounded-full px-3 py-2 text-xs"
                 >
                   {category.name}
                 </Link>
               ))}
             </div>
 
-            <div className="rounded-[24px] border border-[#D4AF37]/15 bg-[linear-gradient(135deg,rgba(212,175,55,0.14),rgba(18,18,18,0.7))] p-4 text-sm leading-7 text-[#DDD6CA]">
+            <div className="theme-inset-card-strong theme-text-soft rounded-[24px] p-4 text-sm leading-7">
               وش تنتظر؟؟!! غير جسمك ، اكتشف مقدرتك، وخلك صحي
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-5 text-sm text-[#A7A29A] md:flex-row">
+        <div className="theme-text-muted flex flex-col items-center justify-between gap-4 border-t pt-5 text-sm md:flex-row" style={{ borderColor: "var(--border)" }}>
           <div>© {currentYear} المعضّل • Almu3dl — مدونة اللياقة والتغذية</div>
           <div>محتوى عربي عن اللياقة، التغذية، والأداء الرياضي.</div>
         </div>

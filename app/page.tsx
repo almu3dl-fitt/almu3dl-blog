@@ -21,23 +21,23 @@ export default async function HomePage() {
               <div className="grid min-h-[520px] lg:grid-cols-[1.12fr_0.88fr]">
                 <div className="flex flex-col justify-center bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.12),transparent_35%)] p-8 md:p-10 xl:p-12">
                   <div className="section-kicker mb-4">{featuredPost.category.name}</div>
-                  <h1 className="display-heading max-w-[32rem] text-[2.05rem] font-black leading-[1.22] text-white sm:text-[2.25rem] md:text-[2.55rem] xl:text-[2.9rem]">
+                  <h1 className="display-heading theme-text-main max-w-[32rem] text-[2.05rem] font-black leading-[1.22] sm:text-[2.25rem] md:text-[2.55rem] xl:text-[2.9rem]">
                     {featuredPost.title}
                   </h1>
-                  <p className="mt-5 max-w-3xl text-[0.97rem] leading-8 text-[#B8B2A8] md:text-base">
+                  <p className="theme-text-soft mt-5 max-w-3xl text-[0.97rem] leading-8 md:text-base">
                     {featuredPost.excerpt}
                   </p>
 
                   <div className="mt-8 flex flex-wrap gap-3">
                     <Link
                       href={featuredPost.href}
-                      className="rounded-full bg-[#D4AF37] px-6 py-3 font-bold text-black transition hover:scale-[1.02]"
+                      className="theme-button-primary rounded-full px-6 py-3 font-bold transition hover:scale-[1.02]"
                     >
                       اقرأ المقال
                     </Link>
                     <Link
                       href="/articles"
-                      className="rounded-full border border-white/10 bg-white/5 px-6 py-3 font-semibold transition hover:bg-white/10"
+                      className="theme-button-secondary rounded-full px-6 py-3 font-semibold"
                     >
                       تصفح الأرشيف
                     </Link>
@@ -45,36 +45,36 @@ export default async function HomePage() {
 
                   <div className="mt-8 grid grid-cols-3 gap-3 text-sm">
                     <div className="surface-muted rounded-2xl p-4">
-                      <div className="mb-1 font-bold text-[#F0D36A]">{totalPosts}+</div>
-                      <div className="text-[#A7A29A]">مقال</div>
+                      <div className="mb-1 font-bold text-[var(--gold-soft)]">{totalPosts}+</div>
+                      <div className="theme-text-muted">مقال</div>
                     </div>
                     <div className="surface-muted rounded-2xl p-4">
-                      <div className="mb-1 font-bold text-[#F0D36A]">{totalCategories}</div>
-                      <div className="text-[#A7A29A]">تصنيف</div>
+                      <div className="mb-1 font-bold text-[var(--gold-soft)]">{totalCategories}</div>
+                      <div className="theme-text-muted">تصنيف</div>
                     </div>
                     <div className="surface-muted rounded-2xl p-4">
-                      <div className="mb-1 font-bold text-[#F0D36A]">100%</div>
-                      <div className="text-[#A7A29A]">محتوى عربي</div>
+                      <div className="mb-1 font-bold text-[var(--gold-soft)]">100%</div>
+                      <div className="theme-text-muted">محتوى عربي</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="relative min-h-[320px] bg-black">
+                <div className="relative min-h-[320px] bg-[var(--panel-plain-soft)]">
                   <div className="absolute inset-0 bg-[url('/articles/categories/strength-performance.svg')] bg-cover bg-center opacity-0" />
                   <ArticleCard post={featuredPost} variant="featured" />
                   {secondaryPost ? (
                     <div className="absolute inset-x-4 bottom-4 md:inset-x-6 md:bottom-6">
                       <Link
                         href={secondaryPost.href}
-                        className="block w-full rounded-[28px] border border-white/10 bg-black/55 p-5 text-right backdrop-blur transition hover:border-[#D4AF37]/30"
+                        className="theme-inset-card block w-full rounded-[28px] p-5 text-right backdrop-blur transition hover:border-[#D4AF37]/30"
                       >
-                        <div className="mb-2 text-sm text-[#F0D36A]">
+                        <div className="mb-2 text-sm text-[var(--gold-soft)]">
                           {secondaryPost.category.name}
                         </div>
-                        <div className="mb-3 text-lg font-black leading-snug text-white md:text-[1.35rem]">
+                        <div className="theme-text-main mb-3 text-lg font-black leading-snug md:text-[1.35rem]">
                           {secondaryPost.title}
                         </div>
-                        <div className="text-sm text-[#B8B2A8]">
+                        <div className="theme-text-soft text-sm">
                           {secondaryPost.readingTime}
                         </div>
                       </Link>
@@ -87,13 +87,13 @@ export default async function HomePage() {
 
           <aside className="space-y-4">
             <div className="panel-surface rounded-[28px] p-5">
-              <div className="mb-4 text-lg font-black text-white">التصنيفات</div>
+              <div className="theme-text-main mb-4 text-lg font-black">التصنيفات</div>
               <div className="flex flex-wrap gap-2">
                 {categorySummaries.map((category) => (
                   <Link
                     key={category.slug}
                     href={`/articles?category=${category.slug}`}
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm transition hover:border-[#D4AF37]/35 hover:text-[#F0D36A]"
+                    className="theme-pill rounded-full px-4 py-2 text-sm"
                   >
                     {category.name}
                   </Link>
@@ -102,30 +102,30 @@ export default async function HomePage() {
             </div>
 
             <div className="panel-surface rounded-[28px] p-5">
-              <div className="mb-4 text-lg font-black text-white">ابحث بسرعة</div>
+              <div className="theme-text-main mb-4 text-lg font-black">ابحث بسرعة</div>
               <form action="/articles" method="get" className="flex gap-2">
                 <input
                   name="q"
                   placeholder="ابحث عن مقال أو موضوع"
-                  className="flex-1 rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none placeholder:text-[#7D766D] focus:border-[#D4AF37]/40"
+                  className="theme-input flex-1 rounded-2xl px-4 py-3"
                 />
                 <button
                   type="submit"
-                  className="rounded-2xl bg-[#D4AF37] px-5 font-bold text-black"
+                  className="theme-button-primary rounded-2xl px-5 font-bold"
                 >
                   بحث
                 </button>
               </form>
             </div>
 
-            <div className="rounded-[28px] border border-[#3DDC84]/20 bg-[linear-gradient(135deg,rgba(61,220,132,0.12),rgba(212,175,55,0.12))] p-6">
-              <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9EAC7]">
+            <div className="theme-store-card rounded-[28px] p-6">
+              <div className="theme-store-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.18em]">
                 {storeHighlight.eyebrow}
               </div>
-              <div className="mb-3 text-2xl font-black text-white">
+              <div className="theme-text-main mb-3 text-2xl font-black">
                 {storeHighlight.title}
               </div>
-              <p className="mb-5 leading-8 text-[#D7E8DD]">
+              <p className="theme-store-copy mb-5 leading-8">
                 {storeHighlight.description}
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
@@ -139,7 +139,7 @@ export default async function HomePage() {
                 </a>
                 <Link
                   href="/about"
-                  className="inline-flex flex-1 items-center justify-center rounded-full border border-white/15 bg-black/20 px-5 py-3 font-semibold text-white"
+                  className="theme-button-secondary inline-flex flex-1 items-center justify-center rounded-full px-5 py-3 font-semibold"
                 >
                   عن المعضّل
                 </Link>
@@ -152,14 +152,14 @@ export default async function HomePage() {
           <div className="flex items-end justify-between gap-4">
             <div>
               <div className="section-kicker mb-2">أحدث النشر</div>
-              <h2 className="display-heading text-3xl font-black text-white">
+              <h2 className="display-heading theme-text-main text-3xl font-black">
                 أحدث المقالات
               </h2>
             </div>
 
             <Link
               href="/articles"
-              className="hidden rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-[#F5F1E8] hover:border-[#D4AF37]/30 hover:text-[#F3D98C] md:inline-flex"
+              className="theme-button-secondary hidden rounded-full px-4 py-2 text-sm font-semibold md:inline-flex"
             >
               عرض الأرشيف كاملًا
             </Link>
@@ -175,7 +175,7 @@ export default async function HomePage() {
         <section className="space-y-5">
           <div>
             <div className="section-kicker mb-2">مسارات المحتوى</div>
-            <h2 className="display-heading text-3xl font-black text-white">
+            <h2 className="display-heading theme-text-main text-3xl font-black">
               مسارات القراءة
             </h2>
           </div>
@@ -185,17 +185,17 @@ export default async function HomePage() {
               <Link
                 key={category.slug}
                 href={`/articles?category=${category.slug}`}
-                className={`overflow-hidden rounded-[28px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(212,175,55,0.12),transparent_28%),linear-gradient(180deg,rgba(18,21,26,0.96),rgba(9,11,14,0.96))] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.26)] transition hover:-translate-y-1 hover:border-[#D4AF37]/24`}
+                className="panel-surface overflow-hidden rounded-[28px] bg-[radial-gradient(circle_at_top_left,rgba(212,175,55,0.12),transparent_28%)] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.26)] transition hover:-translate-y-1 hover:border-[#D4AF37]/24"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <div className="display-heading text-xl font-black text-white">
+                  <div className="display-heading theme-text-main text-xl font-black">
                     {category.name}
                   </div>
-                  <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-[#F3D98C]">
+                  <div className="theme-pill rounded-full px-3 py-1 text-xs text-[var(--gold-soft)]">
                     {category.postCount} مقال
                   </div>
                 </div>
-                <p className="mt-4 text-sm leading-7 text-[#BFB8AB]">
+                <p className="theme-text-soft mt-4 text-sm leading-7">
                   {category.description}
                 </p>
               </Link>

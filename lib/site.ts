@@ -16,46 +16,39 @@ export const NAV_LINKS = [
 
 export const FOOTER_LINKS = [
   { href: "/articles", label: "الأرشيف" },
-  { href: "/about", label: "عن المشروع" },
+  { href: "/about", label: "عن المعضّل" },
   { href: "/contact", label: "التواصل" },
   { href: "/privacy", label: "سياسة الخصوصية" },
 ] as const;
 
 export type SocialLink = {
   label: string;
-  shortLabel: string;
   href: string;
 };
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
     label: "Instagram",
-    shortLabel: "IG",
     href: "https://www.instagram.com/bin_zain/",
   },
   {
     label: "TikTok",
-    shortLabel: "TT",
     href: "https://www.tiktok.com/@almu3dl",
   },
   {
     label: "Snapchat",
-    shortLabel: "SC",
     href: "https://www.snapchat.com/add/almu3dl",
   },
   {
     label: "YouTube",
-    shortLabel: "YT",
     href: "https://www.youtube.com/@almu3dl",
   },
   {
     label: "Telegram",
-    shortLabel: "TG",
     href: "https://t.me/almu3dl",
   },
   {
     label: "X",
-    shortLabel: "X",
     href: "https://x.com/almu3dl",
   },
 ];

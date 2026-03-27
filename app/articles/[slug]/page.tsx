@@ -68,7 +68,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <article className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-6">
             <section className="panel-surface overflow-hidden rounded-[34px]">
-              <div className="relative h-[340px] overflow-hidden md:h-[440px]">
+              <div className="relative h-[300px] overflow-hidden md:h-[400px] xl:h-[460px]">
                 <Image
                   src={post.coverImageUrl}
                   alt={post.title}
@@ -77,47 +77,30 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   sizes="(max-width: 1280px) 100vw, 65vw"
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,8,10,0.1),rgba(7,8,10,0.92))]" />
-                <div className="absolute inset-x-0 bottom-0 space-y-5 p-7 md:p-9">
-                  <div className="flex flex-wrap gap-2 text-sm">
-                    <span className="rounded-full bg-[#D4AF37] px-4 py-2 font-bold text-[#080808]">
-                      {post.category.name}
-                    </span>
-                    <span className="rounded-full border border-white/10 bg-black/35 px-4 py-2 text-[#F5F1E8]">
-                      {post.publishedLabel}
-                    </span>
-                    <span className="rounded-full border border-white/10 bg-black/35 px-4 py-2 text-[#F5F1E8]">
-                      {post.readingTime}
-                    </span>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h1 className="display-heading max-w-5xl text-4xl font-black leading-[1.3] text-white md:text-5xl xl:text-6xl">
-                      {post.title}
-                    </h1>
-                    <p className="max-w-3xl text-base leading-8 text-[#DDD6CA] md:text-lg">
-                      {post.excerpt}
-                    </p>
-                  </div>
-                </div>
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,8,10,0.04),rgba(7,8,10,0.32))]" />
               </div>
             </section>
 
             <section className="panel-surface rounded-[34px] p-6 md:p-8 xl:p-10">
               <div className="rounded-[28px] border border-[#D4AF37]/15 bg-[#0D0D0D] p-5 md:p-6">
-                <div className="mb-4 flex flex-wrap items-center gap-2 text-xs text-[#A7A29A]">
+                <div className="mb-5 flex flex-wrap items-center gap-2 text-xs text-[#A7A29A]">
+                  <span className="rounded-full bg-[#D4AF37] px-3 py-1 font-bold text-[#080808]">
+                    {post.category.name}
+                  </span>
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
                     {post.publishedLabel}
                   </span>
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
                     {post.readingTime}
                   </span>
-                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-                    {post.category.name}
-                  </span>
                 </div>
-                <div className="mb-2 text-sm text-[#F0D36A]">ملخص المقال</div>
-                <p className="text-lg leading-8 text-[#E8E1D6]">{post.excerpt}</p>
+                <h1 className="display-heading max-w-5xl text-3xl font-black leading-[1.35] text-white md:text-4xl xl:text-5xl">
+                  {post.title}
+                </h1>
+                <div className="mt-5 mb-2 text-sm text-[#F0D36A]">ملخص المقال</div>
+                <p className="text-base leading-8 text-[#E8E1D6] md:text-lg">
+                  {post.excerpt}
+                </p>
               </div>
 
               <div className="mt-8 space-y-5">

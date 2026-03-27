@@ -69,14 +69,18 @@ export function ArticleCard({
           <h2
             className={joinClasses(
               "display-heading font-black leading-[1.45] text-white transition group-hover:text-[#F3D98C]",
-              isFeatured ? "text-3xl md:text-4xl" : isCompact ? "text-lg" : "text-xl",
+              isFeatured
+                ? "text-2xl md:text-3xl"
+                : isCompact
+                  ? "text-lg"
+                  : "text-lg md:text-[1.15rem]",
             )}
           >
             {post.title}
           </h2>
 
           {!isCompact ? (
-            <p className="line-clamp-3 text-sm leading-7 text-[#C7C0B3] md:text-base">
+            <p className="line-clamp-3 text-sm leading-7 text-[#C7C0B3]">
               {post.excerpt}
             </p>
           ) : null}

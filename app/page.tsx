@@ -21,10 +21,10 @@ export default async function HomePage() {
               <div className="grid min-h-[520px] lg:grid-cols-[1.02fr_0.98fr]">
                 <div className="flex flex-col justify-center bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.12),transparent_35%)] p-8 md:p-10 xl:p-12">
                   <div className="section-kicker mb-4">{featuredPost.category.name}</div>
-                  <h1 className="display-heading max-w-4xl text-4xl font-black leading-[1.2] text-white md:text-5xl xl:text-6xl">
+                  <h1 className="display-heading max-w-4xl text-3xl font-black leading-[1.25] text-white sm:text-[2.45rem] md:text-[2.85rem] xl:text-[3.35rem]">
                     {featuredPost.title}
                   </h1>
-                  <p className="mt-5 max-w-3xl text-base leading-8 text-[#B8B2A8] md:text-lg">
+                  <p className="mt-5 max-w-3xl text-[0.97rem] leading-8 text-[#B8B2A8] md:text-base">
                     {featuredPost.excerpt}
                   </p>
 
@@ -71,7 +71,7 @@ export default async function HomePage() {
                         <div className="mb-2 text-sm text-[#F0D36A]">
                           {secondaryPost.category.name}
                         </div>
-                        <div className="mb-3 text-2xl font-black leading-snug text-white">
+                        <div className="mb-3 text-xl font-black leading-snug text-white md:text-2xl">
                           {secondaryPost.title}
                         </div>
                         <div className="text-sm text-[#B8B2A8]">

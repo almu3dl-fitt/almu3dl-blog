@@ -54,7 +54,7 @@ export default async function HomePage() {
                     </div>
                     <div className="surface-muted rounded-2xl p-4">
                       <div className="mb-1 font-bold text-[var(--gold-soft)]">100%</div>
-                      <div className="theme-text-muted">محتوى عربي</div>
+                      <div className="theme-text-muted">محتوى متخصص</div>
                     </div>
                   </div>
                 </div>

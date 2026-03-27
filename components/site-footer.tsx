@@ -141,7 +141,7 @@ export function SiteFooter() {
           <div>
             © {currentYear} <BrandName /> — مدونة اللياقة والتغذية
           </div>
-          <div>محتوى عربي عن اللياقة، التغذية، والأداء الرياضي.</div>
+          <div>محتوى عن اللياقة، التغذية، والأداء الرياضي.</div>
         </div>
       </div>
     </footer>

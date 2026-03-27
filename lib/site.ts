@@ -1,9 +1,9 @@
 export const SITE_NAME_AR = "المعضّل";
 export const SITE_NAME_LATIN = "Almu3dl";
 export const SITE_NAME = `${SITE_NAME_AR} - ${SITE_NAME_LATIN}`;
-export const SITE_TAGLINE = "مدونة عربية للياقة والتغذية والأداء الرياضي";
+export const SITE_TAGLINE = "مدونة للياقة والتغذية والأداء الرياضي";
 export const SITE_DESCRIPTION =
-  "مدونة عربية عن اللياقة والتغذية الرياضية وخسارة الدهون وبناء العضلات والمكملات الغذائية والصحة العامة.";
+  "مدونة عن اللياقة والتغذية الرياضية وخسارة الدهون وبناء العضلات والمكملات الغذائية والصحة العامة.";
 export const SITE_LOGO_PATH = "/brand/logo.png";
 const DEFAULT_SITE_URL = "https://almu3dl-blog.almu3dl.store";
 export const STORE_URL = "https://www.almu3dl.store/store";

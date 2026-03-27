@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  slug  String @unique
+  posts Post[]
+}
+
+model Post {
+  id             Int           @id @default(autoincrement())
+  categoryId     Int
+  slug           String        @unique
+  title          String
+  excerpt        String?
+  coverImageUrl  String?
+  publishedAt    DateTime?
+  readingTime    String?
+  status         String        @default("published")
+  seoTitle       String?
+  seoDescription String?
+  category       Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  sections       PostSection[]
+  media          Media[]
+
+  @@index([categoryId])
+  @@index([publishedAt])
+}
+
+model PostSection {
+  id        Int    @id @default(autoincrement())
+  postId    Int
+  heading   String
+  anchor    String
+  content   String
+  sortOrder Int
+  post      Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@unique([postId, anchor])
+}
+
+model Media {
+  id      Int    @id @default(autoincrement())
+  postId  Int
+  url     String
+  altText String?
+  type    String?
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+}

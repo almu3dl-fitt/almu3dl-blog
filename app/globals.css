@@ -1,26 +1,115 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #07090c;
+  --bg-soft: #101318;
+  --panel: #11151a;
+  --panel-strong: #151a20;
+  --fg: #f5f1e8;
+  --fg-soft: #c6c0b5;
+  --muted: #8e8677;
+  --gold: #d4af37;
+  --gold-soft: #f3d98c;
+  --green: #0f7b6c;
+  --border: rgba(255, 255, 255, 0.08);
+  --shadow: 0 26px 80px rgba(0, 0, 0, 0.36);
+  --font-body:
+    "IBM Plex Sans Arabic", "Noto Sans Arabic", "Tajawal", "Segoe UI",
+    system-ui, sans-serif;
+  --font-display:
+    "Cairo", "IBM Plex Sans Arabic", "Noto Sans Arabic", "Segoe UI", sans-serif;
+  --font-mono:
+    "SFMono-Regular", "Cascadia Code", "Consolas", "Liberation Mono", monospace;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(212, 175, 55, 0.1), transparent 30%),
+    radial-gradient(circle at 20% 20%, rgba(15, 123, 108, 0.08), transparent 32%),
+    linear-gradient(180deg, #080a0d 0%, #090b0f 45%, #07090c 100%);
+  color: var(--fg);
+  font-family: var(--font-body);
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 85%);
+  content: "";
+  pointer-events: none;
+}
+
+::selection {
+  background: rgba(212, 175, 55, 0.28);
+  color: white;
+}
+
+* {
+  border-color: var(--border);
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.site-container {
+  width: min(100% - 1.5rem, 76rem);
+  margin-inline: auto;
+}
+
+.display-heading {
+  font-family: var(--font-display);
+}
+
+.panel-surface {
+  background:
+    linear-gradient(180deg, rgba(20, 23, 28, 0.96), rgba(10, 12, 16, 0.96)),
+    rgba(17, 21, 26, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow);
+}
+
+.section-kicker {
+  color: var(--gold-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.page-main {
+  padding-block: 1.5rem 3rem;
+}
+
+@media (min-width: 768px) {
+  .page-main {
+    padding-block: 2rem 4rem;
+  }
 }

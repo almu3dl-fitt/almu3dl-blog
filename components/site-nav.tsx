@@ -28,10 +28,10 @@ export function SiteNav() {
             key={item.href}
             href={item.href}
             className={joinClasses(
-              "rounded-full px-4 py-2 text-sm font-medium transition whitespace-nowrap",
+              "rounded-full border px-4 py-2 text-sm font-medium transition whitespace-nowrap",
               isActive
-                ? "bg-[#D4AF37] text-[#080808] shadow-[0_10px_30px_rgba(212,175,55,0.18)]"
-                : "text-[#D7D1C6] hover:bg-white/5 hover:text-white",
+                ? "border-[#D4AF37]/45 bg-[#D4AF37]/10 text-[#F0D36A]"
+                : "border-white/10 bg-white/5 text-[#D7D1C6] hover:bg-white/10 hover:text-white",
             )}
           >
             {item.label}

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-
-import { ArticleCard } from "@/components/article-card";
 import { getArchivePageData, readSearchParam } from "@/lib/posts";
 
 type ArticlesPageProps = {
@@ -32,10 +31,10 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
   return (
     <main className="page-main">
       <div className="site-container space-y-8">
-        <section className="panel-surface rounded-[34px] p-7 md:p-9">
-          <div className="section-kicker mb-4">Article Archive</div>
-          <div className="grid gap-6 xl:grid-cols-[1fr_auto] xl:items-end">
+        <section className="space-y-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
+              <div className="section-kicker mb-4">Article Archive</div>
               <h1 className="display-heading text-4xl font-black leading-[1.25] text-white md:text-5xl">
                 أرشيف المعضّل
               </h1>
@@ -45,65 +44,15 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
               </p>
             </div>
 
-            <div className="rounded-[26px] border border-white/8 bg-black/20 px-5 py-4 text-sm text-[#C9C2B5]">
-              <div className="text-xs uppercase tracking-[0.18em] text-[#8E8677]">
-                النتائج الحالية
-              </div>
-              <div className="display-heading mt-2 text-3xl font-black text-white">
+            <div className="rounded-full border border-white/10 bg-[#111111] px-4 py-3 text-sm text-[#A7A29A]">
+              <span className="display-heading font-black text-white">
                 {posts.length}
-              </div>
+              </span>{" "}
+              مقال
             </div>
           </div>
 
-          <form
-            action="/articles"
-            method="get"
-            className="mt-7 grid gap-4 rounded-[28px] border border-white/8 bg-black/20 p-4 md:grid-cols-[1fr_260px_auto]"
-          >
-            <label className="flex flex-col gap-2 text-sm text-[#D7D1C6]">
-              <span className="font-semibold text-white">ابحث داخل المقالات</span>
-              <input
-                type="search"
-                name="q"
-                defaultValue={query}
-                placeholder="ابحث بعنوان المقال أو محتواه"
-                className="rounded-2xl border border-white/10 bg-[#11151A] px-4 py-3 text-sm text-white outline-none placeholder:text-[#6F695D] focus:border-[#D4AF37]/35"
-              />
-            </label>
-
-            <label className="flex flex-col gap-2 text-sm text-[#D7D1C6]">
-              <span className="font-semibold text-white">التصنيف</span>
-              <select
-                name="category"
-                defaultValue={categorySlug}
-                className="rounded-2xl border border-white/10 bg-[#11151A] px-4 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/35"
-              >
-                <option value="">كل التصنيفات</option>
-                {categorySummaries.map((category) => (
-                  <option key={category.slug} value={category.slug}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <div className="flex items-end gap-3">
-              <button
-                type="submit"
-                className="inline-flex rounded-full bg-[#D4AF37] px-5 py-3 text-sm font-bold text-[#080808] hover:bg-[#E5C25B]"
-              >
-                تطبيق الفلاتر
-              </button>
-              <Link
-                href="/articles"
-                className="inline-flex rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-[#F5F1E8] hover:border-[#D4AF37]/30 hover:text-[#F3D98C]"
-              >
-                إعادة الضبط
-              </Link>
-            </div>
-          </form>
-
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 rounded-[30px] border border-white/10 bg-[#111111] p-5 md:p-6">
             <Link
               href={query ? `/articles?q=${encodeURIComponent(query)}` : "/articles"}
               className={`rounded-full px-4 py-2 text-sm font-medium transition ${
@@ -130,8 +79,8 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                 >
                   {category.name}
                 </Link>
-              );
-            })}
+                );
+              })}
           </div>
         </section>
 
@@ -151,10 +100,117 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
         )}
 
         {posts.length > 0 ? (
-          <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {posts.map((post) => (
-              <ArticleCard key={post.id} post={post} />
-            ))}
+          <section className="grid gap-5 lg:grid-cols-[270px_1fr]">
+            <aside className="panel-surface h-fit rounded-[26px] p-5">
+              <form action="/articles" method="get" className="space-y-5">
+                <div>
+                  <div className="mb-3 text-sm text-[#A7A29A]">بحث</div>
+                  <input
+                    type="search"
+                    name="q"
+                    defaultValue={query}
+                    placeholder="ابحث في المقالات"
+                    className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none placeholder:text-[#7D766D] focus:border-[#D4AF37]/40"
+                  />
+                </div>
+
+                <div>
+                  <div className="mb-3 text-sm text-[#A7A29A]">التصنيف</div>
+                  <div className="space-y-2">
+                    <label className="block">
+                      <input
+                        type="radio"
+                        name="category"
+                        value=""
+                        defaultChecked={!categorySlug}
+                        className="peer sr-only"
+                      />
+                      <span className="block w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-right text-sm text-[#D7D0C5] transition peer-checked:border-[#D4AF37] peer-checked:bg-[#D4AF37] peer-checked:font-bold peer-checked:text-black hover:border-[#D4AF37]/35">
+                        الكل
+                      </span>
+                    </label>
+                    {categorySummaries.map((category) => (
+                      <label key={category.slug} className="block">
+                        <input
+                          type="radio"
+                          name="category"
+                          value={category.slug}
+                          defaultChecked={categorySlug === category.slug}
+                          className="peer sr-only"
+                        />
+                        <span className="block w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-right text-sm text-[#D7D0C5] transition peer-checked:border-[#D4AF37] peer-checked:bg-[#D4AF37] peer-checked:font-bold peer-checked:text-black hover:border-[#D4AF37]/35">
+                          {category.name}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    className="flex-1 rounded-full bg-[#D4AF37] px-5 py-3 text-sm font-bold text-black"
+                  >
+                    تطبيق
+                  </button>
+                  <Link
+                    href="/articles"
+                    className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-[#F5F1E8]"
+                  >
+                    إعادة
+                  </Link>
+                </div>
+              </form>
+            </aside>
+
+            <div className="space-y-4">
+              {posts.map((post) => (
+                <article
+                  key={post.id}
+                  className="overflow-hidden rounded-[28px] border border-white/10 bg-[#0F0F0F] transition hover:border-[#D4AF37]/25"
+                >
+                  <div className="grid gap-0 md:grid-cols-[280px_1fr]">
+                    <div className="relative min-h-[220px] bg-black">
+                      <Image
+                        src={post.coverImageUrl}
+                        alt={post.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 280px"
+                        className="object-cover"
+                      />
+                    </div>
+
+                    <div className="flex flex-col justify-between gap-4 p-5 md:p-6">
+                      <div>
+                        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-[#A7A29A]">
+                          <span className="rounded-full bg-[#D4AF37]/90 px-3 py-1 font-bold text-black">
+                            {post.category.name}
+                          </span>
+                          <span>{post.publishedLabel}</span>
+                          <span className="h-1 w-1 rounded-full bg-[#6F6A63]" />
+                          <span>{post.readingTime}</span>
+                        </div>
+                        <h2 className="display-heading mb-3 text-2xl font-black leading-9 text-white transition hover:text-[#F0D36A]">
+                          {post.title}
+                        </h2>
+                        <p className="max-w-3xl leading-8 text-[#B8B2A8]">
+                          {post.excerpt}
+                        </p>
+                      </div>
+
+                      <div className="flex justify-end">
+                        <Link
+                          href={post.href}
+                          className="rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold transition hover:border-[#D4AF37]/40 hover:text-[#F0D36A]"
+                        >
+                          اقرأ المقال
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
           </section>
         ) : (
           <section className="panel-surface rounded-[32px] p-8 text-center">

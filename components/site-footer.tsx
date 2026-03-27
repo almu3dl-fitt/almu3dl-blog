@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BrandMark } from "@/components/brand-mark";
 import {
   CATEGORY_DEFINITIONS,
   FOOTER_LINKS,
@@ -9,16 +10,22 @@ import {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-white/6 bg-[#080A0D]">
-      <div className="site-container grid gap-8 py-10 md:grid-cols-[1.2fr_0.8fr_1fr]">
-        <div className="space-y-4">
-          <div className="display-heading text-xl font-black text-white">
-            {SITE_NAME}
-          </div>
-          <p className="max-w-xl text-sm leading-7 text-[#B8B2A7]">
-            {SITE_DESCRIPTION} واجهة عربية داكنة، نظيفة، ومبنية لتجربة قراءة
-            مريحة وسريعة بدون ضجيج بصري.
-          </p>
+    <footer className="mt-12 border-t border-white/10 bg-black/40">
+      <div className="site-container space-y-8 py-10">
+        <div className="grid gap-8 md:grid-cols-[1.15fr_0.85fr_1fr]">
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <BrandMark size="lg" />
+              <div>
+                <div className="display-heading brand-gradient-text text-lg font-black">
+                  {SITE_NAME}
+                </div>
+                <p className="mt-2 max-w-xl text-sm leading-7 text-[#B8B2A7]">
+                  {SITE_DESCRIPTION} تجربة عربية داكنة ومركّزة، مصممة للقراءة
+                  الطويلة بدون ضجيج أو ملاحقة بصريّة.
+                </p>
+              </div>
+            </div>
         </div>
 
         <div className="space-y-4">
@@ -53,6 +60,11 @@ export function SiteFooter() {
               </Link>
             ))}
           </div>
+        </div>
+      </div>
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-5 text-sm text-[#A7A29A] md:flex-row">
+          <div>© 2026 المعضّل • Almu3dl — مدونة اللياقة والتغذية</div>
+          <div>روابط التواصل تبقى في الفوتر فقط حفاظًا على تجربة قراءة نظيفة.</div>
         </div>
       </div>
     </footer>

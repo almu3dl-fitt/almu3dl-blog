@@ -83,6 +83,7 @@ export function ArticleCard({
 
           <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-[#F5F1E8] transition group-hover:border-[#D4AF37]/30 group-hover:text-[#F3D98C]">
             اقرأ المقال
+            <span className="text-[#D4AF37]">←</span>
           </span>
         </div>
       </Link>

@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ArticleCard } from "@/components/article-card";
 import { buildArticleHref, getPostBySlug } from "@/lib/posts";
 
 type ArticlePageProps = {
@@ -102,9 +101,20 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </section>
 
             <section className="panel-surface rounded-[34px] p-6 md:p-8 xl:p-10">
-              <div className="rounded-[28px] border border-[#D4AF37]/18 bg-[linear-gradient(180deg,rgba(212,175,55,0.08),rgba(212,175,55,0.02))] p-5 md:p-6">
-                <div className="section-kicker mb-3">Article Snapshot</div>
-                <p className="text-lg leading-9 text-[#EEE7DA]">{post.excerpt}</p>
+              <div className="rounded-[28px] border border-[#D4AF37]/15 bg-[#0D0D0D] p-5 md:p-6">
+                <div className="mb-4 flex flex-wrap items-center gap-2 text-xs text-[#A7A29A]">
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                    {post.publishedLabel}
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                    {post.readingTime}
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                    {post.category.name}
+                  </span>
+                </div>
+                <div className="mb-2 text-sm text-[#F0D36A]">ملخص المقال</div>
+                <p className="text-lg leading-8 text-[#E8E1D6]">{post.excerpt}</p>
               </div>
 
               <div className="mt-8 space-y-5">
@@ -112,80 +122,93 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   <section
                     key={section.id}
                     id={section.anchor}
-                    className="scroll-mt-28 rounded-[28px] border border-white/8 bg-black/15 p-5 md:p-6"
+                    className="scroll-mt-28 rounded-[26px] border border-white/10 bg-black/20 p-5 md:p-6"
                   >
                     <h2 className="display-heading text-2xl font-black leading-[1.5] text-white">
                       {section.heading}
                     </h2>
-                    <p className="mt-4 whitespace-pre-line text-base leading-9 text-[#DDD6CA]">
+                    <p className="mt-4 whitespace-pre-line text-lg leading-9 text-[#E8E1D6]">
                       {section.content}
                     </p>
                   </section>
                 ))}
               </div>
             </section>
-
-            {post.relatedPosts.length > 0 ? (
-              <section className="space-y-5">
-                <div>
-                  <div className="section-kicker mb-2">Related Reading</div>
-                  <h2 className="display-heading text-3xl font-black text-white">
-                    مقالات ذات صلة
-                  </h2>
-                </div>
-                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                  {post.relatedPosts.map((relatedPost) => (
-                    <ArticleCard
-                      key={relatedPost.id}
-                      post={relatedPost}
-                      variant="compact"
-                    />
-                  ))}
-                </div>
-              </section>
-            ) : null}
           </div>
 
           <aside className="space-y-5 xl:sticky xl:top-24">
-            <section className="panel-surface rounded-[30px] p-5">
-              <div className="section-kicker mb-3">Inside This Article</div>
+            <section className="panel-surface rounded-[28px] p-5">
+              <div className="mb-4 text-lg font-black text-white">داخل المقال</div>
               <div className="space-y-2">
                 {post.sections.map((section, index) => (
                   <a
                     key={section.id}
                     href={`#${section.anchor}`}
-                    className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-[#D7D1C6] hover:border-[#D4AF37]/30 hover:text-[#F3D98C]"
+                    className="block rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-[#D7D1C6] transition hover:border-[#D4AF37]/30 hover:text-[#F0D36A]"
                   >
-                    <span className="text-[#F3D98C]">{index + 1}</span>
-                    <span>{section.heading}</span>
+                    {index + 1}. {section.heading}
                   </a>
                 ))}
               </div>
             </section>
 
-            <section className="panel-surface rounded-[30px] p-5">
-              <div className="section-kicker mb-3">Quick Facts</div>
+            <section className="rounded-[28px] border border-[#3DDC84]/20 bg-[linear-gradient(135deg,rgba(61,220,132,0.12),rgba(212,175,55,0.12))] p-6">
+              <div className="mb-3 text-2xl font-black text-white">
+                قراءة هادئة ومباشرة
+              </div>
+              <p className="mb-5 leading-8 text-[#D7E8DD]">
+                هذه الصفحة مصممة لتبقي التركيز على المحتوى نفسه: عنوان واضح،
+                جدول تنقل داخلي، ومقالات مرتبطة من نفس التصنيف.
+              </p>
+              <Link
+                href="/articles"
+                className="inline-flex w-full items-center justify-center rounded-full bg-[#3DDC84] px-5 py-3 font-bold text-black"
+              >
+                استكشف الأرشيف
+              </Link>
+            </section>
+
+            {post.relatedPosts.length > 0 ? (
+              <section className="panel-surface rounded-[28px] p-5">
+                <div className="mb-4 text-lg font-black text-white">
+                  مقالات ذات صلة
+                </div>
+                <div className="space-y-3">
+                  {post.relatedPosts.map((relatedPost, index) => (
+                    <Link
+                      key={relatedPost.id}
+                      href={relatedPost.href}
+                      className="block rounded-2xl border border-white/10 bg-white/5 p-4 text-right transition hover:border-[#D4AF37]/30"
+                    >
+                      <div className="mb-2 text-xs text-[#F0D36A]">
+                        مقال مرتبط {index + 1}
+                      </div>
+                      <div className="font-bold leading-7 text-white">
+                        {relatedPost.title}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ) : null}
+
+            <section className="panel-surface rounded-[28px] p-5">
+              <div className="mb-3 text-lg font-black text-white">حقائق سريعة</div>
               <div className="space-y-3 text-sm text-[#D7D1C6]">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="text-xs uppercase tracking-[0.16em] text-[#8E8677]">
-                    التصنيف
-                  </div>
+                  <div className="text-xs text-[#8E8677]">التصنيف</div>
                   <div className="mt-2 font-semibold text-white">
                     {post.category.name}
                   </div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="text-xs uppercase tracking-[0.16em] text-[#8E8677]">
-                    النشر
-                  </div>
+                  <div className="text-xs text-[#8E8677]">النشر</div>
                   <div className="mt-2 font-semibold text-white">
                     {post.publishedLabel}
                   </div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="text-xs uppercase tracking-[0.16em] text-[#8E8677]">
-                    مدة القراءة
-                  </div>
+                  <div className="text-xs text-[#8E8677]">مدة القراءة</div>
                   <div className="mt-2 font-semibold text-white">
                     {post.readingTime}
                   </div>

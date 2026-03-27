@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ArticleCard } from "@/components/article-card";
 import { getHomePageData } from "@/lib/posts";
+import { getStoreHighlight, STORE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,7 @@ export default async function HomePage() {
   const { featuredPost, latestPosts, totalPosts, totalCategories, categorySummaries } =
     await getHomePageData();
   const secondaryPost = latestPosts[0] ?? null;
+  const storeHighlight = getStoreHighlight();
 
   return (
     <main className="page-main">
@@ -117,19 +119,31 @@ export default async function HomePage() {
             </div>
 
             <div className="rounded-[28px] border border-[#3DDC84]/20 bg-[linear-gradient(135deg,rgba(61,220,132,0.12),rgba(212,175,55,0.12))] p-6">
+              <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9EAC7]">
+                {storeHighlight.eyebrow}
+              </div>
               <div className="mb-3 text-2xl font-black text-white">
-                تجربة قراءة تركّز على الهدف
+                {storeHighlight.title}
               </div>
               <p className="mb-5 leading-8 text-[#D7E8DD]">
-                تم تصميم المعضّل ليقود القارئ إلى المحتوى مباشرة: تصنيف واضح،
-                بحث سريع، وصفحات تحريرية نظيفة بدون عناصر مطاردة أو تشتيت.
+                {storeHighlight.description}
               </p>
-              <Link
-                href="/about"
-                className="inline-flex w-full items-center justify-center rounded-full bg-[#3DDC84] px-5 py-3 font-bold text-black"
-              >
-                اعرف فلسفة المنصة
-              </Link>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={STORE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex flex-1 items-center justify-center rounded-full bg-[#3DDC84] px-5 py-3 font-bold text-black"
+                >
+                  {storeHighlight.ctaLabel}
+                </a>
+                <Link
+                  href="/about"
+                  className="inline-flex flex-1 items-center justify-center rounded-full border border-white/15 bg-black/20 px-5 py-3 font-semibold text-white"
+                >
+                  عن المنصة
+                </Link>
+              </div>
             </div>
           </aside>
         </section>

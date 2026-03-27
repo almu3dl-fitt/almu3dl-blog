@@ -2,7 +2,8 @@ export const SITE_NAME = "المعضّل - Almu3dl";
 export const SITE_TAGLINE = "منصة عربية للّياقة والتغذية والأداء الرياضي";
 export const SITE_DESCRIPTION =
   "مدونة عربية احترافية عن اللياقة والتغذية الرياضية وخسارة الدهون وبناء العضلات والمكملات الغذائية والصحة العامة.";
-const DEFAULT_SITE_URL = "https://almu3dl.com";
+const DEFAULT_SITE_URL = "https://almu3dl-blog.almu3dl.store";
+export const STORE_URL = "https://www.almu3dl.store/store";
 
 export const NAV_LINKS = [
   { href: "/", label: "الرئيسية" },
@@ -18,6 +19,45 @@ export const FOOTER_LINKS = [
   { href: "/contact", label: "التواصل" },
   { href: "/privacy", label: "سياسة الخصوصية" },
 ] as const;
+
+export type SocialLink = {
+  label: string;
+  shortLabel: string;
+  href: string;
+};
+
+export const SOCIAL_LINKS: SocialLink[] = [
+  {
+    label: "Instagram",
+    shortLabel: "IG",
+    href: "https://www.instagram.com/bin_zain/",
+  },
+  {
+    label: "TikTok",
+    shortLabel: "TT",
+    href: "https://www.tiktok.com/@almu3dl",
+  },
+  {
+    label: "Snapchat",
+    shortLabel: "SC",
+    href: "https://www.snapchat.com/add/almu3dl",
+  },
+  {
+    label: "YouTube",
+    shortLabel: "YT",
+    href: "https://www.youtube.com/@almu3dl",
+  },
+  {
+    label: "Telegram",
+    shortLabel: "TG",
+    href: "https://t.me/almu3dl",
+  },
+  {
+    label: "X",
+    shortLabel: "X",
+    href: "https://x.com/almu3dl",
+  },
+];
 
 export type CategoryDefinition = {
   name: string;
@@ -93,6 +133,73 @@ const categoryBySlug = new Map(
   CATEGORY_DEFINITIONS.map((category) => [category.slug, category]),
 );
 
+type StoreHighlight = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  ctaLabel: string;
+};
+
+const DEFAULT_STORE_HIGHLIGHT: StoreHighlight = {
+  eyebrow: "من نفس المنظومة",
+  title: "المتجر مرتبط بالهدف لا بالإزعاج",
+  description:
+    "المتجر حاضر كامتداد هادئ للمحتوى: منتجات وخيارات مرتبطة بأسلوب المعضّل بدون رسائل مشتتة أو ضغط بصري.",
+  ctaLabel: "زيارة المتجر",
+};
+
+const STORE_HIGHLIGHTS_BY_CATEGORY: Record<string, Omit<StoreHighlight, "eyebrow">> =
+  {
+    "التغذية الرياضية": {
+      title: "خيارات تخدم الخطة الغذائية",
+      description:
+        "إذا كان تركيزك على التوقيت الغذائي والالتزام اليومي، فستجد في المتجر ما يكمل هذا المسار بشكل مباشر.",
+      ctaLabel: "عرض المتجر",
+    },
+    "خسارة الدهون": {
+      title: "دعم عملي لمرحلة التنشيف",
+      description:
+        "ربط المتجر هنا يظل هادئًا: فقط اختيارات مرتبطة بالالتزام، التنظيم، وتجهيز المرحلة بالشكل الصحيح.",
+      ctaLabel: "استكشف المتجر",
+    },
+    "بناء العضلات والأداء": {
+      title: "أدوات ومسارات تخدم الأداء",
+      description:
+        "عندما تكون القراءة مرتبطة بالقوة والتطور العضلي، يصبح الوصول إلى المنتجات والخطط ذات الصلة خطوة منطقية لا إعلانية.",
+      ctaLabel: "زيارة المتجر",
+    },
+    "المستلزمات الرياضية": {
+      title: "اختيارات مرتبطة بالمستلزمات",
+      description:
+        "هذا المسار أقرب للمتجر بطبيعته، لذلك يبقى الرابط هنا مباشرًا وبسيطًا لمن يريد استكمال المقارنة أو الشراء.",
+      ctaLabel: "تصفح المتجر",
+    },
+    "المكملات الغذائية": {
+      title: "وصول واضح للمكملات المرتبطة بالمقال",
+      description:
+        "إذا كان المقال يناقش المكملات، فالمتجر يظهر هنا كخطوة تالية طبيعية لمن يريد منتجًا أو مراجعة مرتبطة بالموضوع.",
+      ctaLabel: "عرض المكملات",
+    },
+    "الصحة العامة": {
+      title: "دعم هادئ للعادات المستمرة",
+      description:
+        "حتى في المقالات الصحية العامة، يبقى المتجر حاضرًا كامتداد اختياري للروتين اليومي وليس كعنصر يقطع تجربة القراءة.",
+      ctaLabel: "زيارة المتجر",
+    },
+    "الوصفات الصحية": {
+      title: "مسار مكمل للوصفات والنظام",
+      description:
+        "إذا كانت الوصفة جزءًا من خطة أكبر، فالمتجر يظل متاحًا كمرجع مكمّل لا كرسالة بيعية متكررة.",
+      ctaLabel: "استكشف المتجر",
+    },
+    "أسلوب الحياة الرياضي": {
+      title: "امتداد بسيط لنمط الحياة الرياضي",
+      description:
+        "هذا الربط مخصص لمن يريد الانتقال من القراءة إلى التطبيق العملي عبر منتجات أو عناصر تدعم الروتين الرياضي اليومي.",
+      ctaLabel: "زيارة المتجر",
+    },
+  };
+
 function normalizeSiteUrl(value?: string | null) {
   const trimmed = value?.trim();
 
@@ -143,4 +250,24 @@ export function getCategoryNameFromSlug(slug?: string | null) {
 
 export function getCategorySlugFromName(name: string) {
   return getCategoryDefinitionByName(name).slug;
+}
+
+export function getStoreHighlight(categoryName?: string | null): StoreHighlight {
+  if (!categoryName) {
+    return DEFAULT_STORE_HIGHLIGHT;
+  }
+
+  const override = STORE_HIGHLIGHTS_BY_CATEGORY[categoryName];
+
+  if (!override) {
+    return {
+      ...DEFAULT_STORE_HIGHLIGHT,
+      eyebrow: `ضمن مسار ${categoryName}`,
+    };
+  }
+
+  return {
+    eyebrow: `ضمن مسار ${categoryName}`,
+    ...override,
+  };
 }

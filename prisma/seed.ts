@@ -1,16 +1,20 @@
 import "dotenv/config";
+import { pathToFileURL } from "node:url";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  throw new Error("DATABASE_URL is missing in .env");
+function createPrismaClient() {
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    throw new Error("DATABASE_URL is missing in .env");
+  }
+
+  const adapter = new PrismaPg({ connectionString });
+  return new PrismaClient({ adapter });
 }
 
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
-
-type ArticleInput = {
+export type ArticleInput = {
   slug: string;
   title: string;
   category: string;
@@ -21,7 +25,7 @@ type ArticleInput = {
   body: string[];
 };
 
-const articles: ArticleInput[] = [
+export const seedArticles: ArticleInput[] = [
   {
     slug: "build-muscle-meal-plan",
     title: "تعرف على اسباب عدم ظهور نتيجة لشكل العضلة وماهي افضل التكنيكات!!",
@@ -1304,90 +1308,100 @@ function makeAnchor(text: string, index: number) {
 }
 
 async function main() {
-  for (const categoryDefinition of categoryDefinitions) {
-    await prisma.category.upsert({
-      where: { name: categoryDefinition.name },
-      update: {
-        slug: categoryDefinition.slug,
-      },
-      create: {
-        name: categoryDefinition.name,
-        slug: categoryDefinition.slug,
-      },
-    });
-  }
+  const prisma = createPrismaClient();
 
-  for (const article of articles) {
-    const category = await prisma.category.upsert({
-      where: { name: article.category },
-      update: {},
-      create: {
-        name: article.category,
-        slug: slugifyCategory(article.category),
-      },
-    });
-
-    const post = await prisma.post.upsert({
-      where: { slug: article.slug },
-      update: {
-        title: article.title,
-        excerpt: article.excerpt,
-        coverImageUrl: article.image,
-        publishedAt: new Date(article.date),
-        readingTime: article.readTime,
-        status: "published",
-        categoryId: category.id,
-        seoTitle: article.title,
-        seoDescription: article.excerpt,
-      },
-      create: {
-        slug: article.slug,
-        title: article.title,
-        excerpt: article.excerpt,
-        coverImageUrl: article.image,
-        publishedAt: new Date(article.date),
-        readingTime: article.readTime,
-        status: "published",
-        categoryId: category.id,
-        seoTitle: article.title,
-        seoDescription: article.excerpt,
-      },
-    });
-
-    await prisma.postSection.deleteMany({ where: { postId: post.id } });
-    await prisma.media.deleteMany({ where: { postId: post.id } });
-
-    await prisma.media.create({
-      data: {
-        postId: post.id,
-        url: article.image,
-        altText: article.title,
-        type: "cover",
-      },
-    });
-
-    for (let i = 0; i < article.body.length; i++) {
-      const sectionText = article.body[i];
-      await prisma.postSection.create({
-        data: {
-          postId: post.id,
-          heading: sectionText.slice(0, 60),
-          anchor: makeAnchor(sectionText, i),
-          content: sectionText,
-          sortOrder: i + 1,
+  try {
+    for (const categoryDefinition of categoryDefinitions) {
+      await prisma.category.upsert({
+        where: { name: categoryDefinition.name },
+        update: {
+          slug: categoryDefinition.slug,
+        },
+        create: {
+          name: categoryDefinition.name,
+          slug: categoryDefinition.slug,
         },
       });
     }
-  }
 
-  console.log(`Seed completed successfully. Imported ${articles.length} articles.`);
+    for (const article of seedArticles) {
+      const category = await prisma.category.upsert({
+        where: { name: article.category },
+        update: {},
+        create: {
+          name: article.category,
+          slug: slugifyCategory(article.category),
+        },
+      });
+
+      const post = await prisma.post.upsert({
+        where: { slug: article.slug },
+        update: {
+          title: article.title,
+          excerpt: article.excerpt,
+          coverImageUrl: article.image,
+          publishedAt: new Date(article.date),
+          readingTime: article.readTime,
+          status: "published",
+          categoryId: category.id,
+          seoTitle: article.title,
+          seoDescription: article.excerpt,
+        },
+        create: {
+          slug: article.slug,
+          title: article.title,
+          excerpt: article.excerpt,
+          coverImageUrl: article.image,
+          publishedAt: new Date(article.date),
+          readingTime: article.readTime,
+          status: "published",
+          categoryId: category.id,
+          seoTitle: article.title,
+          seoDescription: article.excerpt,
+        },
+      });
+
+      await prisma.postSection.deleteMany({ where: { postId: post.id } });
+      await prisma.media.deleteMany({ where: { postId: post.id } });
+
+      await prisma.media.create({
+        data: {
+          postId: post.id,
+          url: article.image,
+          altText: article.title,
+          type: "cover",
+        },
+      });
+
+      for (let i = 0; i < article.body.length; i++) {
+        const sectionText = article.body[i];
+        await prisma.postSection.create({
+          data: {
+            postId: post.id,
+            heading: sectionText.slice(0, 60),
+            anchor: makeAnchor(sectionText, i),
+            content: sectionText,
+            sortOrder: i + 1,
+          },
+        });
+      }
+    }
+
+    console.log(
+      `Seed completed successfully. Imported ${seedArticles.length} articles.`,
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
-main()
-  .catch((error) => {
+const entryPath = process.argv[1]
+  ? pathToFileURL(process.argv[1]).href
+  : undefined;
+
+if (entryPath && import.meta.url === entryPath) {
+  main().catch((error) => {
     console.error("Seed failed:", error);
     process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
   });
+}

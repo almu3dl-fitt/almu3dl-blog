@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getArchivePageData, readSearchParam } from "@/lib/posts";
+import { getStoreHighlight, STORE_URL } from "@/lib/site";
 
 type ArticlesPageProps = {
   searchParams: Promise<{
@@ -24,6 +25,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
     query,
     categorySlug,
   });
+  const storeHighlight = getStoreHighlight(selectedCategoryName);
 
   const activeChipsQuery = new URLSearchParams();
   if (query) activeChipsQuery.set("q", query);
@@ -161,6 +163,26 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                   </Link>
                 </div>
               </form>
+
+              <div className="mt-5 rounded-[24px] border border-[#D4AF37]/15 bg-[linear-gradient(135deg,rgba(212,175,55,0.13),rgba(17,17,17,0.92))] p-5">
+                <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#F0D36A]">
+                  {storeHighlight.eyebrow}
+                </div>
+                <div className="mb-3 text-xl font-black text-white">
+                  {storeHighlight.title}
+                </div>
+                <p className="text-sm leading-7 text-[#D8D2C7]">
+                  {storeHighlight.description}
+                </p>
+                <a
+                  href={STORE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-5 inline-flex w-full items-center justify-center rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-5 py-3 text-sm font-bold text-[#F3D98C] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37] hover:text-black"
+                >
+                  {storeHighlight.ctaLabel}
+                </a>
+              </div>
             </aside>
 
             <div className="space-y-4">

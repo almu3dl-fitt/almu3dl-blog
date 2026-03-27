@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { buildArticleHref, getPostBySlug } from "@/lib/posts";
+import { getStoreHighlight, STORE_URL } from "@/lib/site";
 
 type ArticlePageProps = {
   params: Promise<{
@@ -46,6 +47,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   if (!post) {
     notFound();
   }
+
+  const storeHighlight = getStoreHighlight(post.category.name);
 
   return (
     <main className="page-main">
@@ -153,19 +156,31 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </section>
 
             <section className="rounded-[28px] border border-[#3DDC84]/20 bg-[linear-gradient(135deg,rgba(61,220,132,0.12),rgba(212,175,55,0.12))] p-6">
+              <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9EAC7]">
+                {storeHighlight.eyebrow}
+              </div>
               <div className="mb-3 text-2xl font-black text-white">
-                قراءة هادئة ومباشرة
+                {storeHighlight.title}
               </div>
               <p className="mb-5 leading-8 text-[#D7E8DD]">
-                هذه الصفحة مصممة لتبقي التركيز على المحتوى نفسه: عنوان واضح،
-                جدول تنقل داخلي، ومقالات مرتبطة من نفس التصنيف.
+                {storeHighlight.description}
               </p>
-              <Link
-                href="/articles"
-                className="inline-flex w-full items-center justify-center rounded-full bg-[#3DDC84] px-5 py-3 font-bold text-black"
-              >
-                استكشف الأرشيف
-              </Link>
+              <div className="flex flex-col gap-3">
+                <a
+                  href={STORE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex w-full items-center justify-center rounded-full bg-[#3DDC84] px-5 py-3 font-bold text-black"
+                >
+                  {storeHighlight.ctaLabel}
+                </a>
+                <Link
+                  href="/articles"
+                  className="inline-flex w-full items-center justify-center rounded-full border border-white/15 bg-black/20 px-5 py-3 font-semibold text-white"
+                >
+                  استكشف الأرشيف
+                </Link>
+              </div>
             </section>
 
             {post.relatedPosts.length > 0 ? (

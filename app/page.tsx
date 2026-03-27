@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArticleCard } from "@/components/article-card";
 import { getHomePageData } from "@/lib/posts";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const { featuredPost, latestPosts, totalPosts, totalCategories, categorySummaries } =

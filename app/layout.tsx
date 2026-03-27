@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://almu3dl.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,

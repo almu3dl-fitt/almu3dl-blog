@@ -86,6 +86,11 @@ export type CategorySummary = {
   postCount: number;
 };
 
+export type SitemapEntry = {
+  slug: string;
+  publishedAt: Date | null;
+};
+
 type ArchiveFilters = {
   query?: string;
   categorySlug?: string;
@@ -511,3 +516,14 @@ export function readSearchParam(
 
   return value ?? fallback;
 }
+
+export const getSitemapEntries = cache(async (): Promise<SitemapEntry[]> => {
+  return prisma.post.findMany({
+    where: { status: "published" },
+    select: {
+      slug: true,
+      publishedAt: true,
+    },
+    orderBy: [{ publishedAt: "desc" }, { id: "desc" }],
+  });
+});

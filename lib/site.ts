@@ -2,6 +2,7 @@ export const SITE_NAME = "المعضّل - Almu3dl";
 export const SITE_TAGLINE = "منصة عربية للّياقة والتغذية والأداء الرياضي";
 export const SITE_DESCRIPTION =
   "مدونة عربية احترافية عن اللياقة والتغذية الرياضية وخسارة الدهون وبناء العضلات والمكملات الغذائية والصحة العامة.";
+const DEFAULT_SITE_URL = "https://almu3dl.com";
 
 export const NAV_LINKS = [
   { href: "/", label: "الرئيسية" },
@@ -91,6 +92,41 @@ const categoryByName = new Map(
 const categoryBySlug = new Map(
   CATEGORY_DEFINITIONS.map((category) => [category.slug, category]),
 );
+
+function normalizeSiteUrl(value?: string | null) {
+  const trimmed = value?.trim();
+
+  if (!trimmed) {
+    return null;
+  }
+
+  const withProtocol = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
+
+  try {
+    return new URL(withProtocol).toString().replace(/\/$/, "");
+  } catch {
+    return null;
+  }
+}
+
+export function getSiteUrl() {
+  return (
+    normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL) ??
+    normalizeSiteUrl(process.env.SITE_URL) ??
+    normalizeSiteUrl(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
+    normalizeSiteUrl(process.env.VERCEL_URL) ??
+    DEFAULT_SITE_URL
+  );
+}
+
+export function isPreviewDeployment() {
+  return process.env.VERCEL_ENV === "preview";
+}
+
+export const SITE_URL = getSiteUrl();
+export const SITE_HOST = new URL(SITE_URL).host;
 
 export function getCategoryDefinitionByName(name: string) {
   return categoryByName.get(name) ?? CATEGORY_DEFINITIONS[0];

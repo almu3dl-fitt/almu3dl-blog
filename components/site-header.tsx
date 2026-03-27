@@ -1,8 +1,9 @@
 import Link from "next/link";
 
+import { BrandName } from "@/components/brand-name";
 import { BrandMark } from "@/components/brand-mark";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
+import { SITE_TAGLINE } from "@/lib/site";
 import { SiteNav } from "@/components/site-nav";
 import type { SiteTheme } from "@/lib/theme";
 
@@ -18,9 +19,7 @@ export function SiteHeader({ theme }: SiteHeaderProps) {
           <Link href="/" className="group inline-flex items-center gap-4">
             <BrandMark />
             <span className="flex flex-col">
-              <span className="display-heading brand-gradient-text text-[1.05rem] font-black md:text-[1.22rem]">
-                {SITE_NAME}
-              </span>
+              <BrandName className="display-heading brand-gradient-text text-[1.05rem] font-black md:text-[1.22rem]" />
               <span className="theme-text-muted mt-1 text-xs transition group-hover:text-[var(--gold)]">
                 {SITE_TAGLINE}
               </span>

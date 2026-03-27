@@ -168,7 +168,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   href="/articles"
                   className="theme-button-secondary inline-flex w-full items-center justify-center rounded-full px-5 py-3 font-semibold"
                 >
-                  استكشف الأرشيف
+                  الانتقال إلى الأرشيف
                 </Link>
               </div>
             </section>

@@ -1,12 +1,12 @@
 import Link from "next/link";
 
+import { BrandName } from "@/components/brand-name";
 import { BrandMark } from "@/components/brand-mark";
 import {
   CATEGORY_DEFINITIONS,
   FOOTER_LINKS,
   SOCIAL_LINKS,
   SITE_DESCRIPTION,
-  SITE_NAME,
   STORE_URL,
 } from "@/lib/site";
 
@@ -66,9 +66,7 @@ export function SiteFooter() {
             <div className="flex items-center gap-4">
               <BrandMark size="lg" />
               <div>
-                <div className="display-heading brand-gradient-text text-lg font-black">
-                  {SITE_NAME}
-                </div>
+                <BrandName className="display-heading brand-gradient-text text-lg font-black" />
                 <p className="theme-text-soft mt-2 max-w-xl text-sm leading-7">
                   {SITE_DESCRIPTION}
                 </p>
@@ -140,7 +138,9 @@ export function SiteFooter() {
         </div>
 
         <div className="theme-text-muted flex flex-col items-center justify-between gap-4 border-t pt-5 text-sm md:flex-row" style={{ borderColor: "var(--border)" }}>
-          <div>© {currentYear} المعضّل • Almu3dl — مدونة اللياقة والتغذية</div>
+          <div>
+            © {currentYear} <BrandName /> — مدونة اللياقة والتغذية
+          </div>
           <div>محتوى عربي عن اللياقة، التغذية، والأداء الرياضي.</div>
         </div>
       </div>

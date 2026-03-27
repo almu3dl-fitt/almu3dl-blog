@@ -134,8 +134,7 @@ export function SiteFooter() {
             </div>
 
             <div className="rounded-[24px] border border-[#D4AF37]/15 bg-[linear-gradient(135deg,rgba(212,175,55,0.14),rgba(18,18,18,0.7))] p-4 text-sm leading-7 text-[#DDD6CA]">
-              المتجر الرسمي للمكملات، المستلزمات، والخطط المرتبطة بأسلوب
-              المعضّل.
+              وش تنتظر؟؟!! غير جسمك ، اكتشف مقدرتك، وخلك صحي
             </div>
           </div>
         </div>

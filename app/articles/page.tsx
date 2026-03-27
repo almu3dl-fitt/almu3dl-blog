@@ -36,7 +36,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
         <section className="space-y-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <div className="section-kicker mb-4">Article Archive</div>
+              <div className="section-kicker mb-4">الأرشيف</div>
               <h1 className="display-heading text-4xl font-black leading-[1.25] text-white md:text-5xl">
                 أرشيف المعضّل
               </h1>

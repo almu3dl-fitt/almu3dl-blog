@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <InfoPage
-      eyebrow="Privacy"
+      eyebrow="الخصوصية"
       title="سياسة الخصوصية"
       description="يلتزم المعضّل بتجربة قراءة محترمة وخفيفة، مع الحد الأدنى من جمع البيانات اللازمة لاستقرار الموقع وحمايته وتحسين الأداء العام."
       blocks={[

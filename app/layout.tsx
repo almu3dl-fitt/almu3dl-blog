@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+import {
+  SITE_DESCRIPTION,
+  SITE_LOGO_PATH,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/site";
 
 import "./globals.css";
 
@@ -25,17 +30,31 @@ export const metadata: Metadata = {
     "صحة عامة",
     "وصفات صحية",
   ],
+  icons: {
+    icon: SITE_LOGO_PATH,
+    shortcut: SITE_LOGO_PATH,
+    apple: SITE_LOGO_PATH,
+  },
   openGraph: {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
     siteName: SITE_NAME,
     locale: "ar_SA",
     type: "website",
+    images: [
+      {
+        url: SITE_LOGO_PATH,
+        width: 888,
+        height: 884,
+        alt: SITE_NAME,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
+    images: [SITE_LOGO_PATH],
   },
 };
 

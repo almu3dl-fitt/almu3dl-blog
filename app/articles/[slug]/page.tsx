@@ -130,9 +130,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     <h2 className="display-heading text-2xl font-black leading-[1.5] text-white">
                       {section.heading}
                     </h2>
-                    <p className="mt-4 whitespace-pre-line text-lg leading-9 text-[#E8E1D6]">
-                      {section.content}
-                    </p>
+                    {/<[a-z][\s\S]*>/i.test(section.content) ? (
+                      <div
+                        className="article-rich-content mt-4"
+                        dangerouslySetInnerHTML={{ __html: section.content }}
+                      />
+                    ) : (
+                      <p className="mt-4 whitespace-pre-line text-lg leading-9 text-[#E8E1D6]">
+                        {section.content}
+                      </p>
+                    )}
                   </section>
                 ))}
               </div>
@@ -208,7 +215,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             ) : null}
 
             <section className="panel-surface rounded-[28px] p-5">
-              <div className="mb-3 text-lg font-black text-white">حقائق سريعة</div>
+              <div className="mb-3 text-lg font-black text-white">بيانات المقال</div>
               <div className="space-y-3 text-sm text-[#D7D1C6]">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="text-xs text-[#8E8677]">التصنيف</div>

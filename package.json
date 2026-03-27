@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "eslint",
     "db:seed": "tsx prisma/seed.ts",
-    "db:audit": "tsx scripts/audit-content.ts"
+    "db:audit": "tsx scripts/audit-content.ts",
+    "db:import-backup": "tsx scripts/import-backup-content.ts",
+    "db:repair-taxonomy": "tsx scripts/repair-taxonomy.ts"
   },
   "engines": {
     "node": ">=20.9.0"

@@ -25,8 +25,7 @@ export function SiteFooter() {
                   {SITE_NAME}
                 </div>
                 <p className="mt-2 max-w-xl text-sm leading-7 text-[#B8B2A7]">
-                  {SITE_DESCRIPTION} تجربة عربية داكنة ومركّزة، مصممة للقراءة
-                  الطويلة بدون ضجيج بصري.
+                  {SITE_DESCRIPTION}
                 </p>
               </div>
             </div>
@@ -89,15 +88,15 @@ export function SiteFooter() {
             </div>
 
             <div className="rounded-[24px] border border-[#D4AF37]/15 bg-[linear-gradient(135deg,rgba(212,175,55,0.14),rgba(18,18,18,0.7))] p-4 text-sm leading-7 text-[#DDD6CA]">
-              رابط المتجر حاضر هنا فقط كامتداد هادئ للمنظومة، مع بقاء تجربة
-              القراءة نفسها خالية من العناصر الملاحقة.
+              المتجر الرسمي للمكملات، المستلزمات، والخطط المرتبطة بأسلوب
+              المعضّل.
             </div>
           </div>
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-5 text-sm text-[#A7A29A] md:flex-row">
           <div>© {currentYear} المعضّل • Almu3dl — مدونة اللياقة والتغذية</div>
-          <div>تجربة تحريرية عربية داكنة تربط بين المحتوى والمنظومة بهدوء.</div>
+          <div>محتوى عربي عن اللياقة، التغذية، والأداء الرياضي.</div>
         </div>
       </div>
     </footer>

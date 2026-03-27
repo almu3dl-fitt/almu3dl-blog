@@ -141,7 +141,7 @@ export default async function HomePage() {
                   href="/about"
                   className="inline-flex flex-1 items-center justify-center rounded-full border border-white/15 bg-black/20 px-5 py-3 font-semibold text-white"
                 >
-                  عن المنصة
+                  عن المعضّل
                 </Link>
               </div>
             </div>
@@ -151,7 +151,7 @@ export default async function HomePage() {
         <section className="space-y-5">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <div className="section-kicker mb-2">Latest Articles</div>
+              <div className="section-kicker mb-2">أحدث النشر</div>
               <h2 className="display-heading text-3xl font-black text-white">
                 أحدث المقالات
               </h2>
@@ -174,7 +174,7 @@ export default async function HomePage() {
 
         <section className="space-y-5">
           <div>
-            <div className="section-kicker mb-2">Editorial Tracks</div>
+            <div className="section-kicker mb-2">مسارات المحتوى</div>
             <h2 className="display-heading text-3xl font-black text-white">
               مسارات القراءة
             </h2>

@@ -18,10 +18,10 @@ export default async function HomePage() {
         <section className="grid items-stretch gap-6 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="panel-surface overflow-hidden rounded-[34px]">
             {featuredPost ? (
-              <div className="grid min-h-[520px] lg:grid-cols-[1.02fr_0.98fr]">
+              <div className="grid min-h-[520px] lg:grid-cols-[1.12fr_0.88fr]">
                 <div className="flex flex-col justify-center bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.12),transparent_35%)] p-8 md:p-10 xl:p-12">
                   <div className="section-kicker mb-4">{featuredPost.category.name}</div>
-                  <h1 className="display-heading max-w-4xl text-3xl font-black leading-[1.25] text-white sm:text-[2.45rem] md:text-[2.85rem] xl:text-[3.35rem]">
+                  <h1 className="display-heading max-w-[32rem] text-[2.05rem] font-black leading-[1.22] text-white sm:text-[2.25rem] md:text-[2.55rem] xl:text-[2.9rem]">
                     {featuredPost.title}
                   </h1>
                   <p className="mt-5 max-w-3xl text-[0.97rem] leading-8 text-[#B8B2A8] md:text-base">
@@ -71,7 +71,7 @@ export default async function HomePage() {
                         <div className="mb-2 text-sm text-[#F0D36A]">
                           {secondaryPost.category.name}
                         </div>
-                        <div className="mb-3 text-xl font-black leading-snug text-white md:text-2xl">
+                        <div className="mb-3 text-lg font-black leading-snug text-white md:text-[1.35rem]">
                           {secondaryPost.title}
                         </div>
                         <div className="text-sm text-[#B8B2A8]">

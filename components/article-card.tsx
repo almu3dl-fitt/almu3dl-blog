@@ -70,10 +70,10 @@ export function ArticleCard({
             className={joinClasses(
               "display-heading font-black leading-[1.45] text-white transition group-hover:text-[#F3D98C]",
               isFeatured
-                ? "text-2xl md:text-3xl"
+                ? "text-[1.55rem] md:text-[1.95rem]"
                 : isCompact
                   ? "text-lg"
-                  : "text-lg md:text-[1.15rem]",
+                  : "text-[1.02rem] md:text-[1.12rem]",
             )}
           >
             {post.title}

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { getCategoryDefinitionByName } from "@/lib/site";
 
 type ApprovalItemSource = "database" | "draft";
 
@@ -122,6 +123,8 @@ export default function ApprovalsPage() {
   const [draftForm, setDraftForm] = useState<DraftReviewForm | null>(null);
   const [draftSaveError, setDraftSaveError] = useState("");
   const [savingDraft, setSavingDraft] = useState(false);
+  const draftEditorFieldClassName =
+    "w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder:text-gray-400";
 
   async function fetchPendingArticles() {
     try {
@@ -345,10 +348,13 @@ export default function ApprovalsPage() {
       return;
     }
 
-    if (draftForm.sections.some((section) => !section.heading.trim() || !section.content.trim())) {
-      setDraftSaveError("كل قسم يحتاج عنواناً ومحتوى قبل الحفظ");
-      return;
-    }
+    const normalizedSections = draftForm.sections
+      .map((section, index) => ({
+        heading: section.heading.trim() || `القسم ${index + 1}`,
+        content: section.content.trim(),
+      }))
+      .filter((section) => section.heading.length > 0 || section.content.length > 0)
+      .filter((section) => section.content.length > 0);
 
     try {
       setSavingDraft(true);
@@ -370,10 +376,7 @@ export default function ApprovalsPage() {
             seoTitle: draftForm.seoTitle.trim(),
             seoDescription: draftForm.seoDescription.trim(),
             sourceUrl: draftForm.sourceUrl.trim(),
-            sections: draftForm.sections.map((section) => ({
-              heading: section.heading.trim(),
-              content: section.content.trim(),
-            })),
+            sections: normalizedSections,
           },
         }),
       });
@@ -409,6 +412,9 @@ export default function ApprovalsPage() {
 
   const selectedArticle = review ? toPendingArticle(review) : null;
   const databaseEditHref = review?.source === "database" ? review.editHref : null;
+  const draftCoverPreviewSrc = draftForm
+    ? draftForm.coverImageUrl.trim() || getCategoryDefinitionByName(draftForm.category).imagePath
+    : "";
 
   return (
     <div>
@@ -633,7 +639,7 @@ export default function ApprovalsPage() {
                         type="text"
                         value={draftForm.title}
                         onChange={(event) => updateDraftField("title", event.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                        className={draftEditorFieldClassName}
                       />
                     </div>
                     <div>
@@ -645,7 +651,7 @@ export default function ApprovalsPage() {
                         dir="ltr"
                         value={draftForm.slug}
                         onChange={(event) => updateDraftField("slug", event.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                        className={draftEditorFieldClassName}
                       />
                     </div>
                     <div>
@@ -656,7 +662,7 @@ export default function ApprovalsPage() {
                         type="text"
                         value={draftForm.category}
                         onChange={(event) => updateDraftField("category", event.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                        className={draftEditorFieldClassName}
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -667,7 +673,7 @@ export default function ApprovalsPage() {
                         value={draftForm.excerpt}
                         onChange={(event) => updateDraftField("excerpt", event.target.value)}
                         rows={4}
-                        className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                        className={draftEditorFieldClassName}
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -681,15 +687,15 @@ export default function ApprovalsPage() {
                         onChange={(event) =>
                           updateDraftField("coverImageUrl", event.target.value)
                         }
-                        className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                        className={draftEditorFieldClassName}
                       />
                       <p className="mt-2 text-xs text-gray-500">
                         يمكن استخدام مسار محلي مثل `/articles/example-cover.svg` أو رابط صورة مباشر.
                       </p>
-                      {draftForm.coverImageUrl.trim() && (
+                      {draftCoverPreviewSrc && (
                         <div className="mt-3 overflow-hidden rounded-lg border border-gray-200">
                           <Image
-                            src={draftForm.coverImageUrl}
+                            src={draftCoverPreviewSrc}
                             alt="معاينة صورة الغلاف"
                             width={1200}
                             height={640}
@@ -707,7 +713,7 @@ export default function ApprovalsPage() {
                         dir="ltr"
                         value={draftForm.sourceUrl}
                         onChange={(event) => updateDraftField("sourceUrl", event.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                        className={draftEditorFieldClassName}
                       />
                     </div>
                     <div>
@@ -718,7 +724,7 @@ export default function ApprovalsPage() {
                         type="text"
                         value={draftForm.seoTitle}
                         onChange={(event) => updateDraftField("seoTitle", event.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                        className={draftEditorFieldClassName}
                       />
                     </div>
                     <div>
@@ -731,7 +737,7 @@ export default function ApprovalsPage() {
                           updateDraftField("seoDescription", event.target.value)
                         }
                         rows={3}
-                        className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                        className={draftEditorFieldClassName}
                       />
                     </div>
                   </div>
@@ -775,7 +781,7 @@ export default function ApprovalsPage() {
                               updateDraftSection(index, "heading", event.target.value)
                             }
                             placeholder="عنوان القسم"
-                            className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                            className={draftEditorFieldClassName}
                           />
                           <textarea
                             value={section.content}
@@ -784,7 +790,7 @@ export default function ApprovalsPage() {
                             }
                             rows={8}
                             placeholder="محتوى القسم"
-                            className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                            className={draftEditorFieldClassName}
                           />
                         </div>
                       </section>

@@ -121,8 +121,21 @@ async function resolveCoverImage(
   coverImageUrl: string | null,
   categoryName: string,
 ) {
-  if (coverImageUrl?.startsWith("/") && (await hasLocalAsset(coverImageUrl))) {
-    return coverImageUrl;
+  const cleanedCoverImageUrl = coverImageUrl?.trim();
+
+  if (!cleanedCoverImageUrl) {
+    return getCategoryDefinitionByName(categoryName).imagePath;
+  }
+
+  if (/^https?:\/\//i.test(cleanedCoverImageUrl)) {
+    return cleanedCoverImageUrl;
+  }
+
+  if (
+    cleanedCoverImageUrl.startsWith("/") &&
+    (await hasLocalAsset(cleanedCoverImageUrl))
+  ) {
+    return cleanedCoverImageUrl;
   }
 
   return getCategoryDefinitionByName(categoryName).imagePath;
@@ -274,13 +287,11 @@ export async function getArchivePageData(filters: ArchiveFilters) {
               {
                 title: {
                   contains: query,
-                  mode: "insensitive",
                 },
               },
               {
                 excerpt: {
                   contains: query,
-                  mode: "insensitive",
                 },
               },
               {
@@ -288,7 +299,6 @@ export async function getArchivePageData(filters: ArchiveFilters) {
                   some: {
                     content: {
                       contains: query,
-                      mode: "insensitive",
                     },
                   },
                 },

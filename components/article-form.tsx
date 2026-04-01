@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createSlug } from "@/lib/slug";
+import { getCategoryDefinitionByName } from "@/lib/site";
 
 interface Category {
   id: number;
@@ -42,6 +43,8 @@ export default function ArticleForm({
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const fieldClassName =
+    "w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder:text-gray-400 focus:border-transparent focus:ring-2 focus:ring-blue-500";
 
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
@@ -194,6 +197,14 @@ export default function ArticleForm({
     }
   }
 
+  const selectedCategoryName =
+    categories.find((category) => String(category.id) === String(formData.categoryId))?.name ?? "";
+  const coverPreviewSrc =
+    formData.coverImageUrl.trim() ||
+    (selectedCategoryName
+      ? getCategoryDefinitionByName(selectedCategoryName).imagePath
+      : "");
+
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {error && (
@@ -218,7 +229,7 @@ export default function ArticleForm({
               onChange={handleInputChange}
               placeholder="أدخل عنوان المقالة"
               maxLength={200}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={fieldClassName}
               required
             />
             <p className="text-gray-500 text-xs mt-1">
@@ -237,7 +248,7 @@ export default function ArticleForm({
               placeholder="ملخص قصير للمقالة"
               rows={3}
               maxLength={500}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={fieldClassName}
             />
             <p className="text-gray-500 text-xs mt-1">
               {formData.excerpt.length}/500
@@ -253,7 +264,7 @@ export default function ArticleForm({
                 name="categoryId"
                 value={formData.categoryId}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={fieldClassName}
                 required
               >
                 <option value="">اختر فئة</option>
@@ -275,15 +286,15 @@ export default function ArticleForm({
                 value={formData.coverImageUrl}
                 onChange={handleInputChange}
                 placeholder="/articles/example-cover.svg أو https://example.com/image.jpg"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={fieldClassName}
               />
               <p className="text-gray-500 text-xs mt-1">
                 يمكنك استخدام صورة محلية من `public/` أو رابط صورة خارجي مباشر.
               </p>
-              {formData.coverImageUrl.trim() && (
+              {coverPreviewSrc && (
                 <div className="mt-3 overflow-hidden rounded-lg border border-gray-200">
                   <Image
-                    src={formData.coverImageUrl}
+                    src={coverPreviewSrc}
                     alt="معاينة صورة الغلاف"
                     width={1200}
                     height={640}
@@ -312,7 +323,7 @@ export default function ArticleForm({
               onChange={handleInputChange}
               placeholder="العنوان المستخدم في محركات البحث"
               maxLength={60}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={fieldClassName}
             />
             <p className="text-gray-500 text-xs mt-1">
               {formData.seoTitle.length}/60
@@ -330,7 +341,7 @@ export default function ArticleForm({
               placeholder="الوصف المستخدم في محركات البحث"
               rows={2}
               maxLength={160}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={fieldClassName}
             />
             <p className="text-gray-500 text-xs mt-1">
               {formData.seoDescription.length}/160
@@ -379,7 +390,7 @@ export default function ArticleForm({
                   handleSectionChange(index, "heading", e.target.value)
                 }
                 onBlur={() => handleSectionHeadingBlur(index)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={fieldClassName}
               />
 
               <input
@@ -389,7 +400,7 @@ export default function ArticleForm({
                 onChange={(e) =>
                   handleSectionChange(index, "anchor", e.target.value)
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={fieldClassName}
               />
 
               <textarea
@@ -399,7 +410,7 @@ export default function ArticleForm({
                   handleSectionChange(index, "content", e.target.value)
                 }
                 rows={6}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={fieldClassName}
               />
 
               <div>
@@ -416,7 +427,7 @@ export default function ArticleForm({
                       parseInt(e.target.value)
                     )
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={fieldClassName}
                 />
               </div>
             </div>
@@ -437,7 +448,7 @@ export default function ArticleForm({
               name="status"
               value={formData.status}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={fieldClassName}
             >
               <option value="draft">مسودة (لم تُحفظ)</option>
               <option value="pending_approval">قيد الانتظار (تحتاج موافقة)</option>

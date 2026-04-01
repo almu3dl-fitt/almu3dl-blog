@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  normalizeArticleSections,
+  normalizeArticleText,
+  normalizeOptionalArticleText,
+  parseArticleCategoryId,
+} from "@/lib/admin-article-input";
 import { prisma } from "@/lib/prisma";
 
 interface ArticleParams {
@@ -41,16 +47,21 @@ export async function PUT(request: NextRequest, { params }: ArticleParams) {
     const { id } = await params;
     const articleId = parseInt(id);
     const body = await request.json();
-    const {
-      title,
-      excerpt,
-      categoryId,
-      coverImageUrl,
-      seoTitle,
-      seoDescription,
-      sections = [],
-      status = "draft",
-    } = body;
+    const title = normalizeArticleText(body.title);
+    const excerpt = normalizeArticleText(body.excerpt);
+    const categoryId = parseArticleCategoryId(body.categoryId);
+    const coverImageUrl = normalizeOptionalArticleText(body.coverImageUrl);
+    const seoTitle = normalizeOptionalArticleText(body.seoTitle);
+    const seoDescription = normalizeOptionalArticleText(body.seoDescription);
+    const sections = normalizeArticleSections(body.sections);
+    const status = normalizeArticleText(body.status) || "draft";
+
+    if (!title || !categoryId) {
+      return NextResponse.json(
+        { error: "Title and category are required" },
+        { status: 400 }
+      );
+    }
 
     const existingArticle = await prisma.post.findUnique({
       where: { id: articleId },
@@ -72,10 +83,10 @@ export async function PUT(request: NextRequest, { params }: ArticleParams) {
         data: {
           title,
           excerpt,
-          categoryId: parseInt(categoryId),
+          categoryId,
           coverImageUrl,
-          seoTitle,
-          seoDescription,
+          seoTitle: seoTitle ?? title,
+          seoDescription: seoDescription ?? excerpt ?? "",
           status,
           publishedAt,
         },
@@ -87,20 +98,13 @@ export async function PUT(request: NextRequest, { params }: ArticleParams) {
 
       if (sections.length > 0) {
         await tx.postSection.createMany({
-          data: sections.map(
-            (section: {
-              heading: string;
-              anchor: string;
-              content: string;
-              sortOrder: number;
-            }) => ({
-              postId: articleId,
-              heading: section.heading,
-              anchor: section.anchor,
-              content: section.content,
-              sortOrder: section.sortOrder,
-            })
-          ),
+          data: sections.map((section) => ({
+            postId: articleId,
+            heading: section.heading,
+            anchor: section.anchor,
+            content: section.content,
+            sortOrder: section.sortOrder,
+          })),
         });
       }
     });

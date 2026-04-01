@@ -1,13 +1,16 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getCategoryDefinitionByName } from "@/lib/site";
 
 interface Article {
   id: number;
   title: string;
   slug: string;
   excerpt?: string;
+  coverImageUrl?: string;
   category: { name: string };
   publishedAt?: string;
   status: string;
@@ -37,6 +40,13 @@ function getStatusClasses(status: string) {
     default:
       return "bg-gray-100 text-gray-700";
   }
+}
+
+function resolveArticleThumbnail(article: Article) {
+  return (
+    article.coverImageUrl?.trim() ||
+    getCategoryDefinitionByName(article.category.name).imagePath
+  );
 }
 
 export default function ArticlesPage() {
@@ -137,9 +147,18 @@ export default function ArticlesPage() {
               {articles.map((article) => (
                 <tr key={article.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm text-gray-900">
-                    <div>
-                      <p className="font-medium">{article.title}</p>
-                      <p className="text-gray-500 text-xs">/{article.slug}</p>
+                    <div className="flex items-center gap-4">
+                      <Image
+                        src={resolveArticleThumbnail(article)}
+                        alt={article.title}
+                        width={96}
+                        height={64}
+                        className="h-16 w-24 rounded-lg border border-gray-200 bg-gray-100 object-cover"
+                      />
+                      <div>
+                        <p className="font-medium">{article.title}</p>
+                        <p className="text-gray-500 text-xs">/{article.slug}</p>
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-700">

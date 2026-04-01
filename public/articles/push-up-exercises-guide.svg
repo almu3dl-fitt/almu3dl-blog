@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Push-up exercises article cover</title>
+  <desc id="desc">Stylized athlete performing a push-up with athletic lines.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#121417"/>
+      <stop offset="55%" stop-color="#23181a"/>
+      <stop offset="100%" stop-color="#8d6b2d"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3d98c"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <path d="M84 454c148-86 291-129 430-129 169 0 334 51 495 153" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="34" stroke-linecap="round"/>
+  <circle cx="382" cy="206" r="46" fill="#f1c7a6"/>
+  <path d="M416 232c72 24 142 55 210 92 56 31 130 48 222 51" fill="none" stroke="#f1c7a6" stroke-width="34" stroke-linecap="round"/>
+  <path d="M316 258c-41 67-81 136-120 207" fill="none" stroke="#f1c7a6" stroke-width="30" stroke-linecap="round"/>
+  <path d="M506 317c-28 63-57 126-86 189" fill="none" stroke="#f1c7a6" stroke-width="28" stroke-linecap="round"/>
+  <path d="M602 334c-40 55-78 111-114 170" fill="none" stroke="#23262b" stroke-width="46" stroke-linecap="round"/>
+  <path d="M675 364c62 8 121 11 177 11 46 0 95-2 147-7" fill="none" stroke="#23262b" stroke-width="44" stroke-linecap="round"/>
+  <path d="M214 468h812" stroke="url(#gold)" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="214" cy="468" r="22" fill="#d4af37"/>
+  <circle cx="1026" cy="468" r="22" fill="#d4af37"/>
+  <path d="M708 238c84 14 161 48 231 102" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="18" stroke-linecap="round"/>
+</svg>

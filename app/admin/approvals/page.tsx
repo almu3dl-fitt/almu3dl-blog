@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -669,12 +670,12 @@ export default function ApprovalsPage() {
                         className="w-full rounded-lg border border-gray-300 px-4 py-2"
                       />
                     </div>
-                    <div>
+                    <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         صورة الغلاف
                       </label>
                       <input
-                        type="url"
+                        type="text"
                         dir="ltr"
                         value={draftForm.coverImageUrl}
                         onChange={(event) =>
@@ -682,6 +683,20 @@ export default function ApprovalsPage() {
                         }
                         className="w-full rounded-lg border border-gray-300 px-4 py-2"
                       />
+                      <p className="mt-2 text-xs text-gray-500">
+                        يمكن استخدام مسار محلي مثل `/articles/example-cover.svg` أو رابط صورة مباشر.
+                      </p>
+                      {draftForm.coverImageUrl.trim() && (
+                        <div className="mt-3 overflow-hidden rounded-lg border border-gray-200">
+                          <Image
+                            src={draftForm.coverImageUrl}
+                            alt="معاينة صورة الغلاف"
+                            width={1200}
+                            height={640}
+                            className="h-44 w-full object-cover"
+                          />
+                        </div>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -780,6 +795,15 @@ export default function ApprovalsPage() {
             ) : review ? (
               <div className="space-y-6">
                 <section className="rounded-[28px] bg-white p-6 shadow md:p-8">
+                  <div className="mb-6 overflow-hidden rounded-[28px] border border-gray-200 bg-gray-100">
+                    <Image
+                      src={review.coverImageUrl}
+                      alt={review.title}
+                      width={1200}
+                      height={640}
+                      className="h-64 w-full object-cover"
+                    />
+                  </div>
                   <div className="mb-5 flex flex-wrap items-center gap-2 text-xs text-gray-600">
                     <span className="rounded-full bg-yellow-200 px-3 py-1 font-bold text-yellow-900">
                       {review.category.name}

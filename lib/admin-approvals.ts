@@ -184,7 +184,10 @@ function normalizeMarkdownContent(content: string) {
     .replace(/^###\s+/gm, "")
     .replace(/^####\s+/gm, "")
     .replace(/\*\*(.*?)\*\*/g, "$1")
-    .replace(/\[(.*?)\]\((.*?)\)/g, "$1")
+    .replace(
+      /\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noreferrer">$1</a>',
+    )
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }

@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createSlug } from "@/lib/slug";
 
 interface Category {
   id: number;
@@ -55,6 +57,23 @@ export default function ArticleForm({
   });
 
   useEffect(() => {
+    if (!initialData) return;
+
+    setFormData({
+      title: initialData.title || "",
+      excerpt: initialData.excerpt || "",
+      categoryId: initialData.categoryId || "",
+      coverImageUrl: initialData.coverImageUrl || "",
+      seoTitle: initialData.seoTitle || "",
+      seoDescription: initialData.seoDescription || "",
+      status: initialData.status || "draft",
+      sections: initialData.sections?.length
+        ? initialData.sections
+        : [{ heading: "", anchor: "", content: "", sortOrder: 0 }],
+    });
+  }, [initialData]);
+
+  useEffect(() => {
     fetchCategories();
   }, []);
 
@@ -90,6 +109,21 @@ export default function ArticleForm({
     const newSections = [...formData.sections];
     newSections[index] = { ...newSections[index], [field]: value };
     setFormData((prev) => ({ ...prev, sections: newSections }));
+  }
+
+  function handleSectionHeadingBlur(index: number) {
+    const currentSection = formData.sections[index];
+
+    if (!currentSection || currentSection.anchor.trim()) {
+      return;
+    }
+
+    const nextAnchor = createSlug(currentSection.heading.trim());
+    if (!nextAnchor) {
+      return;
+    }
+
+    handleSectionChange(index, "anchor", nextAnchor);
   }
 
   function addSection() {
@@ -236,13 +270,27 @@ export default function ArticleForm({
                 صورة الغلاف (رابط)
               </label>
               <input
-                type="url"
+                type="text"
                 name="coverImageUrl"
                 value={formData.coverImageUrl}
                 onChange={handleInputChange}
-                placeholder="https://example.com/image.jpg"
+                placeholder="/articles/example-cover.svg أو https://example.com/image.jpg"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-gray-500 text-xs mt-1">
+                يمكنك استخدام صورة محلية من `public/` أو رابط صورة خارجي مباشر.
+              </p>
+              {formData.coverImageUrl.trim() && (
+                <div className="mt-3 overflow-hidden rounded-lg border border-gray-200">
+                  <Image
+                    src={formData.coverImageUrl}
+                    alt="معاينة صورة الغلاف"
+                    width={1200}
+                    height={640}
+                    className="h-40 w-full object-cover"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -330,12 +378,13 @@ export default function ArticleForm({
                 onChange={(e) =>
                   handleSectionChange(index, "heading", e.target.value)
                 }
+                onBlur={() => handleSectionHeadingBlur(index)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
 
               <input
                 type="text"
-                placeholder="المرساة (anchor) - مثال: section-one"
+                placeholder="المرساة (anchor) - ستُنشأ تلقائياً إن تُركت فارغة"
                 value={section.anchor}
                 onChange={(e) =>
                   handleSectionChange(index, "anchor", e.target.value)

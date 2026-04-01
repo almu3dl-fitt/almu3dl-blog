@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import {
+  normalizeArticleSections,
+  normalizeArticleText,
+  normalizeOptionalArticleText,
+  parseArticleCategoryId,
+} from "@/lib/admin-article-input";
 import { createSlug } from "@/lib/slug";
 import { prisma } from "@/lib/prisma";
 
@@ -40,16 +46,14 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      title,
-      excerpt,
-      categoryId,
-      coverImageUrl,
-      seoTitle,
-      seoDescription,
-      sections = [],
-      status = "draft",
-    } = body;
+    const title = normalizeArticleText(body.title);
+    const excerpt = normalizeArticleText(body.excerpt);
+    const categoryId = parseArticleCategoryId(body.categoryId);
+    const coverImageUrl = normalizeOptionalArticleText(body.coverImageUrl);
+    const seoTitle = normalizeOptionalArticleText(body.seoTitle);
+    const seoDescription = normalizeOptionalArticleText(body.seoDescription);
+    const sections = normalizeArticleSections(body.sections);
+    const status = normalizeArticleText(body.status) || "draft";
 
     if (!title || !categoryId) {
       return NextResponse.json(
@@ -65,27 +69,19 @@ export async function POST(request: NextRequest) {
         title,
         slug,
         excerpt: excerpt || "",
-        categoryId: parseInt(categoryId),
-        coverImageUrl: coverImageUrl || null,
-        seoTitle: seoTitle || title,
-        seoDescription: seoDescription || excerpt || "",
+        categoryId,
+        coverImageUrl,
+        seoTitle: seoTitle ?? title,
+        seoDescription: seoDescription ?? excerpt ?? "",
         publishedAt: status === "published" ? new Date() : null,
-        status: status,
-        sections: {
-          create: sections.map(
-            (section: {
-              heading: string;
-              anchor: string;
-              content: string;
-              sortOrder: number;
-            }) => ({
-              heading: section.heading,
-              anchor: section.anchor,
-              content: section.content,
-              sortOrder: section.sortOrder,
-            })
-          ),
-        },
+        status,
+        ...(sections.length > 0
+          ? {
+              sections: {
+                create: sections,
+              },
+            }
+          : {}),
       },
       include: {
         category: true,

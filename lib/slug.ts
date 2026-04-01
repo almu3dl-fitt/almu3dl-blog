@@ -35,6 +35,10 @@ export function normalizeSlug(value: string) {
     .replace(/^-|-$/g, "");
 }
 
+export function createSlug(title: string): string {
+  return normalizeSlug(title) || "untitled";
+}
+
 export function buildSlugVariants(input: string) {
   const raw = stripEdgeSlashes(input);
   const decoded = decodeSlugValue(raw);

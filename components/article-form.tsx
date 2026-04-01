@@ -1,0 +1,410 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+interface Category {
+  id: number;
+  name: string;
+}
+
+interface Section {
+  heading: string;
+  anchor: string;
+  content: string;
+  sortOrder: number;
+}
+
+interface ArticleFormProps {
+  articleId?: number;
+  initialData?: {
+    title: string;
+    excerpt?: string;
+    categoryId: number;
+    coverImageUrl?: string;
+    seoTitle?: string;
+    seoDescription?: string;
+    publishedAt?: string;
+    sections?: Section[];
+  };
+}
+
+export default function ArticleForm({
+  articleId,
+  initialData,
+}: ArticleFormProps) {
+  const router = useRouter();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const [formData, setFormData] = useState({
+    title: initialData?.title || "",
+    excerpt: initialData?.excerpt || "",
+    categoryId: initialData?.categoryId || "",
+    coverImageUrl: initialData?.coverImageUrl || "",
+    seoTitle: initialData?.seoTitle || "",
+    seoDescription: initialData?.seoDescription || "",
+    publishNow: !!initialData?.publishedAt,
+    sections: initialData?.sections || [
+      { heading: "", anchor: "", content: "", sortOrder: 0 },
+    ],
+  });
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  async function fetchCategories() {
+    try {
+      const res = await fetch("/api/admin/categories");
+      if (!res.ok) throw new Error("Failed to fetch categories");
+      const data = await res.json();
+      setCategories(data);
+    } catch (err) {
+      setError("فشل تحميل الفئات");
+      console.error(err);
+    }
+  }
+
+  function handleInputChange(
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) {
+    const { name, value, type } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+    }));
+  }
+
+  function handleSectionChange(
+    index: number,
+    field: keyof Section,
+    value: string | number
+  ) {
+    const newSections = [...formData.sections];
+    newSections[index] = { ...newSections[index], [field]: value };
+    setFormData((prev) => ({ ...prev, sections: newSections }));
+  }
+
+  function addSection() {
+    setFormData((prev) => ({
+      ...prev,
+      sections: [
+        ...prev.sections,
+        {
+          heading: "",
+          anchor: "",
+          content: "",
+          sortOrder: prev.sections.length,
+        },
+      ],
+    }));
+  }
+
+  function removeSection(index: number) {
+    setFormData((prev) => ({
+      ...prev,
+      sections: prev.sections.filter((_, i) => i !== index),
+    }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      if (!formData.title.trim()) {
+        setError("العنوان مطلوب");
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.categoryId) {
+        setError("الفئة مطلوبة");
+        setLoading(false);
+        return;
+      }
+
+      const url = articleId
+        ? `/api/admin/articles/${articleId}`
+        : "/api/admin/articles";
+      const method = articleId ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "فشل حفظ المقالة");
+      }
+
+      const savedArticle = await res.json();
+      router.push("/admin/articles");
+      router.refresh();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "فشل حفظ المقالة"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-8">
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+
+      {/* Basic Information */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">المعلومات الأساسية</h2>
+
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              العنوان *
+            </label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              placeholder="أدخل عنوان المقالة"
+              maxLength={200}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            />
+            <p className="text-gray-500 text-xs mt-1">
+              {formData.title.length}/200
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              الملخص
+            </label>
+            <textarea
+              name="excerpt"
+              value={formData.excerpt}
+              onChange={handleInputChange}
+              placeholder="ملخص قصير للمقالة"
+              rows={3}
+              maxLength={500}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <p className="text-gray-500 text-xs mt-1">
+              {formData.excerpt.length}/500
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                الفئة *
+              </label>
+              <select
+                name="categoryId"
+                value={formData.categoryId}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              >
+                <option value="">اختر فئة</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                صورة الغلاف (رابط)
+              </label>
+              <input
+                type="url"
+                name="coverImageUrl"
+                value={formData.coverImageUrl}
+                onChange={handleInputChange}
+                placeholder="https://example.com/image.jpg"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SEO Information */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">معلومات SEO</h2>
+
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              عنوان SEO
+            </label>
+            <input
+              type="text"
+              name="seoTitle"
+              value={formData.seoTitle}
+              onChange={handleInputChange}
+              placeholder="العنوان المستخدم في محركات البحث"
+              maxLength={60}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <p className="text-gray-500 text-xs mt-1">
+              {formData.seoTitle.length}/60
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              وصف SEO
+            </label>
+            <textarea
+              name="seoDescription"
+              value={formData.seoDescription}
+              onChange={handleInputChange}
+              placeholder="الوصف المستخدم في محركات البحث"
+              rows={2}
+              maxLength={160}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <p className="text-gray-500 text-xs mt-1">
+              {formData.seoDescription.length}/160
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Sections */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-gray-900">محتوى المقالة</h2>
+          <button
+            type="button"
+            onClick={addSection}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+          >
+            + قسم جديد
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          {formData.sections.map((section, index) => (
+            <div
+              key={index}
+              className="p-4 border border-gray-300 rounded-lg space-y-4"
+            >
+              <div className="flex justify-between items-center">
+                <h3 className="font-medium text-gray-900">القسم {index + 1}</h3>
+                {formData.sections.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeSection(index)}
+                    className="text-red-600 hover:text-red-800 font-medium text-sm"
+                  >
+                    حذف
+                  </button>
+                )}
+              </div>
+
+              <input
+                type="text"
+                placeholder="عنوان القسم"
+                value={section.heading}
+                onChange={(e) =>
+                  handleSectionChange(index, "heading", e.target.value)
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+
+              <input
+                type="text"
+                placeholder="المرساة (anchor) - مثال: section-one"
+                value={section.anchor}
+                onChange={(e) =>
+                  handleSectionChange(index, "anchor", e.target.value)
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+
+              <textarea
+                placeholder="محتوى القسم"
+                value={section.content}
+                onChange={(e) =>
+                  handleSectionChange(index, "content", e.target.value)
+                }
+                rows={6}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  ترتيب الظهور
+                </label>
+                <input
+                  type="number"
+                  value={section.sortOrder}
+                  onChange={(e) =>
+                    handleSectionChange(
+                      index,
+                      "sortOrder",
+                      parseInt(e.target.value)
+                    )
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Publishing Options */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">خيارات النشر</h2>
+
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            name="publishNow"
+            checked={formData.publishNow}
+            onChange={handleInputChange}
+            className="w-4 h-4 text-blue-600 rounded"
+          />
+          <span className="text-gray-700 font-medium">نشر المقالة الآن</span>
+        </label>
+      </div>
+
+      {/* Form Actions */}
+      <div className="flex gap-4">
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+        >
+          {loading ? "جاري الحفظ..." : articleId ? "حفظ التغييرات" : "إنشاء المقالة"}
+        </button>
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+        >
+          إلغاء
+        </button>
+      </div>
+    </form>
+  );
+}

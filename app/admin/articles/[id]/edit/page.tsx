@@ -2,33 +2,33 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import ArticleForm from "@/components/article-form";
+import ArticleForm, { type ArticleFormInitialData } from "@/components/article-form";
 
 export default function EditArticlePage() {
   const params = useParams();
   const id = params.id as string;
-  const [article, setArticle] = useState<any>(null);
+  const [article, setArticle] = useState<ArticleFormInitialData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchArticle();
-  }, [id]);
-
-  async function fetchArticle() {
-    try {
-      const res = await fetch(`/api/admin/articles/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch article");
-      const data = await res.json();
-      setArticle(data);
-      setError("");
-    } catch (err) {
-      setError("فشل تحميل المقالة");
-      console.error(err);
-    } finally {
-      setLoading(false);
+    async function fetchArticle() {
+      try {
+        const res = await fetch(`/api/admin/articles/${id}`);
+        if (!res.ok) throw new Error("Failed to fetch article");
+        const data = (await res.json()) as ArticleFormInitialData;
+        setArticle(data);
+        setError("");
+      } catch (err) {
+        setError("فشل تحميل المقالة");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
+
+    void fetchArticle();
+  }, [id]);
 
   if (loading) {
     return (

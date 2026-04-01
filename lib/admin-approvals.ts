@@ -5,7 +5,15 @@ import path from "node:path";
 
 import { prisma } from "@/lib/prisma";
 import { createSlug } from "@/lib/slug";
-import { CATEGORY_DEFINITIONS, getCategorySlugFromName } from "@/lib/site";
+import {
+  CATEGORY_DEFINITIONS,
+  getCategoryDefinitionByName,
+  getCategorySlugFromName,
+} from "@/lib/site";
+import {
+  getStoreRecommendation,
+  type StoreRecommendation,
+} from "@/lib/store-recommendations";
 
 const draftsRoot = path.join(process.cwd(), "articles");
 
@@ -47,9 +55,29 @@ export type ApprovalReviewItem = {
   status: string;
   fileName: string | null;
   readingTime: string | null;
+  coverImageUrl: string;
+  sourceUrl: string | null;
+  originalityNote: string;
+  storeRecommendation: StoreRecommendation | null;
+  editHref: string | null;
   seoTitle: string;
   seoDescription: string;
   sections: ApprovalReviewSection[];
+};
+
+export type DraftApprovalUpdateInput = {
+  title: string;
+  slug: string;
+  excerpt: string;
+  category: string;
+  coverImageUrl?: string;
+  seoTitle: string;
+  seoDescription: string;
+  sourceUrl?: string;
+  sections: {
+    heading: string;
+    content: string;
+  }[];
 };
 
 type DraftSection = {
@@ -67,11 +95,13 @@ type PendingDraft = {
   slug: string;
   category: string;
   excerpt: string;
+  coverImageUrl: string | null;
   seoTitle: string;
   seoDescription: string;
   publishedAt: string | null;
   status: string;
   readingTime: string | null;
+  sourceUrl: string | null;
   submittedAt: string | null;
   sections: DraftSection[];
 };
@@ -130,6 +160,11 @@ function setFrontmatterValue(frontmatter: string, key: string, value: string | n
   return frontmatter.trim().length > 0
     ? `${frontmatter.trimEnd()}\n${nextLine}`
     : nextLine;
+}
+
+function extractPublishingNotesBlock(body: string) {
+  const match = body.match(/\n---\s*\n\s*##\s+معلومات إضافية للنشر[\s\S]*$/u);
+  return match?.[0]?.trim() ?? "";
 }
 
 function stripPublishingNotes(body: string) {
@@ -237,6 +272,28 @@ function normalizeCategoryName(categoryName: string) {
   return CATEGORY_ALIASES[trimmed] ?? trimmed;
 }
 
+function resolveCoverImage(categoryName: string, coverImageUrl?: string | null) {
+  const cleanedUrl = coverImageUrl?.trim();
+
+  if (cleanedUrl) {
+    return cleanedUrl;
+  }
+
+  return getCategoryDefinitionByName(categoryName).imagePath;
+}
+
+function buildOriginalityNote(source: ApprovalItemSource, sourceUrl?: string | null) {
+  if (sourceUrl?.trim()) {
+    return "يوجد رابط مصدر خارجي مرفق، لذلك يجب التأكد يدويًا من الأصالة وحقوق النشر قبل الاعتماد.";
+  }
+
+  if (source === "draft") {
+    return "المقالة محفوظة كمسودة محلية داخل المشروع ولا يوجد رابط مصدر خارجي مرفق. التحقق النهائي من الأصالة يظل مراجعة تحريرية يدوية.";
+  }
+
+  return "المقالة محفوظة داخل نظام الإدارة ولا يوجد رابط مصدر خارجي مرفق هنا. التحقق التحريري النهائي من الأصالة يبقى مطلوبًا قبل النشر.";
+}
+
 function getCategorySlug(categoryName: string) {
   return CATEGORY_DEFINITIONS.some((category) => category.name === categoryName)
     ? getCategorySlugFromName(categoryName)
@@ -273,6 +330,10 @@ async function readDraft(draftId: string) {
   const category = normalizeCategoryName(
     getFrontmatterValue(frontmatter, "category") ?? "",
   );
+  const coverImageUrl = (
+    getFrontmatterValue(frontmatter, "coverImageUrl") ??
+    getFrontmatterValue(frontmatter, "image")
+  )?.trim() ?? null;
   const slug = (
     getFrontmatterValue(frontmatter, "slug") ?? createSlug(title)
   ).trim();
@@ -285,6 +346,7 @@ async function readDraft(draftId: string) {
     title
   ).trim();
   const status = (getFrontmatterValue(frontmatter, "status") ?? "draft").trim();
+  const sourceUrl = (getFrontmatterValue(frontmatter, "sourceUrl") ?? "").trim() || null;
 
   return {
     draftId: toDraftId(fileName),
@@ -294,11 +356,13 @@ async function readDraft(draftId: string) {
     slug,
     category,
     excerpt,
+    coverImageUrl,
     seoTitle,
     seoDescription,
     publishedAt: getFrontmatterValue(frontmatter, "publishedAt"),
     status,
     readingTime: extractReadingTime(body),
+    sourceUrl,
     submittedAt: fileStats.mtime.toISOString(),
     sections: buildSectionsFromMarkdown(body),
   } satisfies PendingDraft;
@@ -324,6 +388,30 @@ async function updateDraftFrontmatter(
 
 function buildApprovalReviewPath(source: ApprovalItemSource, id: string) {
   return `/admin/approvals?reviewSource=${source}&reviewId=${encodeURIComponent(id)}`;
+}
+
+function buildDraftBody(
+  sections: DraftApprovalUpdateInput["sections"],
+  existingBody: string,
+) {
+  const contentBlocks = sections
+    .map((section, index) => ({
+      heading: section.heading.trim() || `القسم ${index + 1}`,
+      content: section.content.trim(),
+    }))
+    .filter((section) => section.content.length > 0)
+    .map((section) => `## ${section.heading}\n\n${section.content}`)
+    .join("\n\n");
+
+  const publishingNotes = extractPublishingNotesBlock(existingBody);
+
+  if (!publishingNotes) {
+    return contentBlocks.trim();
+  }
+
+  return contentBlocks.trim().length > 0
+    ? `${contentBlocks.trim()}\n\n${publishingNotes}`
+    : publishingNotes;
 }
 
 async function listPendingDatabaseApprovals() {
@@ -405,6 +493,7 @@ async function getDatabaseApprovalReviewItem(id: string) {
       title: true,
       slug: true,
       excerpt: true,
+      coverImageUrl: true,
       status: true,
       readingTime: true,
       seoTitle: true,
@@ -444,6 +533,16 @@ async function getDatabaseApprovalReviewItem(id: string) {
     status: article.status,
     fileName: null,
     readingTime: article.readingTime,
+    coverImageUrl: resolveCoverImage(article.category.name, article.coverImageUrl),
+    sourceUrl: null,
+    originalityNote: buildOriginalityNote("database"),
+    storeRecommendation: getStoreRecommendation({
+      categoryName: article.category.name,
+      title: article.title,
+      excerpt: article.excerpt,
+      sections: article.sections,
+    }),
+    editHref: `/admin/articles/${article.id}/edit`,
     seoTitle: article.seoTitle ?? article.title,
     seoDescription: article.seoDescription ?? article.excerpt ?? article.title,
     sections: article.sections.map((section) => ({
@@ -470,6 +569,16 @@ async function getDraftApprovalReviewItem(id: string) {
     status: draft.status,
     fileName: draft.fileName,
     readingTime: draft.readingTime,
+    coverImageUrl: resolveCoverImage(draft.category, draft.coverImageUrl),
+    sourceUrl: draft.sourceUrl,
+    originalityNote: buildOriginalityNote("draft", draft.sourceUrl),
+    storeRecommendation: getStoreRecommendation({
+      categoryName: draft.category,
+      title: draft.title,
+      excerpt: draft.excerpt,
+      sections: draft.sections,
+    }),
+    editHref: null,
     seoTitle: draft.seoTitle,
     seoDescription: draft.seoDescription,
     sections: draft.sections.map((section, index) => ({
@@ -562,6 +671,7 @@ async function approveDraftArticle(id: string) {
         title: draft.title,
         excerpt: draft.excerpt,
         categoryId: category.id,
+        coverImageUrl: draft.coverImageUrl,
         seoTitle: draft.seoTitle,
         seoDescription: draft.seoDescription,
         status: "published",
@@ -573,6 +683,7 @@ async function approveDraftArticle(id: string) {
         title: draft.title,
         excerpt: draft.excerpt,
         categoryId: category.id,
+        coverImageUrl: draft.coverImageUrl,
         seoTitle: draft.seoTitle,
         seoDescription: draft.seoDescription,
         status: "published",
@@ -638,6 +749,52 @@ export async function getApprovalReviewItem(
   if (source === "database") {
     return getDatabaseApprovalReviewItem(id);
   }
+
+  return getDraftApprovalReviewItem(id);
+}
+
+export async function updateDraftApprovalItem(
+  id: string,
+  input: DraftApprovalUpdateInput,
+) {
+  const draft = await readDraft(parseDraftId(id));
+  const raw = await readFile(draft.filePath, "utf8");
+  const { frontmatter, body } = splitFrontmatter(raw);
+
+  let nextFrontmatter = frontmatter;
+  nextFrontmatter = setFrontmatterValue(nextFrontmatter, "title", input.title.trim());
+  nextFrontmatter = setFrontmatterValue(nextFrontmatter, "slug", input.slug.trim());
+  nextFrontmatter = setFrontmatterValue(
+    nextFrontmatter,
+    "category",
+    normalizeCategoryName(input.category),
+  );
+  nextFrontmatter = setFrontmatterValue(nextFrontmatter, "excerpt", input.excerpt.trim());
+  nextFrontmatter = setFrontmatterValue(
+    nextFrontmatter,
+    "seoTitle",
+    input.seoTitle.trim(),
+  );
+  nextFrontmatter = setFrontmatterValue(
+    nextFrontmatter,
+    "metaDescription",
+    input.seoDescription.trim(),
+  );
+  nextFrontmatter = setFrontmatterValue(
+    nextFrontmatter,
+    "coverImageUrl",
+    input.coverImageUrl?.trim() ? input.coverImageUrl.trim() : null,
+  );
+  nextFrontmatter = setFrontmatterValue(
+    nextFrontmatter,
+    "sourceUrl",
+    input.sourceUrl?.trim() ? input.sourceUrl.trim() : null,
+  );
+
+  const nextBody = buildDraftBody(input.sections, body);
+  const nextContent = `---\n${nextFrontmatter.trim()}\n---\n\n${nextBody.trimStart()}`;
+
+  await writeFile(draft.filePath, nextContent, "utf8");
 
   return getDraftApprovalReviewItem(id);
 }

@@ -8,26 +8,28 @@ interface Category {
   name: string;
 }
 
-interface Section {
+export interface Section {
   heading: string;
   anchor: string;
   content: string;
   sortOrder: number;
 }
 
+export interface ArticleFormInitialData {
+  title: string;
+  excerpt?: string;
+  categoryId: number;
+  coverImageUrl?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  status?: string;
+  publishedAt?: string;
+  sections?: Section[];
+}
+
 interface ArticleFormProps {
   articleId?: number;
-  initialData?: {
-    title: string;
-    excerpt?: string;
-    categoryId: number;
-    coverImageUrl?: string;
-    seoTitle?: string;
-    seoDescription?: string;
-    status?: string;
-    publishedAt?: string;
-    sections?: Section[];
-  };
+  initialData?: ArticleFormInitialData;
 }
 
 export default function ArticleForm({
@@ -146,7 +148,7 @@ export default function ArticleForm({
         throw new Error(errorData.error || "فشل حفظ المقالة");
       }
 
-      const savedArticle = await res.json();
+      await res.json();
       router.push("/admin/articles");
       router.refresh();
     } catch (err) {
@@ -401,7 +403,8 @@ export default function ArticleForm({
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-sm text-blue-900">
-              💡 <strong>نصيحة:</strong> استخدم "قيد الانتظار" إذا أردت أن يراجع المشرف المقالة قبل النشر
+              💡 <strong>نصيحة:</strong> استخدم حالة الانتظار إذا أردت أن يراجع
+              المشرف المقالة قبل النشر
             </p>
           </div>
         </div>

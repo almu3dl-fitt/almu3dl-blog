@@ -1,9 +1,37 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-import { listPendingApprovalItems } from "@/lib/admin-approvals";
+import {
+  getApprovalReviewItem,
+  listPendingApprovalItems,
+  type ApprovalItemSource,
+} from "@/lib/admin-approvals";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const source = searchParams.get("source");
+    const id = searchParams.get("id");
+
+    if (source && id) {
+      if (source !== "database" && source !== "draft") {
+        return NextResponse.json(
+          { error: "Invalid approval source" },
+          { status: 400 },
+        );
+      }
+
+      const approval = await getApprovalReviewItem(source as ApprovalItemSource, id);
+
+      if (!approval) {
+        return NextResponse.json(
+          { error: "Approval item not found" },
+          { status: 404 },
+        );
+      }
+
+      return NextResponse.json(approval);
+    }
+
     const approvals = await listPendingApprovalItems();
     return NextResponse.json(approvals);
   } catch (error) {

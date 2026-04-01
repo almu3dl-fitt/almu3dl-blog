@@ -28,6 +28,30 @@ export type ApprovalItem = {
   fileName: string | null;
 };
 
+export type ApprovalReviewSection = {
+  id: string;
+  heading: string;
+  anchor: string;
+  content: string;
+  sortOrder: number;
+};
+
+export type ApprovalReviewItem = {
+  id: string;
+  source: ApprovalItemSource;
+  title: string;
+  slug: string;
+  excerpt: string;
+  category: { name: string };
+  submittedAt: string | null;
+  status: string;
+  fileName: string | null;
+  readingTime: string | null;
+  seoTitle: string;
+  seoDescription: string;
+  sections: ApprovalReviewSection[];
+};
+
 type DraftSection = {
   heading: string;
   anchor: string;
@@ -298,6 +322,10 @@ async function updateDraftFrontmatter(
   await writeFile(filePath, nextContent, "utf8");
 }
 
+function buildApprovalReviewPath(source: ApprovalItemSource, id: string) {
+  return `/admin/approvals?reviewSource=${source}&reviewId=${encodeURIComponent(id)}`;
+}
+
 async function listPendingDatabaseApprovals() {
   const articles = await prisma.post.findMany({
     where: { status: "pending_approval" },
@@ -327,7 +355,7 @@ async function listPendingDatabaseApprovals() {
         category: article.category,
         submittedAt: null,
         status: article.status,
-        reviewHref: `/admin/articles/${article.id}/edit`,
+        reviewHref: buildApprovalReviewPath("database", `db:${article.id}`),
         fileName: null,
       }) satisfies ApprovalItem,
   );
@@ -354,7 +382,7 @@ async function listPendingDraftApprovals() {
             category: { name: draft.category },
             submittedAt: draft.submittedAt,
             status: draft.status,
-            reviewHref: null,
+            reviewHref: buildApprovalReviewPath("draft", `draft:${draft.draftId}`),
             fileName: draft.fileName,
           }) satisfies ApprovalItem,
       );
@@ -365,6 +393,93 @@ async function listPendingDraftApprovals() {
 
     throw error;
   }
+}
+
+async function getDatabaseApprovalReviewItem(id: string) {
+  const articleId = parseDatabaseId(id);
+
+  const article = await prisma.post.findUnique({
+    where: { id: articleId },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      status: true,
+      readingTime: true,
+      seoTitle: true,
+      seoDescription: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      sections: {
+        orderBy: {
+          sortOrder: "asc",
+        },
+        select: {
+          id: true,
+          heading: true,
+          anchor: true,
+          content: true,
+          sortOrder: true,
+        },
+      },
+    },
+  });
+
+  if (!article) {
+    return null;
+  }
+
+  return {
+    id,
+    source: "database",
+    title: article.title,
+    slug: article.slug,
+    excerpt: article.excerpt ?? "",
+    category: article.category,
+    submittedAt: null,
+    status: article.status,
+    fileName: null,
+    readingTime: article.readingTime,
+    seoTitle: article.seoTitle ?? article.title,
+    seoDescription: article.seoDescription ?? article.excerpt ?? article.title,
+    sections: article.sections.map((section) => ({
+      id: `db-section:${section.id}`,
+      heading: section.heading,
+      anchor: section.anchor,
+      content: section.content,
+      sortOrder: section.sortOrder,
+    })),
+  } satisfies ApprovalReviewItem;
+}
+
+async function getDraftApprovalReviewItem(id: string) {
+  const draft = await readDraft(parseDraftId(id));
+
+  return {
+    id,
+    source: "draft",
+    title: draft.title,
+    slug: draft.slug,
+    excerpt: draft.excerpt,
+    category: { name: draft.category },
+    submittedAt: draft.submittedAt,
+    status: draft.status,
+    fileName: draft.fileName,
+    readingTime: draft.readingTime,
+    seoTitle: draft.seoTitle,
+    seoDescription: draft.seoDescription,
+    sections: draft.sections.map((section, index) => ({
+      id: `draft-section:${index + 1}`,
+      heading: section.heading,
+      anchor: section.anchor,
+      content: section.content,
+      sortOrder: section.sortOrder,
+    })),
+  } satisfies ApprovalReviewItem;
 }
 
 function parseDatabaseId(id: string) {
@@ -514,6 +629,17 @@ export async function listPendingApprovalItems() {
     const rightTime = right.submittedAt ? new Date(right.submittedAt).getTime() : 0;
     return rightTime - leftTime;
   });
+}
+
+export async function getApprovalReviewItem(
+  source: ApprovalItemSource,
+  id: string,
+) {
+  if (source === "database") {
+    return getDatabaseApprovalReviewItem(id);
+  }
+
+  return getDraftApprovalReviewItem(id);
 }
 
 export async function approveApprovalItem(source: ApprovalItemSource, id: string) {

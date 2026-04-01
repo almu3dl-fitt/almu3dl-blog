@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { isAdminLoggedIn, logoutAdmin } from "../auth";
 
 export default function AdminLayout({
   children,
@@ -9,6 +11,34 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const isClient = typeof window !== "undefined";
+  const isAuthenticated = isClient && isAdminLoggedIn();
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    if (!isAuthenticated && pathname !== "/admin/login") {
+      router.push("/admin/login");
+      return;
+    }
+
+    if (isAuthenticated && pathname === "/admin/login") {
+      router.push("/admin");
+    }
+  }, [isClient, isAuthenticated, pathname, router]);
+
+  if (!isClient) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-gray-600">جاري التحقق من صلاحيات المشرف...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated && pathname !== "/admin/login") {
+    return null;
+  }
 
   const navItems = [
     { href: "/admin", label: "لوحة التحكم", icon: "📊" },
@@ -24,13 +54,25 @@ export default function AdminLayout({
             <h1 className="text-2xl font-bold text-gray-900">
               لوحة تحكم المعضّل
             </h1>
-            <div>
-              <a
+            <div className="flex items-center gap-4">
+              <Link
                 href="/"
                 className="text-blue-600 hover:text-blue-700 text-sm font-medium"
               >
                 ← العودة للموقع
-              </a>
+              </Link>
+
+              {isAuthenticated && (
+                <button
+                  onClick={() => {
+                    logoutAdmin();
+                    router.push("/admin/login");
+                  }}
+                  className="text-red-600 hover:text-red-700 text-sm font-medium"
+                >
+                  تسجيل الخروج
+                </button>
+              )}
             </div>
           </div>
         </div>

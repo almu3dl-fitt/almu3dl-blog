@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 interface Article {
   id: number;
@@ -14,11 +13,36 @@ interface Article {
   status: string;
 }
 
+function getStatusLabel(status: string) {
+  switch (status) {
+    case "published":
+      return "منشورة";
+    case "pending_approval":
+      return "بانتظار الموافقة";
+    case "rejected":
+      return "مرفوضة";
+    default:
+      return "مسودة";
+  }
+}
+
+function getStatusClasses(status: string) {
+  switch (status) {
+    case "published":
+      return "bg-green-100 text-green-800";
+    case "pending_approval":
+      return "bg-yellow-100 text-yellow-800";
+    case "rejected":
+      return "bg-red-100 text-red-800";
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+}
+
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const router = useRouter();
 
   useEffect(() => {
     fetchArticles();
@@ -99,6 +123,9 @@ export default function ArticlesPage() {
                   الفئة
                 </th>
                 <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">
+                  الحالة
+                </th>
+                <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">
                   تاريخ النشر
                 </th>
                 <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">
@@ -119,9 +146,16 @@ export default function ArticlesPage() {
                     {article.category.name}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-700">
+                    <span
+                      className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${getStatusClasses(article.status)}`}
+                    >
+                      {getStatusLabel(article.status)}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-700">
                     {article.publishedAt
                       ? new Date(article.publishedAt).toLocaleDateString("ar-SA")
-                      : "مسودة"}
+                      : "غير منشورة"}
                   </td>
                   <td className="px-6 py-4 text-sm">
                     <div className="flex gap-3">
@@ -137,14 +171,20 @@ export default function ArticlesPage() {
                       >
                         حذف
                       </button>
-                      <a
-                        href={`/articles/${article.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-green-600 hover:text-green-800 font-medium"
-                      >
-                        عرض
-                      </a>
+                      {article.status === "published" ? (
+                        <a
+                          href={`/articles/${article.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green-600 hover:text-green-800 font-medium"
+                        >
+                          عرض
+                        </a>
+                      ) : (
+                        <span className="text-gray-400 font-medium cursor-not-allowed">
+                          غير متاح
+                        </span>
+                      )}
                     </div>
                   </td>
                 </tr>

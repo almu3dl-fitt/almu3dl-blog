@@ -39,6 +39,7 @@ export async function GET(request: NextRequest, { params }: ArticleParams) {
 export async function PUT(request: NextRequest, { params }: ArticleParams) {
   try {
     const { id } = await params;
+    const articleId = parseInt(id);
     const body = await request.json();
     const {
       title,
@@ -48,50 +49,72 @@ export async function PUT(request: NextRequest, { params }: ArticleParams) {
       seoTitle,
       seoDescription,
       sections = [],
-      publishNow,
+      status = "draft",
     } = body;
 
-    const article = await prisma.post.update({
-      where: { id: parseInt(id) },
-      data: {
-        title,
-        excerpt,
-        categoryId: parseInt(categoryId),
-        coverImageUrl,
-        seoTitle,
-        seoDescription,
-        publishedAt: publishNow ? new Date() : undefined,
-      },
+    const existingArticle = await prisma.post.findUnique({
+      where: { id: articleId },
+      select: { id: true, publishedAt: true },
+    });
+
+    if (!existingArticle) {
+      return NextResponse.json({ error: "Article not found" }, { status: 404 });
+    }
+
+    const publishedAt =
+      status === "published"
+        ? existingArticle.publishedAt ?? new Date()
+        : null;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.post.update({
+        where: { id: articleId },
+        data: {
+          title,
+          excerpt,
+          categoryId: parseInt(categoryId),
+          coverImageUrl,
+          seoTitle,
+          seoDescription,
+          status,
+          publishedAt,
+        },
+      });
+
+      await tx.postSection.deleteMany({
+        where: { postId: articleId },
+      });
+
+      if (sections.length > 0) {
+        await tx.postSection.createMany({
+          data: sections.map(
+            (section: {
+              heading: string;
+              anchor: string;
+              content: string;
+              sortOrder: number;
+            }) => ({
+              postId: articleId,
+              heading: section.heading,
+              anchor: section.anchor,
+              content: section.content,
+              sortOrder: section.sortOrder,
+            })
+          ),
+        });
+      }
+    });
+
+    const article = await prisma.post.findUnique({
+      where: { id: articleId },
       include: {
         category: true,
-        sections: true,
+        sections: {
+          orderBy: { sortOrder: "asc" },
+        },
         media: true,
       },
     });
-
-    // Update sections
-    await prisma.postSection.deleteMany({
-      where: { postId: parseInt(id) },
-    });
-
-    if (sections.length > 0) {
-      await prisma.postSection.createMany({
-        data: sections.map(
-          (section: {
-            heading: string;
-            anchor: string;
-            content: string;
-            sortOrder: number;
-          }) => ({
-            postId: parseInt(id),
-            heading: section.heading,
-            anchor: section.anchor,
-            content: section.content,
-            sortOrder: section.sortOrder,
-          })
-        ),
-      });
-    }
 
     return NextResponse.json(article);
   } catch (error) {

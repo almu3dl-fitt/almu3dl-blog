@@ -10,6 +10,10 @@ interface Stats {
   pendingArticles: number;
 }
 
+interface DashboardArticle {
+  status: string;
+}
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats>({
     totalArticles: 0,
@@ -36,7 +40,7 @@ export default function AdminDashboard() {
           totalArticles: articles.length,
           totalCategories: categories.length,
           publishedArticles: articles.filter(
-            (a: any) => a.publishedAt
+            (article: DashboardArticle) => article.status === "published"
           ).length,
           pendingArticles: pending.length,
         });

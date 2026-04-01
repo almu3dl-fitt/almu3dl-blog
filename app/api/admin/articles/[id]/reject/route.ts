@@ -26,6 +26,7 @@ export async function POST(
       where: { id: articleId },
       data: {
         status: "rejected",
+        publishedAt: null,
       },
     });
 

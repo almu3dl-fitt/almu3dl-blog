@@ -26,7 +26,7 @@ export async function POST(
       where: { id: articleId },
       data: {
         status: "published",
-        publishedAt: new Date(),
+        publishedAt: article.publishedAt ?? new Date(),
       },
     });
 

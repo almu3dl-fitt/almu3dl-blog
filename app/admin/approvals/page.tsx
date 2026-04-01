@@ -48,7 +48,9 @@ export default function ApprovalsPage() {
       });
       if (!res.ok) throw new Error("Failed to approve article");
 
-      setArticles(articles.filter((a) => a.id !== id));
+      setArticles((currentArticles) =>
+        currentArticles.filter((article) => article.id !== id)
+      );
       alert("تم نشر المقالة بنجاح");
     } catch (err) {
       alert("فشل نشر المقالة");
@@ -71,7 +73,9 @@ export default function ApprovalsPage() {
       });
       if (!res.ok) throw new Error("Failed to reject article");
 
-      setArticles(articles.filter((a) => a.id !== id));
+      setArticles((currentArticles) =>
+        currentArticles.filter((article) => article.id !== id)
+      );
       alert("تم رفض المقالة");
     } catch (err) {
       alert("فشل رفض المقالة");

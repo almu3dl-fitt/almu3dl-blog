@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { isAdminLoggedIn, logoutAdmin } from "../auth";
+import { isAdminLoggedIn, logoutAdmin } from "./auth";
 
 export default function AdminLayout({
   children,

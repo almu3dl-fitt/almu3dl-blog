@@ -22,7 +22,7 @@ model Post {
   coverImageUrl  String?
   publishedAt    DateTime?
   readingTime    String?
-  status         String        @default("published")
+  status         String        @default("draft") // draft, pending_approval, published, rejected
   seoTitle       String?
   seoDescription String?
   category       Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
@@ -31,6 +31,7 @@ model Post {
 
   @@index([categoryId])
   @@index([publishedAt])
+  @@index([status])
 }
 
 model PostSection {

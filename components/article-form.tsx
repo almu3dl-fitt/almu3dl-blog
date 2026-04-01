@@ -24,6 +24,7 @@ interface ArticleFormProps {
     coverImageUrl?: string;
     seoTitle?: string;
     seoDescription?: string;
+    status?: string;
     publishedAt?: string;
     sections?: Section[];
   };
@@ -45,7 +46,7 @@ export default function ArticleForm({
     coverImageUrl: initialData?.coverImageUrl || "",
     seoTitle: initialData?.seoTitle || "",
     seoDescription: initialData?.seoDescription || "",
-    publishNow: !!initialData?.publishedAt,
+    status: initialData?.status || "draft", // draft, pending_approval, published
     sections: initialData?.sections || [
       { heading: "", anchor: "", content: "", sortOrder: 0 },
     ],
@@ -374,18 +375,36 @@ export default function ArticleForm({
 
       {/* Publishing Options */}
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">خيارات النشر</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-6">حالة النشر</h2>
 
-        <label className="flex items-center gap-3 cursor-pointer">
-          <input
-            type="checkbox"
-            name="publishNow"
-            checked={formData.publishNow}
-            onChange={handleInputChange}
-            className="w-4 h-4 text-blue-600 rounded"
-          />
-          <span className="text-gray-700 font-medium">نشر المقالة الآن</span>
-        </label>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              حالة المقالة
+            </label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="draft">مسودة (لم تُحفظ)</option>
+              <option value="pending_approval">قيد الانتظار (تحتاج موافقة)</option>
+              <option value="published">منشورة</option>
+            </select>
+            <p className="text-gray-500 text-sm mt-2">
+              {formData.status === "draft" && "المقالة محفوظة محلياً فقط - لن تظهر للزوار"}
+              {formData.status === "pending_approval" && "المقالة بانتظار موافقة المشرف - لن تظهر للزوار حتى الموافقة"}
+              {formData.status === "published" && "المقالة ستكون متاحة للزوار فوراً"}
+            </p>
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-900">
+              💡 <strong>نصيحة:</strong> استخدم "قيد الانتظار" إذا أردت أن يراجع المشرف المقالة قبل النشر
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Form Actions */}

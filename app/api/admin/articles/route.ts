@@ -5,14 +5,23 @@ import { prisma } from "@/lib/prisma";
 // GET all articles
 export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get("status");
+
+    const where: any = {};
+    if (status) {
+      where.status = status;
+    }
+
     const articles = await prisma.post.findMany({
+      where,
       include: {
         category: true,
         sections: true,
         media: true,
       },
       orderBy: {
-        publishedAt: "desc",
+        id: "desc",
       },
     });
 
@@ -38,7 +47,7 @@ export async function POST(request: NextRequest) {
       seoTitle,
       seoDescription,
       sections = [],
-      publishNow = false,
+      status = "draft",
     } = body;
 
     if (!title || !categoryId) {
@@ -59,8 +68,8 @@ export async function POST(request: NextRequest) {
         coverImageUrl: coverImageUrl || null,
         seoTitle: seoTitle || title,
         seoDescription: seoDescription || excerpt || "",
-        publishedAt: publishNow ? new Date() : null,
-        status: "published",
+        publishedAt: status === "published" ? new Date() : null,
+        status: status,
         sections: {
           create: sections.map(
             (section: {

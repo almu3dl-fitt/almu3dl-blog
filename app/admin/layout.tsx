@@ -42,6 +42,7 @@ export default function AdminLayout({
 
   const navItems = [
     { href: "/admin", label: "لوحة التحكم", icon: "📊" },
+    { href: "/admin/approvals", label: "المقالات المعلقة", icon: "⏳", badge: true },
     { href: "/admin/articles", label: "المقالات", icon: "📝" },
   ];
 
@@ -86,7 +87,7 @@ export default function AdminLayout({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors relative ${
                   pathname === item.href
                     ? "bg-blue-100 text-blue-700"
                     : "text-gray-700 hover:bg-gray-100"
@@ -94,6 +95,11 @@ export default function AdminLayout({
               >
                 <span className="text-xl">{item.icon}</span>
                 {item.label}
+                {item.badge && (
+                  <span className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    !
+                  </span>
+                )}
               </Link>
             ))}
           </nav>

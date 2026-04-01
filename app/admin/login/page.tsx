@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ADMIN_USERNAME, ADMIN_PASSWORD, loginAdmin } from "../auth";
+import { loginAdmin } from "../auth";
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState("");
@@ -14,9 +14,7 @@ export default function AdminLoginPage() {
     event.preventDefault();
     const success = loginAdmin(username.trim(), password);
     if (!success) {
-      setError(
-        `خطأ في بيانات التسجيل. اسم المستخدم يجب أن يكون "${ADMIN_USERNAME}" وكلمة المرور "${ADMIN_PASSWORD}".`
-      );
+      setError("خطأ في بيانات التسجيل");
       return;
     }
 
@@ -28,10 +26,6 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <div className="w-full max-w-md bg-white rounded-xl shadow p-8">
         <h1 className="text-2xl font-bold mb-4 text-center">تسجيل دخول المشرف</h1>
-        <p className="text-sm mb-6 text-gray-600">
-          استخدم اسم المستخدم <strong>{ADMIN_USERNAME}</strong> وكلمة المرور
-          <strong>{ADMIN_PASSWORD}</strong>
-        </p>
 
         {error && (
           <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-4">

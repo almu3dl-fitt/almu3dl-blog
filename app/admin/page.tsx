@@ -14,6 +14,10 @@ interface DashboardArticle {
   status: string;
 }
 
+interface PendingApproval {
+  id: string;
+}
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats>({
     totalArticles: 0,
@@ -26,15 +30,15 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function fetchStats() {
       try {
-        const [articlesRes, categoriesRes, pendingRes] = await Promise.all([
+        const [articlesRes, categoriesRes, approvalsRes] = await Promise.all([
           fetch("/api/admin/articles"),
           fetch("/api/admin/categories"),
-          fetch("/api/admin/articles?status=pending_approval"),
+          fetch("/api/admin/approvals"),
         ]);
 
         const articles = await articlesRes.json();
         const categories = await categoriesRes.json();
-        const pending = await pendingRes.json();
+        const pendingApprovals = (await approvalsRes.json()) as PendingApproval[];
 
         setStats({
           totalArticles: articles.length,
@@ -42,7 +46,7 @@ export default function AdminDashboard() {
           publishedArticles: articles.filter(
             (article: DashboardArticle) => article.status === "published"
           ).length,
-          pendingArticles: pending.length,
+          pendingArticles: pendingApprovals.length,
         });
       } catch (error) {
         console.error("Failed to fetch stats:", error);

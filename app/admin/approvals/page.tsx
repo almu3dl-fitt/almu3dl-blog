@@ -4,19 +4,22 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface PendingArticle {
-  id: number;
+  id: string;
+  source: "database" | "draft";
   title: string;
-  excerpt?: string;
+  excerpt: string;
   category: { name: string };
-  createdAt: string;
+  submittedAt: string | null;
   status: string;
+  reviewHref: string | null;
+  fileName: string | null;
 }
 
 export default function ApprovalsPage() {
   const [articles, setArticles] = useState<PendingArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [actioningId, setActioningId] = useState<number | null>(null);
+  const [actioningId, setActioningId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPendingArticles();
@@ -25,7 +28,7 @@ export default function ApprovalsPage() {
   async function fetchPendingArticles() {
     try {
       setLoading(true);
-      const res = await fetch("/api/admin/articles?status=pending_approval");
+      const res = await fetch("/api/admin/approvals");
       if (!res.ok) throw new Error("Failed to fetch pending articles");
       const data = await res.json();
       setArticles(data);
@@ -38,18 +41,23 @@ export default function ApprovalsPage() {
     }
   }
 
-  async function approveArticle(id: number) {
+  async function approveArticle(article: PendingArticle) {
     if (!confirm("هل تريد نشر هذه المقالة؟")) return;
 
     try {
-      setActioningId(id);
-      const res = await fetch(`/api/admin/articles/${id}/approve`, {
+      setActioningId(article.id);
+      const res = await fetch("/api/admin/approvals/approve", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: article.id,
+          source: article.source,
+        }),
       });
       if (!res.ok) throw new Error("Failed to approve article");
 
       setArticles((currentArticles) =>
-        currentArticles.filter((article) => article.id !== id)
+        currentArticles.filter((currentArticle) => currentArticle.id !== article.id)
       );
       alert("تم نشر المقالة بنجاح");
     } catch (err) {
@@ -60,21 +68,25 @@ export default function ApprovalsPage() {
     }
   }
 
-  async function rejectArticle(id: number) {
+  async function rejectArticle(article: PendingArticle) {
     const reason = prompt("أدخل سبب الرفض (اختياري):");
     if (reason === null) return;
 
     try {
-      setActioningId(id);
-      const res = await fetch(`/api/admin/articles/${id}/reject`, {
+      setActioningId(article.id);
+      const res = await fetch("/api/admin/approvals/reject", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reason: reason || "" }),
+        body: JSON.stringify({
+          id: article.id,
+          source: article.source,
+          reason: reason || "",
+        }),
       });
       if (!res.ok) throw new Error("Failed to reject article");
 
       setArticles((currentArticles) =>
-        currentArticles.filter((article) => article.id !== id)
+        currentArticles.filter((currentArticle) => currentArticle.id !== article.id)
       );
       alert("تم رفض المقالة");
     } catch (err) {
@@ -125,7 +137,7 @@ export default function ApprovalsPage() {
                   الفئة
                 </th>
                 <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">
-                  تاريخ الإنشاء
+                  تاريخ الإرسال
                 </th>
                 <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">
                   الإجراءات
@@ -138,6 +150,11 @@ export default function ApprovalsPage() {
                   <td className="px-6 py-4 text-sm text-gray-900">
                     <div>
                       <p className="font-medium">{article.title}</p>
+                      <p className="text-gray-500 text-xs mt-1">
+                        {article.source === "draft"
+                          ? `مسودة محلية: ${article.fileName ?? "ملف غير معروف"}`
+                          : "مقالة محفوظة في لوحة التحكم"}
+                      </p>
                       {article.excerpt && (
                         <p className="text-gray-500 text-xs mt-1 line-clamp-2">
                           {article.excerpt}
@@ -149,25 +166,33 @@ export default function ApprovalsPage() {
                     {article.category.name}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-700">
-                    {new Date(article.createdAt).toLocaleDateString("ar-SA")}
+                    {article.submittedAt
+                      ? new Date(article.submittedAt).toLocaleDateString("ar-SA")
+                      : "غير متوفر"}
                   </td>
                   <td className="px-6 py-4 text-sm">
                     <div className="flex gap-2">
-                      <Link
-                        href={`/admin/articles/${article.id}/edit`}
-                        className="text-blue-600 hover:text-blue-800 font-medium"
-                      >
-                        عرض
-                      </Link>
+                      {article.reviewHref ? (
+                        <Link
+                          href={article.reviewHref}
+                          className="text-blue-600 hover:text-blue-800 font-medium"
+                        >
+                          عرض
+                        </Link>
+                      ) : (
+                        <span className="text-gray-400 font-medium">
+                          من الملف المحلي
+                        </span>
+                      )}
                       <button
-                        onClick={() => approveArticle(article.id)}
+                        onClick={() => approveArticle(article)}
                         disabled={actioningId === article.id}
                         className="text-green-600 hover:text-green-800 font-medium disabled:text-gray-400"
                       >
                         ✓ نشر
                       </button>
                       <button
-                        onClick={() => rejectArticle(article.id)}
+                        onClick={() => rejectArticle(article)}
                         disabled={actioningId === article.id}
                         className="text-red-600 hover:text-red-800 font-medium disabled:text-gray-400"
                       >

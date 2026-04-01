@@ -1,5 +1,5 @@
 export const ADMIN_USERNAME = "binzain";
-export const ADMIN_PASSWORD = "Admin@123";
+export const ADMIN_PASSWORD = "Mohmmed@1313";
 
 export function isAdminLoggedIn() {
   if (typeof window === "undefined") return false;

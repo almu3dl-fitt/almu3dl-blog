@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { CATEGORY_DEFINITIONS } from "@/lib/site";
 
 // GET all categories
 export async function GET() {
@@ -10,10 +11,17 @@ export async function GET() {
 
     return NextResponse.json(categories);
   } catch (error) {
-    console.error("Failed to fetch categories:", error);
+    console.warn(
+      "Failed to fetch categories from database, returning static fallback categories:",
+      error,
+    );
+
     return NextResponse.json(
-      { error: "Failed to fetch categories" },
-      { status: 500 }
+      CATEGORY_DEFINITIONS.map((category, index) => ({
+        id: index + 1,
+        name: category.name,
+        slug: category.slug,
+      })),
     );
   }
 }

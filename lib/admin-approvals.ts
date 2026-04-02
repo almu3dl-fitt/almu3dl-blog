@@ -27,6 +27,10 @@ const CATEGORY_ALIASES: Record<string, string> = {
 
 const DRAFT_SOURCE_MEDIA_TYPE = "draft-source-file";
 
+function logApprovalsDatabaseFallback(scope: string, error: unknown) {
+  console.warn(`[admin-approvals] Falling back without database for ${scope}:`, error);
+}
+
 const draftOverlayPostSelect = {
   id: true,
   slug: true,
@@ -398,20 +402,25 @@ function getDraftSourceUrlFromOverlay(overlay: DraftOverlayPost | null) {
 }
 
 async function findDraftOverlayPostByFileName(fileName: string) {
-  return prisma.post.findFirst({
-    where: {
-      media: {
-        some: {
-          type: DRAFT_SOURCE_MEDIA_TYPE,
-          url: fileName,
+  try {
+    return await (prisma.post.findFirst({
+      where: {
+        media: {
+          some: {
+            type: DRAFT_SOURCE_MEDIA_TYPE,
+            url: fileName,
+          },
         },
       },
-    },
-    orderBy: {
-      id: "desc",
-    },
-    select: draftOverlayPostSelect,
-  }) as Promise<DraftOverlayPost | null>;
+      orderBy: {
+        id: "desc",
+      },
+      select: draftOverlayPostSelect,
+    }) as Promise<DraftOverlayPost | null>);
+  } catch (error) {
+    logApprovalsDatabaseFallback(`draft overlay lookup for "${fileName}"`, error);
+    return null;
+  }
 }
 
 async function listDraftOverlayPostsByFileName(fileNames: string[]) {
@@ -419,19 +428,24 @@ async function listDraftOverlayPostsByFileName(fileNames: string[]) {
     return [];
   }
 
-  return prisma.post.findMany({
-    where: {
-      media: {
-        some: {
-          type: DRAFT_SOURCE_MEDIA_TYPE,
-          url: {
-            in: fileNames,
+  try {
+    return await (prisma.post.findMany({
+      where: {
+        media: {
+          some: {
+            type: DRAFT_SOURCE_MEDIA_TYPE,
+            url: {
+              in: fileNames,
+            },
           },
         },
       },
-    },
-    select: draftOverlayPostSelect,
-  }) as Promise<DraftOverlayPost[]>;
+      select: draftOverlayPostSelect,
+    }) as Promise<DraftOverlayPost[]>);
+  } catch (error) {
+    logApprovalsDatabaseFallback("draft overlay list", error);
+    return [];
+  }
 }
 
 function toDraftId(fileName: string) {
@@ -748,45 +762,50 @@ function buildApprovalReviewPath(source: ApprovalItemSource, id: string) {
 }
 
 async function listPendingDatabaseApprovals() {
-  const articles = await prisma.post.findMany({
-    where: {
-      status: "pending_approval",
-      media: {
-        none: {
-          type: DRAFT_SOURCE_MEDIA_TYPE,
+  try {
+    const articles = await prisma.post.findMany({
+      where: {
+        status: "pending_approval",
+        media: {
+          none: {
+            type: DRAFT_SOURCE_MEDIA_TYPE,
+          },
         },
       },
-    },
-    select: {
-      id: true,
-      title: true,
-      excerpt: true,
-      status: true,
-      category: {
-        select: {
-          name: true,
+      select: {
+        id: true,
+        title: true,
+        excerpt: true,
+        status: true,
+        category: {
+          select: {
+            name: true,
+          },
         },
       },
-    },
-    orderBy: {
-      id: "desc",
-    },
-  });
+      orderBy: {
+        id: "desc",
+      },
+    });
 
-  return articles.map(
-    (article) =>
-      ({
-        id: `db:${article.id}`,
-        source: "database",
-        title: article.title,
-        excerpt: article.excerpt ?? "",
-        category: article.category,
-        submittedAt: null,
-        status: article.status,
-        reviewHref: buildApprovalReviewPath("database", `db:${article.id}`),
-        fileName: null,
-      }) satisfies ApprovalItem,
-  );
+    return articles.map(
+      (article) =>
+        ({
+          id: `db:${article.id}`,
+          source: "database",
+          title: article.title,
+          excerpt: article.excerpt ?? "",
+          category: article.category,
+          submittedAt: null,
+          status: article.status,
+          reviewHref: buildApprovalReviewPath("database", `db:${article.id}`),
+          fileName: null,
+        }) satisfies ApprovalItem,
+    );
+  } catch (error) {
+    logApprovalsDatabaseFallback("pending database approvals list", error);
+    return [];
+  }
 }
 
 async function listPendingDraftApprovals() {
@@ -837,75 +856,80 @@ async function listPendingDraftApprovals() {
 }
 
 async function getDatabaseApprovalReviewItem(id: string) {
-  const articleId = parseDatabaseId(id);
+  try {
+    const articleId = parseDatabaseId(id);
 
-  const article = await prisma.post.findUnique({
-    where: { id: articleId },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      excerpt: true,
-      coverImageUrl: true,
-      status: true,
-      readingTime: true,
-      seoTitle: true,
-      seoDescription: true,
-      category: {
-        select: {
-          name: true,
+    const article = await prisma.post.findUnique({
+      where: { id: articleId },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        excerpt: true,
+        coverImageUrl: true,
+        status: true,
+        readingTime: true,
+        seoTitle: true,
+        seoDescription: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        sections: {
+          orderBy: {
+            sortOrder: "asc",
+          },
+          select: {
+            id: true,
+            heading: true,
+            anchor: true,
+            content: true,
+            sortOrder: true,
+          },
         },
       },
-      sections: {
-        orderBy: {
-          sortOrder: "asc",
-        },
-        select: {
-          id: true,
-          heading: true,
-          anchor: true,
-          content: true,
-          sortOrder: true,
-        },
-      },
-    },
-  });
+    });
 
-  if (!article) {
+    if (!article) {
+      return null;
+    }
+
+    return {
+      id,
+      source: "database",
+      title: article.title,
+      slug: article.slug,
+      excerpt: article.excerpt ?? "",
+      category: article.category,
+      submittedAt: null,
+      status: article.status,
+      fileName: null,
+      readingTime: article.readingTime,
+      coverImageUrl: resolveCoverImage(article.category.name, article.coverImageUrl),
+      sourceUrl: null,
+      originalityNote: buildOriginalityNote("database"),
+      storeRecommendation: getStoreRecommendation({
+        categoryName: article.category.name,
+        title: article.title,
+        excerpt: article.excerpt,
+        sections: article.sections,
+      }),
+      editHref: `/admin/articles/${article.id}/edit`,
+      seoTitle: article.seoTitle ?? article.title,
+      seoDescription: article.seoDescription ?? article.excerpt ?? article.title,
+      sections: article.sections.map((section) => ({
+        id: `db-section:${section.id}`,
+        heading: section.heading,
+        anchor: section.anchor,
+        content: section.content,
+        sortOrder: section.sortOrder,
+      })),
+    } satisfies ApprovalReviewItem;
+  } catch (error) {
+    logApprovalsDatabaseFallback(`database review item "${id}"`, error);
     return null;
   }
-
-  return {
-    id,
-    source: "database",
-    title: article.title,
-    slug: article.slug,
-    excerpt: article.excerpt ?? "",
-    category: article.category,
-    submittedAt: null,
-    status: article.status,
-    fileName: null,
-    readingTime: article.readingTime,
-    coverImageUrl: resolveCoverImage(article.category.name, article.coverImageUrl),
-    sourceUrl: null,
-    originalityNote: buildOriginalityNote("database"),
-    storeRecommendation: getStoreRecommendation({
-      categoryName: article.category.name,
-      title: article.title,
-      excerpt: article.excerpt,
-      sections: article.sections,
-    }),
-    editHref: `/admin/articles/${article.id}/edit`,
-    seoTitle: article.seoTitle ?? article.title,
-    seoDescription: article.seoDescription ?? article.excerpt ?? article.title,
-    sections: article.sections.map((section) => ({
-      id: `db-section:${section.id}`,
-      heading: section.heading,
-      anchor: section.anchor,
-      content: section.content,
-      sortOrder: section.sortOrder,
-    })),
-  } satisfies ApprovalReviewItem;
 }
 
 async function getDraftApprovalReviewItem(id: string) {

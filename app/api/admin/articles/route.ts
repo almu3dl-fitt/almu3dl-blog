@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import { normalizeCoverImageForStorage } from "@/lib/article-cover-images";
 import {
   normalizeArticleSections,
   normalizeArticleText,
@@ -49,7 +50,9 @@ export async function POST(request: NextRequest) {
     const title = normalizeArticleText(body.title);
     const excerpt = normalizeArticleText(body.excerpt);
     const categoryId = parseArticleCategoryId(body.categoryId);
-    const coverImageUrl = normalizeOptionalArticleText(body.coverImageUrl);
+    const coverImageUrl = normalizeCoverImageForStorage(
+      normalizeOptionalArticleText(body.coverImageUrl),
+    );
     const seoTitle = normalizeOptionalArticleText(body.seoTitle);
     const seoDescription = normalizeOptionalArticleText(body.seoDescription);
     const sections = normalizeArticleSections(body.sections);
@@ -93,8 +96,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(article, { status: 201 });
   } catch (error) {
     console.error("Failed to create article:", error);
+    const message =
+      error instanceof Error && error.message.trim().length > 0
+        ? error.message
+        : "Failed to create article";
     return NextResponse.json(
-      { error: "Failed to create article" },
+      { error: message },
       { status: 500 }
     );
   }

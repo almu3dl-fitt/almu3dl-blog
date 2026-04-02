@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { cache } from "react";
 
+import { resolveCoverImageUrl } from "@/lib/article-cover-images";
 import { prisma } from "@/lib/prisma";
 import { buildSlugVariants, decodeSlugValue, normalizeSlug } from "@/lib/slug";
 import {
@@ -123,14 +124,10 @@ async function resolveCoverImage(
   coverImageUrl: string | null,
   categoryName: string,
 ) {
-  const cleanedCoverImageUrl = coverImageUrl?.trim();
+  const cleanedCoverImageUrl = resolveCoverImageUrl(coverImageUrl, categoryName);
 
   if (!cleanedCoverImageUrl) {
     return getCategoryDefinitionByName(categoryName).imagePath;
-  }
-
-  if (/^https?:\/\//i.test(cleanedCoverImageUrl)) {
-    return cleanedCoverImageUrl;
   }
 
   if (

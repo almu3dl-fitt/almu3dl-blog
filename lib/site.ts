@@ -1,3 +1,5 @@
+import { getCategoryFallbackCoverImage } from "@/lib/article-cover-images";
+
 export const SITE_NAME_AR = "المعضّل";
 export const SITE_NAME_LATIN = "Almu3dl";
 export const SITE_NAME = `${SITE_NAME_AR} - ${SITE_NAME_LATIN}`;
@@ -68,56 +70,56 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     name: "التغذية الرياضية",
     slug: "sports-nutrition",
     description: "خطط الأكل، توقيت العناصر، واستراتيجيات الدعم اليومي للأداء.",
-    imagePath: "/articles/categories/sports-nutrition.svg",
+    imagePath: getCategoryFallbackCoverImage("التغذية الرياضية"),
     accent: "from-[#D4AF37]/35 via-[#1A1A1A] to-[#101418]",
   },
   {
     name: "خسارة الدهون",
     slug: "fat-loss",
     description: "مفاهيم التنشيف، التحكم بالسعرات، ورفع كفاءة الحرق بدون فوضى.",
-    imagePath: "/articles/categories/fat-loss.svg",
+    imagePath: getCategoryFallbackCoverImage("خسارة الدهون"),
     accent: "from-[#0F7B6C]/25 via-[#171717] to-[#101010]",
   },
   {
     name: "بناء العضلات والأداء",
     slug: "strength-performance",
     description: "التدريب، التطور العضلي، وتحسين القوة والتحمل الرياضي.",
-    imagePath: "/articles/categories/strength-performance.svg",
+    imagePath: getCategoryFallbackCoverImage("بناء العضلات والأداء"),
     accent: "from-[#D4AF37]/30 via-[#151515] to-[#0C0E11]",
   },
   {
     name: "المستلزمات الرياضية",
     slug: "sports-gear",
     description: "اختيار الأدوات والمستلزمات التي ترفع الجودة والالتزام داخل النادي.",
-    imagePath: "/articles/categories/sports-gear.svg",
+    imagePath: getCategoryFallbackCoverImage("المستلزمات الرياضية"),
     accent: "from-[#8D6B2D]/30 via-[#161616] to-[#0F1114]",
   },
   {
     name: "المكملات الغذائية",
     slug: "supplements",
     description: "مراجعات وتفسيرات عملية للمكملات الشائعة واستخدامها الصحيح.",
-    imagePath: "/articles/categories/supplements.svg",
+    imagePath: getCategoryFallbackCoverImage("المكملات الغذائية"),
     accent: "from-[#D4AF37]/25 via-[#181818] to-[#121212]",
   },
   {
     name: "الصحة العامة",
     slug: "general-health",
     description: "المؤشرات الصحية، الاستشفاء، النوم، والعادات الداعمة للاستمرارية.",
-    imagePath: "/articles/categories/general-health.svg",
+    imagePath: getCategoryFallbackCoverImage("الصحة العامة"),
     accent: "from-[#0F7B6C]/22 via-[#171717] to-[#0E1112]",
   },
   {
     name: "الوصفات الصحية",
     slug: "healthy-recipes",
     description: "وصفات عملية تحافظ على الطعم وتخدم الهدف الغذائي اليومي.",
-    imagePath: "/articles/categories/healthy-recipes.svg",
+    imagePath: getCategoryFallbackCoverImage("الوصفات الصحية"),
     accent: "from-[#D4AF37]/25 via-[#171717] to-[#121315]",
   },
   {
     name: "أسلوب الحياة الرياضي",
     slug: "athletic-lifestyle",
     description: "تنظيم الروتين، الاستمرارية، والقرارات الصغيرة التي تصنع الفارق.",
-    imagePath: "/articles/categories/athletic-lifestyle.svg",
+    imagePath: getCategoryFallbackCoverImage("أسلوب الحياة الرياضي"),
     accent: "from-[#0F7B6C]/20 via-[#171717] to-[#121212]",
   },
 ];

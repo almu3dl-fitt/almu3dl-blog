@@ -4,11 +4,14 @@ import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  normalizeCoverImageForStorage,
+  resolveCoverImageUrl,
+} from "@/lib/article-cover-images";
 import { prisma } from "@/lib/prisma";
 import { createSlug } from "@/lib/slug";
 import {
   CATEGORY_DEFINITIONS,
-  getCategoryDefinitionByName,
   getCategorySlugFromName,
 } from "@/lib/site";
 import {
@@ -278,13 +281,7 @@ function normalizeCategoryName(categoryName: string) {
 }
 
 function resolveCoverImage(categoryName: string, coverImageUrl?: string | null) {
-  const cleanedUrl = coverImageUrl?.trim();
-
-  if (cleanedUrl) {
-    return cleanedUrl;
-  }
-
-  return getCategoryDefinitionByName(categoryName).imagePath;
+  return resolveCoverImageUrl(coverImageUrl, categoryName);
 }
 
 function buildOriginalityNote(source: ApprovalItemSource, sourceUrl?: string | null) {
@@ -335,10 +332,12 @@ async function readDraft(draftId: string) {
   const category = normalizeCategoryName(
     getFrontmatterValue(frontmatter, "category") ?? "",
   );
-  const coverImageUrl = (
+  const coverImageUrl = normalizeCoverImageForStorage(
+    (
     getFrontmatterValue(frontmatter, "coverImageUrl") ??
     getFrontmatterValue(frontmatter, "image")
-  )?.trim() ?? null;
+    )?.trim() ?? null,
+  );
   const slug = (
     getFrontmatterValue(frontmatter, "slug") ?? createSlug(title)
   ).trim();
@@ -788,7 +787,7 @@ export async function updateDraftApprovalItem(
   nextFrontmatter = setFrontmatterValue(
     nextFrontmatter,
     "coverImageUrl",
-    input.coverImageUrl?.trim() ? input.coverImageUrl.trim() : null,
+    normalizeCoverImageForStorage(input.coverImageUrl?.trim()) ?? null,
   );
   nextFrontmatter = setFrontmatterValue(
     nextFrontmatter,

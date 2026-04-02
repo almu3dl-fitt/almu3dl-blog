@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { resolveCoverImageUrl } from "@/lib/article-cover-images";
 import { getCategoryDefinitionByName } from "@/lib/site";
 
 interface Article {
@@ -44,7 +45,7 @@ function getStatusClasses(status: string) {
 
 function resolveArticleThumbnail(article: Article) {
   return (
-    article.coverImageUrl?.trim() ||
+    resolveCoverImageUrl(article.coverImageUrl, article.category.name) ||
     getCategoryDefinitionByName(article.category.name).imagePath
   );
 }

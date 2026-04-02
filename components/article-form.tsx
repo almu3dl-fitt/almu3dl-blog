@@ -3,6 +3,10 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import {
+  normalizeCoverImageForStorage,
+  resolveCoverImageUrl,
+} from "@/lib/article-cover-images";
 import { createSlug } from "@/lib/slug";
 import { getCategoryDefinitionByName } from "@/lib/site";
 
@@ -59,7 +63,7 @@ export default function ArticleForm({
     title: initialData?.title || "",
     excerpt: initialData?.excerpt || "",
     categoryId: initialData?.categoryId || "",
-    coverImageUrl: initialData?.coverImageUrl || "",
+    coverImageUrl: normalizeCoverImageForStorage(initialData?.coverImageUrl) || "",
     seoTitle: initialData?.seoTitle || "",
     seoDescription: initialData?.seoDescription || "",
     status: initialData?.status || "draft", // draft, pending_approval, published
@@ -75,7 +79,7 @@ export default function ArticleForm({
       title: initialData.title || "",
       excerpt: initialData.excerpt || "",
       categoryId: initialData.categoryId || "",
-      coverImageUrl: initialData.coverImageUrl || "",
+      coverImageUrl: normalizeCoverImageForStorage(initialData.coverImageUrl) || "",
       seoTitle: initialData.seoTitle || "",
       seoDescription: initialData.seoDescription || "",
       status: initialData.status || "draft",
@@ -257,7 +261,7 @@ export default function ArticleForm({
   const selectedCategoryName =
     categories.find((category) => String(category.id) === String(formData.categoryId))?.name ?? "";
   const coverPreviewSrc =
-    formData.coverImageUrl.trim() ||
+    resolveCoverImageUrl(formData.coverImageUrl, selectedCategoryName) ||
     (selectedCategoryName
       ? getCategoryDefinitionByName(selectedCategoryName).imagePath
       : "");

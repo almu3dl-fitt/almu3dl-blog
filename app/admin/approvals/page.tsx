@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { resolveCoverImageUrl } from "@/lib/article-cover-images";
 import { getCategoryDefinitionByName } from "@/lib/site";
 
 type ApprovalItemSource = "database" | "draft";
@@ -96,7 +97,7 @@ function toDraftReviewForm(review: ApprovalReview): DraftReviewForm {
     slug: review.slug,
     excerpt: review.excerpt,
     category: review.category.name,
-    coverImageUrl: review.coverImageUrl,
+    coverImageUrl: resolveCoverImageUrl(review.coverImageUrl, review.category.name),
     seoTitle: review.seoTitle,
     seoDescription: review.seoDescription,
     sourceUrl: review.sourceUrl ?? "",
@@ -413,7 +414,8 @@ export default function ApprovalsPage() {
   const selectedArticle = review ? toPendingArticle(review) : null;
   const databaseEditHref = review?.source === "database" ? review.editHref : null;
   const draftCoverPreviewSrc = draftForm
-    ? draftForm.coverImageUrl.trim() || getCategoryDefinitionByName(draftForm.category).imagePath
+    ? resolveCoverImageUrl(draftForm.coverImageUrl, draftForm.category) ||
+      getCategoryDefinitionByName(draftForm.category).imagePath
     : "";
 
   return (

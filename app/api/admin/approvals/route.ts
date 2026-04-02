@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { normalizeCoverImageForStorage } from "@/lib/article-cover-images";
 import {
   getApprovalReviewItem,
   listPendingApprovalItems,
@@ -104,7 +105,8 @@ export async function PATCH(request: NextRequest) {
       slug: data.slug.trim(),
       excerpt: data.excerpt.trim(),
       category: data.category.trim(),
-      coverImageUrl: data.coverImageUrl?.trim(),
+      coverImageUrl:
+        normalizeCoverImageForStorage(data.coverImageUrl?.trim()) ?? undefined,
       seoTitle: data.seoTitle.trim(),
       seoDescription: data.seoDescription.trim(),
       sourceUrl: data.sourceUrl?.trim(),

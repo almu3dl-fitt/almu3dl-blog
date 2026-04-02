@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { normalizeCoverImageForStorage } from "@/lib/article-cover-images";
 import {
   normalizeArticleSections,
   normalizeArticleText,
@@ -50,7 +51,9 @@ export async function PUT(request: NextRequest, { params }: ArticleParams) {
     const title = normalizeArticleText(body.title);
     const excerpt = normalizeArticleText(body.excerpt);
     const categoryId = parseArticleCategoryId(body.categoryId);
-    const coverImageUrl = normalizeOptionalArticleText(body.coverImageUrl);
+    const coverImageUrl = normalizeCoverImageForStorage(
+      normalizeOptionalArticleText(body.coverImageUrl),
+    );
     const seoTitle = normalizeOptionalArticleText(body.seoTitle);
     const seoDescription = normalizeOptionalArticleText(body.seoDescription);
     const sections = normalizeArticleSections(body.sections);
@@ -123,8 +126,12 @@ export async function PUT(request: NextRequest, { params }: ArticleParams) {
     return NextResponse.json(article);
   } catch (error) {
     console.error("Failed to update article:", error);
+    const message =
+      error instanceof Error && error.message.trim().length > 0
+        ? error.message
+        : "Failed to update article";
     return NextResponse.json(
-      { error: "Failed to update article" },
+      { error: message },
       { status: 500 }
     );
   }

@@ -2,6 +2,7 @@ import "server-only";
 
 import { access } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { cache } from "react";
 
 import { resolveCoverImageUrl } from "@/lib/article-cover-images";
@@ -14,7 +15,8 @@ import {
   getCategorySlugFromName,
 } from "@/lib/site";
 
-const publicRoot = path.join(/* turbopackIgnore: true */ process.cwd(), "public");
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const publicRoot = path.join(repoRoot, "public");
 const localAssetCache = new Map<string, Promise<boolean>>();
 
 type CategoryRelation = {
@@ -110,9 +112,7 @@ async function hasLocalAsset(publicPath: string) {
     return localAssetCache.get(normalized)!;
   }
 
-  const lookup = access(
-    path.join(/* turbopackIgnore: true */ publicRoot, normalized.replace(/^\//, "")),
-  )
+  const lookup = access(path.join(publicRoot, normalized.replace(/^\//, "")))
     .then(() => true)
     .catch(() => false);
 

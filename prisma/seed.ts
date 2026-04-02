@@ -1,8 +1,18 @@
 import "dotenv/config";
 import { pathToFileURL } from "node:url";
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const prisma = new PrismaClient();
+function createPrismaClient() {
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    throw new Error("DATABASE_URL is missing in .env");
+  }
+
+  const adapter = new PrismaPg({ connectionString });
+  return new PrismaClient({ adapter });
+}
 
 export type ArticleInput = {
   slug: string;
@@ -1298,6 +1308,8 @@ function makeAnchor(text: string, index: number) {
 }
 
 async function main() {
+  const prisma = createPrismaClient();
+
   try {
     for (const categoryDefinition of categoryDefinitions) {
       await prisma.category.upsert({

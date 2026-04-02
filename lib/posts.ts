@@ -2,6 +2,7 @@ import "server-only";
 
 import { access } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { cache } from "react";
 
 import { prisma } from "@/lib/prisma";
@@ -13,7 +14,8 @@ import {
   getCategorySlugFromName,
 } from "@/lib/site";
 
-const publicRoot = path.join(process.cwd(), "public");
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const publicRoot = path.join(repoRoot, "public");
 const localAssetCache = new Map<string, Promise<boolean>>();
 
 type CategoryRelation = {

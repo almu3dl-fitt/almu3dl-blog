@@ -1,9 +1,9 @@
 ---
 title: "توقيت البروتين: دليلك الشامل لتحقيق أقصى فوائد التعافي العضلي"
 slug: "timing-protein-muscle-recovery"
-category: "تغذية رياضية"
+category: "التغذية الرياضية"
 excerpt: "تعرف على أفضل أوقات تناول البروتين لتعزيز نمو العضلات وتسريع التعافي بعد التمارين الشاقة"
-coverImageUrl: "/articles/protein-timing-guide.svg"
+coverImageUrl: "https://almu3dl.com/wp-content/uploads/2022/12/protein.png"
 seoTitle: "توقيت البروتين للعضلات - دليل المعضّل الشامل 2024"
 metaDescription: "دليل كامل عن توقيت تناول البروتين لكمال الأجسام والتعافي العضلي. تعرف على أفضل الممارسات وأوقات الاستهلاك الفعّالة"
 sourceUrl: "https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0177-8"

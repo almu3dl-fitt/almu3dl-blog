@@ -2,6 +2,7 @@ import "server-only";
 
 import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { prisma } from "@/lib/prisma";
 import { createSlug } from "@/lib/slug";
@@ -15,7 +16,8 @@ import {
   type StoreRecommendation,
 } from "@/lib/store-recommendations";
 
-const draftsRoot = path.join(process.cwd(), "articles");
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const draftsRoot = path.join(repoRoot, "articles");
 
 const CATEGORY_ALIASES: Record<string, string> = {
   "تغذية رياضية": "التغذية الرياضية",

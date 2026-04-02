@@ -690,7 +690,9 @@ export default function ApprovalsPage() {
                         className={draftEditorFieldClassName}
                       />
                       <p className="mt-2 text-xs text-gray-500">
-                        يمكن استخدام مسار محلي مثل `/articles/example-cover.svg` أو رابط صورة مباشر.
+                        استخدم رابط صورة مباشر أو مسارًا محليًا بصيغة PNG أو JPG مثل
+                        {" "}
+                        `/articles/example-cover.png`.
                       </p>
                       {draftCoverPreviewSrc && (
                         <div className="mt-3 overflow-hidden rounded-lg border border-gray-200">

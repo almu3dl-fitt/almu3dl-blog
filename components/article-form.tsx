@@ -342,11 +342,11 @@ export default function ArticleForm({
                 name="coverImageUrl"
                 value={formData.coverImageUrl}
                 onChange={handleInputChange}
-                placeholder="/articles/example-cover.svg أو https://example.com/image.jpg"
+                placeholder="/articles/example-cover.png أو https://example.com/image.jpg"
                 className={fieldClassName}
               />
               <p className="text-gray-500 text-xs mt-1">
-                يمكنك استخدام صورة محلية من `public/` أو رابط صورة خارجي مباشر.
+                استخدم صورة محلية من `public/` أو رابط صورة خارجي مباشر بصيغة PNG أو JPG.
               </p>
               {coverPreviewSrc && (
                 <div className="mt-3 overflow-hidden rounded-lg border border-gray-200">

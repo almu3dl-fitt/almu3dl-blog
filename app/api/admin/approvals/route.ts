@@ -117,8 +117,12 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(updatedDraft);
   } catch (error) {
     console.error("Failed to update draft approval item:", error);
+    const message =
+      error instanceof Error && error.message.trim().length > 0
+        ? error.message
+        : "Failed to update draft approval item";
     return NextResponse.json(
-      { error: "Failed to update draft approval item" },
+      { error: message },
       { status: 500 },
     );
   }

@@ -425,6 +425,18 @@ async function findDraftOverlayPostByFileName(fileName: string) {
   }
 }
 
+async function findDraftOverlayPostBySlug(slug: string) {
+  try {
+    return await (prisma.post.findUnique({
+      where: { slug },
+      select: draftOverlayPostSelect,
+    }) as Promise<DraftOverlayPost | null>);
+  } catch (error) {
+    logApprovalsDatabaseFallback(`draft overlay slug lookup for "${slug}"`, error);
+    return null;
+  }
+}
+
 async function listDraftOverlayPostsByFileName(fileNames: string[]) {
   if (fileNames.length === 0) {
     return [];
@@ -627,7 +639,7 @@ async function upsertDraftOverlayPost(
   input: DraftApprovalUpdateInput,
   status: "draft" | "pending_approval" | "published" | "rejected",
 ) {
-  const overlay = await findDraftOverlayPostByFileName(draft.fileName);
+  let overlay = await findDraftOverlayPostByFileName(draft.fileName);
   const title = input.title.trim();
   const slug = input.slug.trim();
   const excerpt = input.excerpt.trim();
@@ -640,10 +652,14 @@ async function upsertDraftOverlayPost(
   const sections = normalizeDraftSectionsForStorage(input.sections);
   const now = new Date();
 
-  const conflictingPost = await prisma.post.findUnique({
-    where: { slug },
-    select: { id: true },
-  });
+  const conflictingPost = await findDraftOverlayPostBySlug(slug);
+
+  // Older production rows may exist without the draft-source-file media link.
+  // If the draft is still pointing at its original slug, adopt that post as the overlay
+  // so subsequent saves repair the linkage instead of failing with a false conflict.
+  if (!overlay && conflictingPost && slug === draft.slug) {
+    overlay = conflictingPost;
+  }
 
   if (conflictingPost && conflictingPost.id !== overlay?.id) {
     throw new Error("يوجد مقال آخر يستخدم هذا الرابط بالفعل");

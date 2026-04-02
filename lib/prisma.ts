@@ -1,7 +1,6 @@
 import "server-only";
 
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { PrismaClient } from "@prisma/client";
 
@@ -21,8 +20,7 @@ function resolveDatabaseUrl() {
     return databaseUrl;
   }
 
-  const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-  return `file:${path.resolve(repoRoot, sqlitePath)}`;
+  return `file:${path.resolve(/* turbopackIgnore: true */ process.cwd(), sqlitePath)}`;
 }
 
 const databaseUrl = resolveDatabaseUrl();

@@ -2,7 +2,6 @@ import "server-only";
 
 import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import {
   normalizeCoverImageForStorage,
@@ -19,8 +18,7 @@ import {
   type StoreRecommendation,
 } from "@/lib/store-recommendations";
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const draftsRoot = path.join(repoRoot, "articles");
+const draftsRoot = path.join(/* turbopackIgnore: true */ process.cwd(), "articles");
 
 const CATEGORY_ALIASES: Record<string, string> = {
   "تغذية رياضية": "التغذية الرياضية",
@@ -450,7 +448,7 @@ function resolveDraftFilePath(draftId: string) {
 
   return {
     fileName: safeFileName,
-    filePath: path.join(draftsRoot, safeFileName),
+    filePath: path.join(/* turbopackIgnore: true */ draftsRoot, safeFileName),
   };
 }
 

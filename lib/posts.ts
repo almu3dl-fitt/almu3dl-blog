@@ -137,6 +137,10 @@ async function resolveCoverImage(
     return cleanedCoverImageUrl;
   }
 
+  if (!cleanedCoverImageUrl.startsWith("/")) {
+    return cleanedCoverImageUrl;
+  }
+
   return getCategoryDefinitionByName(categoryName).imagePath;
 }
 

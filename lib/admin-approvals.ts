@@ -27,6 +27,48 @@ const CATEGORY_ALIASES: Record<string, string> = {
   "تمارين رياضية": "بناء العضلات والأداء",
 };
 
+const DRAFT_SOURCE_MEDIA_TYPE = "draft-source-file";
+
+const draftOverlayPostSelect = {
+  id: true,
+  slug: true,
+  title: true,
+  excerpt: true,
+  coverImageUrl: true,
+  publishedAt: true,
+  readingTime: true,
+  status: true,
+  seoTitle: true,
+  seoDescription: true,
+  category: {
+    select: {
+      name: true,
+    },
+  },
+  sections: {
+    orderBy: {
+      sortOrder: "asc",
+    },
+    select: {
+      id: true,
+      heading: true,
+      anchor: true,
+      content: true,
+      sortOrder: true,
+    },
+  },
+  media: {
+    where: {
+      type: DRAFT_SOURCE_MEDIA_TYPE,
+    },
+    select: {
+      url: true,
+      altText: true,
+      type: true,
+    },
+  },
+} as const;
+
 export type ApprovalItemSource = "database" | "draft";
 
 export type ApprovalItem = {
@@ -111,6 +153,34 @@ type PendingDraft = {
   sections: DraftSection[];
 };
 
+type DraftOverlayPost = {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  coverImageUrl: string | null;
+  publishedAt: Date | null;
+  readingTime: string | null;
+  status: string;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  category: {
+    name: string;
+  };
+  sections: {
+    id: number;
+    heading: string;
+    anchor: string;
+    content: string;
+    sortOrder: number;
+  }[];
+  media: {
+    url: string;
+    altText: string | null;
+    type: string | null;
+  }[];
+};
+
 function splitFrontmatter(raw: string) {
   const match = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/);
 
@@ -165,11 +235,6 @@ function setFrontmatterValue(frontmatter: string, key: string, value: string | n
   return frontmatter.trim().length > 0
     ? `${frontmatter.trimEnd()}\n${nextLine}`
     : nextLine;
-}
-
-function extractPublishingNotesBlock(body: string) {
-  const match = body.match(/\n---\s*\n\s*##\s+معلومات إضافية للنشر[\s\S]*$/u);
-  return match?.[0]?.trim() ?? "";
 }
 
 function stripPublishingNotes(body: string) {
@@ -266,6 +331,30 @@ function buildSectionsFromMarkdown(body: string) {
   return sections;
 }
 
+function normalizeDraftSectionsForStorage(
+  sections: DraftApprovalUpdateInput["sections"],
+) {
+  const usedAnchors = new Set<string>();
+
+  return sections
+    .map((section, index) => {
+      const heading = section.heading.trim() || `القسم ${index + 1}`;
+      const content = section.content.trim();
+
+      if (!content) {
+        return null;
+      }
+
+      return {
+        heading,
+        anchor: ensureUniqueAnchor(createSlug(heading), usedAnchors, index),
+        content,
+        sortOrder: index + 1,
+      };
+    })
+    .filter((section): section is DraftSection => section !== null);
+}
+
 function normalizeCategoryName(categoryName: string) {
   const trimmed = categoryName.trim();
 
@@ -300,6 +389,51 @@ function getCategorySlug(categoryName: string) {
   return CATEGORY_DEFINITIONS.some((category) => category.name === categoryName)
     ? getCategorySlugFromName(categoryName)
     : createSlug(categoryName);
+}
+
+function isPendingDraftOverlayStatus(status: string) {
+  return status === "draft" || status === "pending_approval";
+}
+
+function getDraftSourceUrlFromOverlay(overlay: DraftOverlayPost | null) {
+  return overlay?.media[0]?.altText?.trim() || null;
+}
+
+async function findDraftOverlayPostByFileName(fileName: string) {
+  return prisma.post.findFirst({
+    where: {
+      media: {
+        some: {
+          type: DRAFT_SOURCE_MEDIA_TYPE,
+          url: fileName,
+        },
+      },
+    },
+    orderBy: {
+      id: "desc",
+    },
+    select: draftOverlayPostSelect,
+  }) as Promise<DraftOverlayPost | null>;
+}
+
+async function listDraftOverlayPostsByFileName(fileNames: string[]) {
+  if (fileNames.length === 0) {
+    return [];
+  }
+
+  return prisma.post.findMany({
+    where: {
+      media: {
+        some: {
+          type: DRAFT_SOURCE_MEDIA_TYPE,
+          url: {
+            in: fileNames,
+          },
+        },
+      },
+    },
+    select: draftOverlayPostSelect,
+  }) as Promise<DraftOverlayPost[]>;
 }
 
 function toDraftId(fileName: string) {
@@ -372,6 +506,79 @@ async function readDraft(draftId: string) {
   } satisfies PendingDraft;
 }
 
+function buildDraftReviewItem(
+  id: string,
+  draft: PendingDraft,
+  overlay?: DraftOverlayPost | null,
+) {
+  const effectiveCategoryName = overlay?.category.name ?? draft.category;
+  const effectiveTitle = overlay?.title ?? draft.title;
+  const effectiveExcerpt = overlay?.excerpt ?? draft.excerpt;
+  const effectiveSections = overlay?.sections.length ? overlay.sections : draft.sections;
+  const effectiveStatus =
+    overlay && !isPendingDraftOverlayStatus(overlay.status)
+      ? overlay.status
+      : draft.status;
+  const effectiveSourceUrl = getDraftSourceUrlFromOverlay(overlay ?? null) ?? draft.sourceUrl;
+
+  return {
+    id,
+    source: "draft",
+    title: effectiveTitle,
+    slug: overlay?.slug ?? draft.slug,
+    excerpt: effectiveExcerpt,
+    category: { name: effectiveCategoryName },
+    submittedAt: draft.submittedAt,
+    status: effectiveStatus,
+    fileName: draft.fileName,
+    readingTime: overlay?.readingTime ?? draft.readingTime,
+    coverImageUrl: resolveCoverImage(
+      effectiveCategoryName,
+      overlay?.coverImageUrl ?? draft.coverImageUrl,
+    ),
+    sourceUrl: effectiveSourceUrl,
+    originalityNote: buildOriginalityNote("draft", effectiveSourceUrl),
+    storeRecommendation: getStoreRecommendation({
+      categoryName: effectiveCategoryName,
+      title: effectiveTitle,
+      excerpt: effectiveExcerpt,
+      sections: effectiveSections,
+    }),
+    editHref: null,
+    seoTitle: overlay?.seoTitle ?? draft.seoTitle,
+    seoDescription: overlay?.seoDescription ?? draft.seoDescription,
+    sections: effectiveSections.map((section, index) => ({
+      id: `draft-section:${index + 1}`,
+      heading: section.heading,
+      anchor: section.anchor,
+      content: section.content,
+      sortOrder: section.sortOrder,
+    })),
+  } satisfies ApprovalReviewItem;
+}
+
+function buildDraftUpdateInputFromState(
+  draft: PendingDraft,
+  overlay?: DraftOverlayPost | null,
+): DraftApprovalUpdateInput {
+  const effectiveSections = overlay?.sections.length ? overlay.sections : draft.sections;
+
+  return {
+    title: overlay?.title ?? draft.title,
+    slug: overlay?.slug ?? draft.slug,
+    excerpt: overlay?.excerpt ?? draft.excerpt,
+    category: overlay?.category.name ?? draft.category,
+    coverImageUrl: overlay?.coverImageUrl ?? draft.coverImageUrl ?? undefined,
+    seoTitle: overlay?.seoTitle ?? draft.seoTitle,
+    seoDescription: overlay?.seoDescription ?? draft.seoDescription,
+    sourceUrl: getDraftSourceUrlFromOverlay(overlay ?? null) ?? draft.sourceUrl ?? undefined,
+    sections: effectiveSections.map((section) => ({
+      heading: section.heading,
+      content: section.content,
+    })),
+  };
+}
+
 async function updateDraftFrontmatter(
   filePath: string,
   updates: Record<string, string | null | undefined>,
@@ -390,37 +597,168 @@ async function updateDraftFrontmatter(
   await writeFile(filePath, nextContent, "utf8");
 }
 
+async function syncDraftFrontmatterBestEffort(
+  filePath: string,
+  updates: Record<string, string | null | undefined>,
+) {
+  try {
+    await updateDraftFrontmatter(filePath, updates);
+  } catch (error) {
+    console.warn("Draft frontmatter sync skipped:", error);
+  }
+}
+
+async function upsertDraftOverlayPost(
+  draft: PendingDraft,
+  input: DraftApprovalUpdateInput,
+  status: "draft" | "pending_approval" | "published" | "rejected",
+) {
+  const overlay = await findDraftOverlayPostByFileName(draft.fileName);
+  const title = input.title.trim();
+  const slug = input.slug.trim();
+  const excerpt = input.excerpt.trim();
+  const categoryName = normalizeCategoryName(input.category);
+  const categorySlug = getCategorySlug(categoryName);
+  const coverImageUrl = normalizeCoverImageForStorage(input.coverImageUrl?.trim());
+  const seoTitle = input.seoTitle.trim() || title;
+  const seoDescription = input.seoDescription.trim() || excerpt || title;
+  const sourceUrl = input.sourceUrl?.trim() ? input.sourceUrl.trim() : null;
+  const sections = normalizeDraftSectionsForStorage(input.sections);
+  const now = new Date();
+
+  const conflictingPost = await prisma.post.findUnique({
+    where: { slug },
+    select: { id: true },
+  });
+
+  if (conflictingPost && conflictingPost.id !== overlay?.id) {
+    throw new Error("يوجد مقال آخر يستخدم هذا الرابط بالفعل");
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const category = await tx.category.upsert({
+      where: { name: categoryName },
+      update: {
+        slug: categorySlug,
+      },
+      create: {
+        name: categoryName,
+        slug: categorySlug,
+      },
+    });
+
+    let postId = overlay?.id ?? null;
+
+    if (overlay) {
+      await tx.post.update({
+        where: { id: overlay.id },
+        data: {
+          title,
+          slug,
+          excerpt,
+          categoryId: category.id,
+          coverImageUrl,
+          seoTitle,
+          seoDescription,
+          status,
+          publishedAt:
+            status === "published" ? overlay.publishedAt ?? now : null,
+          readingTime: draft.readingTime ?? overlay.readingTime ?? null,
+        },
+      });
+    } else {
+      const createdPost = await tx.post.create({
+        data: {
+          title,
+          slug,
+          excerpt,
+          categoryId: category.id,
+          coverImageUrl,
+          seoTitle,
+          seoDescription,
+          status,
+          publishedAt: status === "published" ? now : null,
+          readingTime: draft.readingTime,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      postId = createdPost.id;
+    }
+
+    if (!postId) {
+      throw new Error("Failed to persist draft overlay");
+    }
+
+    const sourceMediaCount = await tx.media.count({
+      where: {
+        postId,
+        type: DRAFT_SOURCE_MEDIA_TYPE,
+        url: draft.fileName,
+      },
+    });
+
+    if (sourceMediaCount === 0) {
+      await tx.media.create({
+        data: {
+          postId,
+          type: DRAFT_SOURCE_MEDIA_TYPE,
+          url: draft.fileName,
+          altText: sourceUrl,
+        },
+      });
+    } else {
+      await tx.media.updateMany({
+        where: {
+          postId,
+          type: DRAFT_SOURCE_MEDIA_TYPE,
+          url: draft.fileName,
+        },
+        data: {
+          altText: sourceUrl,
+        },
+      });
+    }
+
+    await tx.postSection.deleteMany({
+      where: { postId },
+    });
+
+    if (sections.length > 0) {
+      await tx.postSection.createMany({
+        data: sections.map((section) => ({
+          postId,
+          heading: section.heading,
+          anchor: section.anchor,
+          content: section.content,
+          sortOrder: section.sortOrder,
+        })),
+      });
+    }
+
+    return tx.post.findUnique({
+      where: { id: postId },
+      select: draftOverlayPostSelect,
+    }) as Promise<DraftOverlayPost>;
+  });
+}
+
 function buildApprovalReviewPath(source: ApprovalItemSource, id: string) {
   return `/admin/approvals?reviewSource=${source}&reviewId=${encodeURIComponent(id)}`;
 }
 
-function buildDraftBody(
-  sections: DraftApprovalUpdateInput["sections"],
-  existingBody: string,
-) {
-  const contentBlocks = sections
-    .map((section, index) => ({
-      heading: section.heading.trim() || `القسم ${index + 1}`,
-      content: section.content.trim(),
-    }))
-    .filter((section) => section.content.length > 0)
-    .map((section) => `## ${section.heading}\n\n${section.content}`)
-    .join("\n\n");
-
-  const publishingNotes = extractPublishingNotesBlock(existingBody);
-
-  if (!publishingNotes) {
-    return contentBlocks.trim();
-  }
-
-  return contentBlocks.trim().length > 0
-    ? `${contentBlocks.trim()}\n\n${publishingNotes}`
-    : publishingNotes;
-}
-
 async function listPendingDatabaseApprovals() {
   const articles = await prisma.post.findMany({
-    where: { status: "pending_approval" },
+    where: {
+      status: "pending_approval",
+      media: {
+        none: {
+          type: DRAFT_SOURCE_MEDIA_TYPE,
+        },
+      },
+    },
     select: {
       id: true,
       title: true,
@@ -461,23 +799,36 @@ async function listPendingDraftApprovals() {
         .filter((fileName) => fileName.endsWith(".md"))
         .map((fileName) => readDraft(fileName)),
     );
+    const overlays = await listDraftOverlayPostsByFileName(
+      pendingDrafts.map((draft) => draft.fileName),
+    );
+    const overlayByFileName = new Map(
+      overlays.map((overlay) => [overlay.media[0]?.url ?? "", overlay]),
+    );
 
     return pendingDrafts
       .filter((draft) => draft.status === "pending")
-      .map(
-        (draft) =>
-          ({
+      .flatMap((draft) => {
+        const overlay = overlayByFileName.get(draft.fileName);
+
+        if (overlay && !isPendingDraftOverlayStatus(overlay.status)) {
+          return [];
+        }
+
+        return [
+          {
             id: `draft:${draft.draftId}`,
             source: "draft",
-            title: draft.title,
-            excerpt: draft.excerpt,
-            category: { name: draft.category },
+            title: overlay?.title ?? draft.title,
+            excerpt: overlay?.excerpt ?? draft.excerpt,
+            category: { name: overlay?.category.name ?? draft.category },
             submittedAt: draft.submittedAt,
             status: draft.status,
             reviewHref: buildApprovalReviewPath("draft", `draft:${draft.draftId}`),
             fileName: draft.fileName,
-          }) satisfies ApprovalItem,
-      );
+          } satisfies ApprovalItem,
+        ];
+      });
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
       return [];
@@ -561,38 +912,9 @@ async function getDatabaseApprovalReviewItem(id: string) {
 
 async function getDraftApprovalReviewItem(id: string) {
   const draft = await readDraft(parseDraftId(id));
+  const overlay = await findDraftOverlayPostByFileName(draft.fileName);
 
-  return {
-    id,
-    source: "draft",
-    title: draft.title,
-    slug: draft.slug,
-    excerpt: draft.excerpt,
-    category: { name: draft.category },
-    submittedAt: draft.submittedAt,
-    status: draft.status,
-    fileName: draft.fileName,
-    readingTime: draft.readingTime,
-    coverImageUrl: resolveCoverImage(draft.category, draft.coverImageUrl),
-    sourceUrl: draft.sourceUrl,
-    originalityNote: buildOriginalityNote("draft", draft.sourceUrl),
-    storeRecommendation: getStoreRecommendation({
-      categoryName: draft.category,
-      title: draft.title,
-      excerpt: draft.excerpt,
-      sections: draft.sections,
-    }),
-    editHref: null,
-    seoTitle: draft.seoTitle,
-    seoDescription: draft.seoDescription,
-    sections: draft.sections.map((section, index) => ({
-      id: `draft-section:${index + 1}`,
-      heading: section.heading,
-      anchor: section.anchor,
-      content: section.content,
-      sortOrder: section.sortOrder,
-    })),
-  } satisfies ApprovalReviewItem;
+  return buildDraftReviewItem(id, draft, overlay);
 }
 
 function parseDatabaseId(id: string) {
@@ -653,80 +975,30 @@ async function rejectDatabaseArticle(id: string) {
 
 async function approveDraftArticle(id: string) {
   const draft = await readDraft(parseDraftId(id));
-  const publishedAt = new Date();
-  const categoryName = normalizeCategoryName(draft.category);
-  const categorySlug = getCategorySlug(categoryName);
+  const overlay = await findDraftOverlayPostByFileName(draft.fileName);
+  await upsertDraftOverlayPost(
+    draft,
+    buildDraftUpdateInputFromState(draft, overlay),
+    "published",
+  );
 
-  await prisma.$transaction(async (tx) => {
-    const category = await tx.category.upsert({
-      where: { name: categoryName },
-      update: {
-        slug: categorySlug,
-      },
-      create: {
-        name: categoryName,
-        slug: categorySlug,
-      },
-    });
-
-    const post = await tx.post.upsert({
-      where: { slug: draft.slug },
-      update: {
-        title: draft.title,
-        excerpt: draft.excerpt,
-        categoryId: category.id,
-        coverImageUrl: draft.coverImageUrl,
-        seoTitle: draft.seoTitle,
-        seoDescription: draft.seoDescription,
-        status: "published",
-        publishedAt,
-        ...(draft.readingTime ? { readingTime: draft.readingTime } : {}),
-      },
-      create: {
-        slug: draft.slug,
-        title: draft.title,
-        excerpt: draft.excerpt,
-        categoryId: category.id,
-        coverImageUrl: draft.coverImageUrl,
-        seoTitle: draft.seoTitle,
-        seoDescription: draft.seoDescription,
-        status: "published",
-        publishedAt,
-        ...(draft.readingTime ? { readingTime: draft.readingTime } : {}),
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    await tx.postSection.deleteMany({
-      where: { postId: post.id },
-    });
-
-    if (draft.sections.length > 0) {
-      await tx.postSection.createMany({
-        data: draft.sections.map((section) => ({
-          postId: post.id,
-          heading: section.heading,
-          anchor: section.anchor,
-          content: section.content,
-          sortOrder: section.sortOrder,
-        })),
-      });
-    }
-  });
-
-  await updateDraftFrontmatter(draft.filePath, {
+  await syncDraftFrontmatterBestEffort(draft.filePath, {
     status: "published",
-    publishedAt: publishedAt.toISOString(),
+    publishedAt: new Date().toISOString(),
     rejectionReason: null,
   });
 }
 
 async function rejectDraftArticle(id: string, reason?: string) {
   const draft = await readDraft(parseDraftId(id));
+  const overlay = await findDraftOverlayPostByFileName(draft.fileName);
+  await upsertDraftOverlayPost(
+    draft,
+    buildDraftUpdateInputFromState(draft, overlay),
+    "rejected",
+  );
 
-  await updateDraftFrontmatter(draft.filePath, {
+  await syncDraftFrontmatterBestEffort(draft.filePath, {
     status: "rejected",
     publishedAt: null,
     rejectionReason: reason?.trim() ? reason.trim() : null,
@@ -762,45 +1034,9 @@ export async function updateDraftApprovalItem(
   input: DraftApprovalUpdateInput,
 ) {
   const draft = await readDraft(parseDraftId(id));
-  const raw = await readFile(draft.filePath, "utf8");
-  const { frontmatter, body } = splitFrontmatter(raw);
+  const overlay = await upsertDraftOverlayPost(draft, input, "pending_approval");
 
-  let nextFrontmatter = frontmatter;
-  nextFrontmatter = setFrontmatterValue(nextFrontmatter, "title", input.title.trim());
-  nextFrontmatter = setFrontmatterValue(nextFrontmatter, "slug", input.slug.trim());
-  nextFrontmatter = setFrontmatterValue(
-    nextFrontmatter,
-    "category",
-    normalizeCategoryName(input.category),
-  );
-  nextFrontmatter = setFrontmatterValue(nextFrontmatter, "excerpt", input.excerpt.trim());
-  nextFrontmatter = setFrontmatterValue(
-    nextFrontmatter,
-    "seoTitle",
-    input.seoTitle.trim(),
-  );
-  nextFrontmatter = setFrontmatterValue(
-    nextFrontmatter,
-    "metaDescription",
-    input.seoDescription.trim(),
-  );
-  nextFrontmatter = setFrontmatterValue(
-    nextFrontmatter,
-    "coverImageUrl",
-    normalizeCoverImageForStorage(input.coverImageUrl?.trim()) ?? null,
-  );
-  nextFrontmatter = setFrontmatterValue(
-    nextFrontmatter,
-    "sourceUrl",
-    input.sourceUrl?.trim() ? input.sourceUrl.trim() : null,
-  );
-
-  const nextBody = buildDraftBody(input.sections, body);
-  const nextContent = `---\n${nextFrontmatter.trim()}\n---\n\n${nextBody.trimStart()}`;
-
-  await writeFile(draft.filePath, nextContent, "utf8");
-
-  return getDraftApprovalReviewItem(id);
+  return buildDraftReviewItem(id, draft, overlay);
 }
 
 export async function approveApprovalItem(source: ApprovalItemSource, id: string) {

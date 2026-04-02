@@ -11,6 +11,13 @@ interface Category {
   name: string;
 }
 
+interface ArticleTemplate {
+  id: number;
+  title: string;
+  categoryId: number;
+  sections?: Section[];
+}
+
 export interface Section {
   heading: string;
   anchor: string;
@@ -41,6 +48,8 @@ export default function ArticleForm({
 }: ArticleFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [articleTemplates, setArticleTemplates] = useState<ArticleTemplate[]>([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const fieldClassName =
@@ -77,20 +86,40 @@ export default function ArticleForm({
   }, [initialData]);
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    async function fetchFormOptions() {
+      try {
+        const requests = [fetch("/api/admin/categories")];
 
-  async function fetchCategories() {
-    try {
-      const res = await fetch("/api/admin/categories");
-      if (!res.ok) throw new Error("Failed to fetch categories");
-      const data = await res.json();
-      setCategories(data);
-    } catch (err) {
-      setError("فشل تحميل الفئات");
-      console.error(err);
+        if (!articleId) {
+          requests.push(fetch("/api/admin/articles?status=published"));
+        }
+
+        const responses = await Promise.all(requests);
+        const [categoriesResponse, templatesResponse] = responses;
+
+        if (!categoriesResponse.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const categoryData = (await categoriesResponse.json()) as Category[];
+        setCategories(categoryData);
+
+        if (templatesResponse) {
+          if (!templatesResponse.ok) {
+            throw new Error("Failed to fetch article templates");
+          }
+
+          const templateData = (await templatesResponse.json()) as ArticleTemplate[];
+          setArticleTemplates(templateData);
+        }
+      } catch (err) {
+        setError("فشل تحميل بيانات النموذج");
+        console.error(err);
+      }
     }
-  }
+
+    void fetchFormOptions();
+  }, [articleId]);
 
   function handleInputChange(
     e: React.ChangeEvent<
@@ -149,6 +178,34 @@ export default function ArticleForm({
       ...prev,
       sections: prev.sections.filter((_, i) => i !== index),
     }));
+  }
+
+  function applyArticleTemplate() {
+    const template = articleTemplates.find(
+      (articleTemplate) => String(articleTemplate.id) === selectedTemplateId,
+    );
+
+    if (!template) {
+      setError("اختر مقالاً موجوداً لنسخ تنظيمه أولاً");
+      return;
+    }
+
+    const nextSections =
+      template.sections?.length
+        ? template.sections.map((section, index) => ({
+            heading: section.heading,
+            anchor: createSlug(section.heading) || `section-${index + 1}`,
+            content: "",
+            sortOrder: index + 1,
+          }))
+        : [{ heading: "المقدمة", anchor: "introduction", content: "", sortOrder: 1 }];
+
+    setFormData((prev) => ({
+      ...prev,
+      categoryId: String(template.categoryId),
+      sections: nextSections,
+    }));
+    setError("");
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -349,6 +406,36 @@ export default function ArticleForm({
           </div>
         </div>
       </div>
+
+      {!articleId && articleTemplates.length > 0 && (
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">البدء من مقال قديم</h2>
+          <p className="text-sm leading-7 text-gray-600 mb-4">
+            اختر مقالاً منشوراً لنسخ نفس تنظيم الأقسام وترتيبها في المقالة الجديدة.
+          </p>
+          <div className="flex flex-col gap-4 md:flex-row">
+            <select
+              value={selectedTemplateId}
+              onChange={(event) => setSelectedTemplateId(event.target.value)}
+              className={fieldClassName}
+            >
+              <option value="">اختر مقالاً قديماً</option>
+              {articleTemplates.map((template) => (
+                <option key={template.id} value={template.id}>
+                  {template.title}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={applyArticleTemplate}
+              className="rounded-lg bg-slate-900 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-800"
+            >
+              نسخ تنظيم المقال
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Content Sections */}
       <div className="bg-white p-6 rounded-lg shadow">

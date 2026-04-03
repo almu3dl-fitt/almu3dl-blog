@@ -11,7 +11,19 @@ type GeneratedArticle = {
   excerpt: string;
 };
 
+const CATEGORIES = [
+  { name: "التغذية الرياضية", icon: "🥗" },
+  { name: "خسارة الدهون", icon: "🔥" },
+  { name: "بناء العضلات والأداء", icon: "💪" },
+  { name: "المستلزمات الرياضية", icon: "🏋️" },
+  { name: "المكملات الغذائية", icon: "💊" },
+  { name: "الصحة العامة", icon: "❤️" },
+  { name: "الوصفات الصحية", icon: "🍽️" },
+  { name: "أسلوب الحياة الرياضي", icon: "🏃" },
+];
+
 export default function AiGeneratePage() {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState<GeneratedArticle | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -24,6 +36,8 @@ export default function AiGeneratePage() {
     try {
       const response = await fetch("/api/admin/ai-generate", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category: selectedCategory ?? undefined }),
       });
 
       const data = await response.json();
@@ -44,49 +58,58 @@ export default function AiGeneratePage() {
   return (
     <div className="space-y-8" dir="rtl">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">
-          المعضّل AI
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-900">المعضّل AI</h1>
         <p className="mt-2 text-gray-500">
           أنشئ مقالة جديدة بالذكاء الاصطناعي بناءً على أسلوب كتابتك
         </p>
       </div>
 
-      {/* How it works card */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-8">
-        <div className="flex items-start gap-5">
-          <div className="text-5xl select-none">🤖</div>
-          <div className="flex-1">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              كيف يعمل الوكيل؟
-            </h2>
-            <ol className="space-y-3 text-gray-600">
-              <li className="flex items-start gap-2">
-                <span className="font-bold text-blue-600 mt-0.5">١.</span>
-                <span>يدرس المقالات المنشورة في الموقع ويستوعب أسلوبك في الكتابة والنغمة التحريرية</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="font-bold text-blue-600 mt-0.5">٢.</span>
-                <span>يختار موضوعاً جديداً مفيداً في اللياقة أو التغذية الرياضية لم يُتناول من قبل</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="font-bold text-blue-600 mt-0.5">٣.</span>
-                <span>يكتب مقالة شاملة بنفس أسلوبك مع استشهادات علمية حقيقية</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="font-bold text-blue-600 mt-0.5">٤.</span>
-                <span>يجلب صورة غلاف عالية الجودة من Pexels غير مكررة في المقالات الأخرى</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="font-bold text-blue-600 mt-0.5">٥.</span>
-                <span>يضع المقالة في قائمة المعلقة لمراجعتها والموافقة عليها قبل النشر</span>
-              </li>
-            </ol>
-          </div>
+      {/* Category selection */}
+      <div className="bg-white rounded-2xl border border-gray-200 p-8 space-y-5">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900">
+            اختر القسم
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">
+            اختياري — إذا تركته فارغاً سيختار الذكاء الاصطناعي القسم بنفسه
+          </p>
         </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {CATEGORIES.map((cat) => {
+            const isSelected = selectedCategory === cat.name;
+            return (
+              <button
+                key={cat.name}
+                onClick={() =>
+                  setSelectedCategory(isSelected ? null : cat.name)
+                }
+                className={`flex flex-col items-center gap-2 py-4 px-3 rounded-xl border-2 transition-all text-sm font-medium ${
+                  isSelected
+                    ? "border-blue-500 bg-blue-50 text-blue-700"
+                    : "border-gray-200 bg-gray-50 text-gray-700 hover:border-blue-300 hover:bg-blue-50"
+                }`}
+              >
+                <span className="text-2xl">{cat.icon}</span>
+                <span className="text-center leading-tight">{cat.name}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {selectedCategory && (
+          <p className="text-sm text-blue-600 font-medium">
+            ✓ سيكتب الوكيل مقالة في قسم: {selectedCategory}
+          </p>
+        )}
+        {!selectedCategory && (
+          <p className="text-sm text-gray-400">
+            لم يتم تحديد قسم — سيختار الوكيل بحرية
+          </p>
+        )}
       </div>
 
-      {/* Generate button card */}
+      {/* Generate button */}
       <div className="bg-white rounded-2xl border border-gray-200 p-8 space-y-6">
         <button
           onClick={handleGenerate}
@@ -121,6 +144,11 @@ export default function AiGeneratePage() {
             <>
               <span className="text-2xl">✨</span>
               إنشاء مقالة الآن
+              {selectedCategory && (
+                <span className="text-base font-normal opacity-80">
+                  في {selectedCategory}
+                </span>
+              )}
             </>
           )}
         </button>
@@ -151,11 +179,13 @@ export default function AiGeneratePage() {
             </div>
 
             <div className="space-y-2 text-sm">
-              <div className="bg-white rounded-lg border border-green-200 p-3 space-y-1">
+              <div className="bg-white rounded-lg border border-green-200 p-3">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wide">
                   العنوان
                 </p>
-                <p className="text-gray-900 font-semibold">{result.title}</p>
+                <p className="text-gray-900 font-semibold mt-0.5">
+                  {result.title}
+                </p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-white rounded-lg border border-green-200 p-3">

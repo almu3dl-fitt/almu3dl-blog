@@ -32,6 +32,11 @@ export type GeneratedArticleResult = {
   excerpt: string;
 };
 
+export type GenerateOptions = {
+  /** If provided, the AI will write an article in this category. Otherwise it picks freely. */
+  category?: string;
+};
+
 async function getPublishedArticlesForStyleAnalysis() {
   try {
     return await prisma.post.findMany({
@@ -153,8 +158,13 @@ function availableCategoryNames(): string {
 
 async function generateWithGroq(
   styleExamples: string,
+  categoryHint: string | null,
 ): Promise<ClaudeArticleOutput> {
   const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+  const categoryInstruction = categoryHint
+    ? `يجب أن تكون المقالة في فئة: **${categoryHint}** — لا تختر فئة أخرى.`
+    : `اختر الفئة المناسبة من القائمة المتاحة: ${availableCategoryNames()}`;
 
   const systemPrompt = `أنت كاتب محتوى عربي متخصص في اللياقة البدنية والتغذية الرياضية. تكتب لمدونة "المعضّل" وأسلوبك يتسم بـ:
 - الأسلوب العلمي المبسط باللغة العربية الفصيحة
@@ -173,7 +183,9 @@ ${styleExamples}
 
 ---
 
-اكتب الآن مقالة جديدة وفريدة تماماً عن موضوع لياقة بدنية أو تغذية رياضية لم يُتناول في الأمثلة أعلاه.
+${categoryInstruction}
+
+اكتب الآن مقالة جديدة وفريدة تماماً عن موضوع لم يُتناول في الأمثلة أعلاه.
 
 أخرج النتيجة كـ JSON صحيح فقط:
 
@@ -210,7 +222,7 @@ ${styleExamples}
     ],
     temperature: 0.7,
     max_tokens: 6000,
-    response_format: { type: "json_object" },
+    response_format: { type: "json_object" as const },
   });
 
   const text = completion.choices[0]?.message?.content ?? "";
@@ -248,7 +260,14 @@ async function resolveUniqueSlug(base: string): Promise<string> {
   return slug;
 }
 
-export async function generateAiArticle(): Promise<GeneratedArticleResult> {
+export async function generateAiArticle(
+  options: GenerateOptions = {},
+): Promise<GeneratedArticleResult> {
+  // Validate category if provided
+  const categoryHint = options.category
+    ? (CATEGORY_DEFINITIONS.find((c) => c.name === options.category)?.name ?? null)
+    : null;
+
   // 1. Load existing articles for style analysis (best effort)
   const [existingArticles, existingPhotoIds] = await Promise.all([
     getPublishedArticlesForStyleAnalysis(),
@@ -258,7 +277,7 @@ export async function generateAiArticle(): Promise<GeneratedArticleResult> {
   const styleExamples = buildStyleExamples(existingArticles);
 
   // 2. Generate article content with Groq (Llama 3)
-  const generated = await generateWithGroq(styleExamples);
+  const generated = await generateWithGroq(styleExamples, categoryHint);
 
   // 3. Normalize category to one of the known categories
   const validCategory =

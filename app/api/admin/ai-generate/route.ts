@@ -1,10 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { generateAiArticle } from "@/lib/ai-article-generator";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
-    const article = await generateAiArticle();
+    const body = await request.json().catch(() => ({}));
+    const category = typeof body.category === "string" ? body.category : undefined;
+
+    const article = await generateAiArticle({ category });
 
     return NextResponse.json({ success: true, article });
   } catch (error) {

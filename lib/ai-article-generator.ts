@@ -68,6 +68,58 @@ function extractPexelsPhotoId(url: string): string | null {
   return match?.[1] ?? null;
 }
 
+/**
+ * Safe, fitness-relevant fallback queries per category.
+ * Used when the AI generates an irrelevant or unsafe query.
+ */
+const CATEGORY_SAFE_QUERIES: Record<string, string> = {
+  "التغذية الرياضية": "healthy sports nutrition food meal prep",
+  "خسارة الدهون": "fitness cardio workout weight loss training",
+  "بناء العضلات والأداء": "gym strength training muscle workout",
+  "المستلزمات الرياضية": "sports equipment gym gear weights",
+  "المكملات الغذائية": "protein powder supplements sports nutrition",
+  "الصحة العامة": "healthy lifestyle wellness fitness activity",
+  "الوصفات الصحية": "healthy food cooking meal preparation",
+  "أسلوب الحياة الرياضي": "active lifestyle sport fitness outdoor",
+};
+
+const DEFAULT_SAFE_QUERY = "fitness sport healthy lifestyle workout";
+
+/**
+ * Terms that indicate the query might produce irrelevant or unsafe images.
+ * If any of these appear, we fall back to a category-safe query.
+ */
+const BLOCKED_QUERY_TERMS = [
+  "nude", "naked", "sexy", "sex", "adult", "porn", "erotic",
+  "bikini", "underwear", "lingerie", "swimsuit", "intimate",
+  "violence", "blood", "weapon", "gun", "knife",
+  "racist", "hate",
+];
+
+/**
+ * Sanitizes the AI-generated Pexels query:
+ * - Rejects queries with inappropriate/unsafe terms → category fallback
+ * - Appends "fitness sport" to keep results relevant and appropriate
+ */
+function sanitizePexelsQuery(query: string, categoryName: string): string {
+  const fallback = CATEGORY_SAFE_QUERIES[categoryName] ?? DEFAULT_SAFE_QUERY;
+
+  if (!query?.trim()) return fallback;
+
+  const lower = query.toLowerCase();
+  const isUnsafe = BLOCKED_QUERY_TERMS.some((term) => lower.includes(term));
+
+  if (isUnsafe) {
+    console.warn(
+      `[ai-generator] Rejected pexels query "${query}" — using safe fallback for "${categoryName}"`,
+    );
+    return fallback;
+  }
+
+  // Append sport/fitness to anchor results to appropriate content
+  return `${query.trim()} fitness sport`;
+}
+
 async function getExistingPexelsPhotoIds(): Promise<Set<string>> {
   try {
     const posts = await prisma.post.findMany({
@@ -285,9 +337,11 @@ export async function generateAiArticle(
     CATEGORY_DEFINITIONS[0].name;
   const categorySlug = getCategorySlugFromName(validCategory);
 
-  // 4. Fetch a unique cover image from Pexels (compare by photo ID, not full URL)
+  // 4. Fetch a unique cover image from Pexels
+  //    Sanitize query first: reject unsafe/irrelevant terms → category fallback
+  const safeQuery = sanitizePexelsQuery(generated.pexelsQuery, validCategory);
   const coverImageUrl = await fetchUniquePexelsCoverImage(
-    generated.pexelsQuery,
+    safeQuery,
     existingPhotoIds,
   );
 

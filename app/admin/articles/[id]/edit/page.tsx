@@ -14,7 +14,9 @@ export default function EditArticlePage() {
   useEffect(() => {
     async function fetchArticle() {
       try {
-        const res = await fetch(`/api/admin/articles/${id}`);
+        const res = await fetch(`/api/admin/articles/${id}`, {
+          cache: "no-store",
+        });
         if (!res.ok) throw new Error("Failed to fetch article");
         const data = (await res.json()) as ArticleFormInitialData;
         setArticle(data);

@@ -4,11 +4,10 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
+  resolveArticleCoverImageUrl,
   normalizeCoverImageForStorage,
-  resolveCoverImageUrl,
 } from "@/lib/article-cover-images";
 import { createSlug } from "@/lib/slug";
-import { getCategoryDefinitionByName } from "@/lib/site";
 
 interface Category {
   id: number;
@@ -92,14 +91,37 @@ export default function ArticleForm({
   useEffect(() => {
     async function fetchFormOptions() {
       try {
-        const requests = [fetch("/api/admin/categories")];
+        const categoriesRequest = fetch("/api/admin/categories", {
+          cache: "no-store",
+        });
 
         if (!articleId) {
-          requests.push(fetch("/api/admin/articles?status=published"));
+          const requests = [
+            categoriesRequest,
+            fetch("/api/admin/articles?status=published", {
+              cache: "no-store",
+            }),
+          ];
+          const responses = await Promise.all(requests);
+          const [categoriesResponse, templatesResponse] = responses;
+
+          if (!categoriesResponse.ok) {
+            throw new Error("Failed to fetch categories");
+          }
+
+          const categoryData = (await categoriesResponse.json()) as Category[];
+          setCategories(categoryData);
+
+          if (!templatesResponse.ok) {
+            throw new Error("Failed to fetch article templates");
+          }
+
+          const templateData = (await templatesResponse.json()) as ArticleTemplate[];
+          setArticleTemplates(templateData);
+          return;
         }
 
-        const responses = await Promise.all(requests);
-        const [categoriesResponse, templatesResponse] = responses;
+        const categoriesResponse = await categoriesRequest;
 
         if (!categoriesResponse.ok) {
           throw new Error("Failed to fetch categories");
@@ -107,15 +129,6 @@ export default function ArticleForm({
 
         const categoryData = (await categoriesResponse.json()) as Category[];
         setCategories(categoryData);
-
-        if (templatesResponse) {
-          if (!templatesResponse.ok) {
-            throw new Error("Failed to fetch article templates");
-          }
-
-          const templateData = (await templatesResponse.json()) as ArticleTemplate[];
-          setArticleTemplates(templateData);
-        }
       } catch (err) {
         setError("فشل تحميل بيانات النموذج");
         console.error(err);
@@ -260,11 +273,13 @@ export default function ArticleForm({
 
   const selectedCategoryName =
     categories.find((category) => String(category.id) === String(formData.categoryId))?.name ?? "";
-  const coverPreviewSrc =
-    resolveCoverImageUrl(formData.coverImageUrl, selectedCategoryName) ||
-    (selectedCategoryName
-      ? getCategoryDefinitionByName(selectedCategoryName).imagePath
-      : "");
+  const coverPreviewSrc = resolveArticleCoverImageUrl({
+    coverImageUrl: formData.coverImageUrl,
+    categoryName: selectedCategoryName,
+    title: formData.title,
+    excerpt: formData.excerpt,
+    sections: formData.sections,
+  });
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -350,7 +365,7 @@ export default function ArticleForm({
                 className={fieldClassName}
               />
               <p className="text-gray-500 text-xs mt-1">
-                استخدم صورة محلية من `public/` أو رابط صورة خارجي مباشر بصيغة PNG أو JPG.
+                استخدم صورة محلية من `public/` أو رابطًا مباشرًا، وإن تركته فارغًا سيختار النظام صورة مجانية مناسبة تلقائيًا.
               </p>
               {coverPreviewSrc && (
                 <div className="mt-3 overflow-hidden rounded-lg border border-gray-200">

@@ -4,8 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { resolveCoverImageUrl } from "@/lib/article-cover-images";
-import { getCategoryDefinitionByName } from "@/lib/site";
+import { resolveArticleCoverImageUrl } from "@/lib/article-cover-images";
 
 type ApprovalItemSource = "database" | "draft";
 
@@ -97,7 +96,13 @@ function toDraftReviewForm(review: ApprovalReview): DraftReviewForm {
     slug: review.slug,
     excerpt: review.excerpt,
     category: review.category.name,
-    coverImageUrl: resolveCoverImageUrl(review.coverImageUrl, review.category.name),
+    coverImageUrl: resolveArticleCoverImageUrl({
+      coverImageUrl: review.coverImageUrl,
+      categoryName: review.category.name,
+      title: review.title,
+      excerpt: review.excerpt,
+      sections: review.sections,
+    }),
     seoTitle: review.seoTitle,
     seoDescription: review.seoDescription,
     sourceUrl: review.sourceUrl ?? "",
@@ -130,7 +135,9 @@ export default function ApprovalsPage() {
   async function fetchPendingArticles() {
     try {
       setLoading(true);
-      const res = await fetch("/api/admin/approvals");
+      const res = await fetch("/api/admin/approvals", {
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Failed to fetch pending articles");
 
       const data = (await res.json()) as PendingArticle[];
@@ -164,7 +171,9 @@ export default function ApprovalsPage() {
         source: article.source,
         id: article.id,
       });
-      const res = await fetch(`/api/admin/approvals?${params.toString()}`);
+      const res = await fetch(`/api/admin/approvals?${params.toString()}`, {
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Failed to fetch approval review");
 
       const data = (await res.json()) as ApprovalReview;
@@ -414,8 +423,13 @@ export default function ApprovalsPage() {
   const selectedArticle = review ? toPendingArticle(review) : null;
   const databaseEditHref = review?.source === "database" ? review.editHref : null;
   const draftCoverPreviewSrc = draftForm
-    ? resolveCoverImageUrl(draftForm.coverImageUrl, draftForm.category) ||
-      getCategoryDefinitionByName(draftForm.category).imagePath
+    ? resolveArticleCoverImageUrl({
+        coverImageUrl: draftForm.coverImageUrl,
+        categoryName: draftForm.category,
+        title: draftForm.title,
+        excerpt: draftForm.excerpt,
+        sections: draftForm.sections,
+      })
     : "";
 
   return (
@@ -692,9 +706,8 @@ export default function ApprovalsPage() {
                         className={draftEditorFieldClassName}
                       />
                       <p className="mt-2 text-xs text-gray-500">
-                        استخدم رابط صورة مباشر أو مسارًا محليًا بصيغة PNG أو JPG مثل
-                        {" "}
-                        `/articles/example-cover.png`.
+                        استخدم رابط صورة مباشر أو مسارًا محليًا، وإن تركته فارغًا
+                        سيختار النظام صورة مجانية مناسبة تلقائيًا.
                       </p>
                       {draftCoverPreviewSrc && (
                         <div className="mt-3 overflow-hidden rounded-lg border border-gray-200">

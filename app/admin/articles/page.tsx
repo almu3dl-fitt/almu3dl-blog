@@ -3,8 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { resolveCoverImageUrl } from "@/lib/article-cover-images";
-import { getCategoryDefinitionByName } from "@/lib/site";
+import { resolveArticleCoverImageUrl } from "@/lib/article-cover-images";
 
 interface Article {
   id: number;
@@ -44,10 +43,12 @@ function getStatusClasses(status: string) {
 }
 
 function resolveArticleThumbnail(article: Article) {
-  return (
-    resolveCoverImageUrl(article.coverImageUrl, article.category.name) ||
-    getCategoryDefinitionByName(article.category.name).imagePath
-  );
+  return resolveArticleCoverImageUrl({
+    coverImageUrl: article.coverImageUrl,
+    categoryName: article.category.name,
+    title: article.title,
+    excerpt: article.excerpt,
+  });
 }
 
 export default function ArticlesPage() {
@@ -62,7 +63,9 @@ export default function ArticlesPage() {
   async function fetchArticles() {
     try {
       setLoading(true);
-      const res = await fetch("/api/admin/articles");
+      const res = await fetch("/api/admin/articles", {
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Failed to fetch articles");
       const data = await res.json();
       setArticles(data);

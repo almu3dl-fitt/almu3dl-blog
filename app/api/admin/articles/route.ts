@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
-import { normalizeCoverImageForStorage } from "@/lib/article-cover-images";
+import {
+  getSuggestedCoverImageForArticle,
+  normalizeCoverImageForStorage,
+} from "@/lib/article-cover-images";
 import {
   normalizeArticleSections,
   normalizeArticleText,
@@ -9,6 +12,9 @@ import {
 } from "@/lib/admin-article-input";
 import { createSlug } from "@/lib/slug";
 import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 // GET all articles
 export async function GET(request: NextRequest) {
@@ -50,7 +56,7 @@ export async function POST(request: NextRequest) {
     const title = normalizeArticleText(body.title);
     const excerpt = normalizeArticleText(body.excerpt);
     const categoryId = parseArticleCategoryId(body.categoryId);
-    const coverImageUrl = normalizeCoverImageForStorage(
+    const normalizedCoverImageUrl = normalizeCoverImageForStorage(
       normalizeOptionalArticleText(body.coverImageUrl),
     );
     const seoTitle = normalizeOptionalArticleText(body.seoTitle);
@@ -65,6 +71,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+      select: { id: true, name: true },
+    });
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 400 }
+      );
+    }
+
+    const coverImageUrl =
+      normalizedCoverImageUrl ??
+      getSuggestedCoverImageForArticle({
+        title,
+        excerpt,
+        categoryName: category.name,
+        sections,
+      });
+
     const slug = createSlug(title);
 
     const article = await prisma.post.create({
@@ -72,7 +99,7 @@ export async function POST(request: NextRequest) {
         title,
         slug,
         excerpt: excerpt || "",
-        categoryId,
+        categoryId: category.id,
         coverImageUrl,
         seoTitle: seoTitle ?? title,
         seoDescription: seoDescription ?? excerpt ?? "",

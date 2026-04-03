@@ -9,6 +9,9 @@ import {
   updateDraftApprovalItem,
 } from "@/lib/admin-approvals";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 function isDraftSectionList(
   value: unknown,
 ): value is DraftApprovalUpdateInput["sections"] {

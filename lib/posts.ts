@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { cache } from "react";
 
-import { resolveCoverImageUrl } from "@/lib/article-cover-images";
+import { resolveArticleCoverImageUrl } from "@/lib/article-cover-images";
 import { prisma } from "@/lib/prisma";
 import { buildSlugVariants, decodeSlugValue, normalizeSlug } from "@/lib/slug";
 import {
@@ -120,14 +120,26 @@ async function hasLocalAsset(publicPath: string) {
   return lookup;
 }
 
-async function resolveCoverImage(
-  coverImageUrl: string | null,
-  categoryName: string,
-) {
-  const cleanedCoverImageUrl = resolveCoverImageUrl(coverImageUrl, categoryName);
+async function resolveCoverImage(input: {
+  coverImageUrl: string | null;
+  categoryName: string;
+  title: string;
+  excerpt: string | null;
+  sections?: Array<{
+    heading: string;
+    content: string;
+  }>;
+}) {
+  const cleanedCoverImageUrl = resolveArticleCoverImageUrl({
+    coverImageUrl: input.coverImageUrl,
+    categoryName: input.categoryName,
+    title: input.title,
+    excerpt: input.excerpt,
+    sections: input.sections,
+  });
 
   if (!cleanedCoverImageUrl) {
-    return getCategoryDefinitionByName(categoryName).imagePath;
+    return getCategoryDefinitionByName(input.categoryName).imagePath;
   }
 
   if (
@@ -141,7 +153,7 @@ async function resolveCoverImage(
     return cleanedCoverImageUrl;
   }
 
-  return getCategoryDefinitionByName(categoryName).imagePath;
+  return getCategoryDefinitionByName(input.categoryName).imagePath;
 }
 
 export function formatArabicDate(date: Date | null) {
@@ -168,7 +180,12 @@ async function serializePostListItem(post: PostListRecord) {
     href: buildArticleHref(post.slug),
     title: post.title,
     excerpt: firstMeaningfulText(post.excerpt, "محتوى تحريري قيد المراجعة."),
-    coverImageUrl: await resolveCoverImage(post.coverImageUrl, post.category.name),
+    coverImageUrl: await resolveCoverImage({
+      coverImageUrl: post.coverImageUrl,
+      categoryName: post.category.name,
+      title: post.title,
+      excerpt: post.excerpt,
+    }),
     publishedAt: post.publishedAt,
     publishedLabel: formatArabicDate(post.publishedAt),
     readingTime: firstMeaningfulText(post.readingTime, "قراءة سريعة"),
@@ -183,10 +200,33 @@ async function serializePostListItem(post: PostListRecord) {
 }
 
 async function serializePostDetail(post: PostDetailRecord) {
-  const base = await serializePostListItem(post);
+  const categoryDefinition = getCategoryDefinitionByName(post.category.name);
+  const resolvedCoverImageUrl = await resolveCoverImage({
+    coverImageUrl: post.coverImageUrl,
+    categoryName: post.category.name,
+    title: post.title,
+    excerpt: post.excerpt,
+    sections: post.sections,
+  });
 
   return {
-    ...base,
+    id: post.id,
+    slug: post.slug,
+    urlSlug: decodeSlugValue(post.slug),
+    href: buildArticleHref(post.slug),
+    title: post.title,
+    excerpt: firstMeaningfulText(post.excerpt, "محتوى تحريري قيد المراجعة."),
+    coverImageUrl: resolvedCoverImageUrl,
+    publishedAt: post.publishedAt,
+    publishedLabel: formatArabicDate(post.publishedAt),
+    readingTime: firstMeaningfulText(post.readingTime, "قراءة سريعة"),
+    category: {
+      name: post.category.name,
+      slug: getCategorySlugFromName(post.category.name),
+      imagePath: categoryDefinition.imagePath,
+      description: categoryDefinition.description,
+      accent: categoryDefinition.accent,
+    },
     seoTitle: firstMeaningfulText(post.seoTitle, post.title),
     seoDescription: firstMeaningfulText(
       post.seoDescription,

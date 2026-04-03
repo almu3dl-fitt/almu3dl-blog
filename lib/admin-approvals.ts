@@ -5,8 +5,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  getSuggestedCoverImageForArticle,
   normalizeCoverImageForStorage,
-  resolveCoverImageUrl,
+  resolveArticleCoverImageUrl,
 } from "@/lib/article-cover-images";
 import { prisma } from "@/lib/prisma";
 import { createSlug } from "@/lib/slug";
@@ -373,8 +374,23 @@ function normalizeCategoryName(categoryName: string) {
   return CATEGORY_ALIASES[trimmed] ?? trimmed;
 }
 
-function resolveCoverImage(categoryName: string, coverImageUrl?: string | null) {
-  return resolveCoverImageUrl(coverImageUrl, categoryName);
+function resolveCoverImage(input: {
+  title: string;
+  excerpt: string;
+  categoryName: string;
+  coverImageUrl?: string | null;
+  sections?: Array<{
+    heading?: string | null;
+    content?: string | null;
+  }>;
+}) {
+  return resolveArticleCoverImageUrl({
+    coverImageUrl: input.coverImageUrl,
+    categoryName: input.categoryName,
+    title: input.title,
+    excerpt: input.excerpt,
+    sections: input.sections,
+  });
 }
 
 function buildOriginalityNote(source: ApprovalItemSource, sourceUrl?: string | null) {
@@ -558,10 +574,13 @@ function buildDraftReviewItem(
     status: effectiveStatus,
     fileName: draft.fileName,
     readingTime: overlay?.readingTime ?? draft.readingTime,
-    coverImageUrl: resolveCoverImage(
-      effectiveCategoryName,
-      overlay?.coverImageUrl ?? draft.coverImageUrl,
-    ),
+    coverImageUrl: resolveCoverImage({
+      title: effectiveTitle,
+      excerpt: effectiveExcerpt,
+      categoryName: effectiveCategoryName,
+      coverImageUrl: overlay?.coverImageUrl ?? draft.coverImageUrl,
+      sections: effectiveSections,
+    }),
     sourceUrl: effectiveSourceUrl,
     originalityNote: buildOriginalityNote("draft", effectiveSourceUrl),
     storeRecommendation: getStoreRecommendation({
@@ -645,11 +664,18 @@ async function upsertDraftOverlayPost(
   const excerpt = input.excerpt.trim();
   const categoryName = normalizeCategoryName(input.category);
   const categorySlug = getCategorySlug(categoryName);
-  const coverImageUrl = normalizeCoverImageForStorage(input.coverImageUrl?.trim());
   const seoTitle = input.seoTitle.trim() || title;
   const seoDescription = input.seoDescription.trim() || excerpt || title;
   const sourceUrl = input.sourceUrl?.trim() ? input.sourceUrl.trim() : null;
   const sections = normalizeDraftSectionsForStorage(input.sections);
+  const coverImageUrl =
+    normalizeCoverImageForStorage(input.coverImageUrl?.trim()) ??
+    getSuggestedCoverImageForArticle({
+      title,
+      excerpt,
+      categoryName,
+      sections,
+    });
   const now = new Date();
 
   const conflictingPost = await findDraftOverlayPostBySlug(slug);
@@ -924,7 +950,13 @@ async function getDatabaseApprovalReviewItem(id: string) {
       status: article.status,
       fileName: null,
       readingTime: article.readingTime,
-      coverImageUrl: resolveCoverImage(article.category.name, article.coverImageUrl),
+      coverImageUrl: resolveCoverImage({
+        title: article.title,
+        excerpt: article.excerpt ?? "",
+        categoryName: article.category.name,
+        coverImageUrl: article.coverImageUrl,
+        sections: article.sections,
+      }),
       sourceUrl: null,
       originalityNote: buildOriginalityNote("database"),
       storeRecommendation: getStoreRecommendation({

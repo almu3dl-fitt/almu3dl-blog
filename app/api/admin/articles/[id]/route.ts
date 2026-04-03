@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { normalizeCoverImageForStorage } from "@/lib/article-cover-images";
+import {
+  getSuggestedCoverImageForArticle,
+  normalizeCoverImageForStorage,
+} from "@/lib/article-cover-images";
 import {
   normalizeArticleSections,
   normalizeArticleText,
@@ -11,6 +14,9 @@ import { prisma } from "@/lib/prisma";
 interface ArticleParams {
   params: Promise<{ id: string }>;
 }
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 // GET single article
 export async function GET(request: NextRequest, { params }: ArticleParams) {
@@ -51,7 +57,7 @@ export async function PUT(request: NextRequest, { params }: ArticleParams) {
     const title = normalizeArticleText(body.title);
     const excerpt = normalizeArticleText(body.excerpt);
     const categoryId = parseArticleCategoryId(body.categoryId);
-    const coverImageUrl = normalizeCoverImageForStorage(
+    const normalizedCoverImageUrl = normalizeCoverImageForStorage(
       normalizeOptionalArticleText(body.coverImageUrl),
     );
     const seoTitle = normalizeOptionalArticleText(body.seoTitle);
@@ -66,14 +72,36 @@ export async function PUT(request: NextRequest, { params }: ArticleParams) {
       );
     }
 
-    const existingArticle = await prisma.post.findUnique({
-      where: { id: articleId },
-      select: { id: true, publishedAt: true },
-    });
+    const [existingArticle, category] = await Promise.all([
+      prisma.post.findUnique({
+        where: { id: articleId },
+        select: { id: true, publishedAt: true },
+      }),
+      prisma.category.findUnique({
+        where: { id: categoryId },
+        select: { id: true, name: true },
+      }),
+    ]);
 
     if (!existingArticle) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 });
     }
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 400 }
+      );
+    }
+
+    const coverImageUrl =
+      normalizedCoverImageUrl ??
+      getSuggestedCoverImageForArticle({
+        title,
+        excerpt,
+        categoryName: category.name,
+        sections,
+      });
 
     const publishedAt =
       status === "published"
@@ -86,7 +114,7 @@ export async function PUT(request: NextRequest, { params }: ArticleParams) {
         data: {
           title,
           excerpt,
-          categoryId,
+          categoryId: category.id,
           coverImageUrl,
           seoTitle: seoTitle ?? title,
           seoDescription: seoDescription ?? excerpt ?? "",

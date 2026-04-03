@@ -227,15 +227,15 @@ export default function ApprovalsPage() {
       });
       if (!res.ok) throw new Error("Failed to approve article");
 
-      setArticles((currentArticles) =>
-        currentArticles.filter((currentArticle) => currentArticle.id !== article.id),
-      );
-
+      // Clear review panel immediately for instant feedback
       if (review?.id === article.id) {
         setReview(null);
         setDraftForm(null);
         setIsEditingDraft(false);
       }
+
+      // Re-fetch from server to guarantee the article is gone from the list
+      await fetchPendingArticles();
     } catch (err) {
       alert("فشل نشر المقالة");
       console.error(err);
@@ -261,15 +261,15 @@ export default function ApprovalsPage() {
       });
       if (!res.ok) throw new Error("Failed to reject article");
 
-      setArticles((currentArticles) =>
-        currentArticles.filter((currentArticle) => currentArticle.id !== article.id),
-      );
-
+      // Clear review panel immediately for instant feedback
       if (review?.id === article.id) {
         setReview(null);
         setDraftForm(null);
         setIsEditingDraft(false);
       }
+
+      // Re-fetch from server to guarantee the article is gone from the list
+      await fetchPendingArticles();
     } catch (err) {
       alert("فشل رفض المقالة");
       console.error(err);

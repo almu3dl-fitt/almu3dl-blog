@@ -1,6 +1,6 @@
 import "server-only";
 
-import Anthropic from "@anthropic-ai/sdk";
+import Groq from "groq-sdk";
 
 import { prisma } from "@/lib/prisma";
 import { CATEGORY_DEFINITIONS, getCategorySlugFromName } from "@/lib/site";
@@ -137,10 +137,10 @@ function availableCategoryNames(): string {
   return CATEGORY_DEFINITIONS.map((c) => c.name).join("، ");
 }
 
-async function generateWithClaude(
+async function generateWithGroq(
   styleExamples: string,
 ): Promise<ClaudeArticleOutput> {
-  const client = new Anthropic();
+  const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
   const systemPrompt = `أنت كاتب محتوى عربي متخصص في اللياقة البدنية والتغذية الرياضية. تكتب لمدونة "المعضّل" وأسلوبك يتسم بـ:
 - الأسلوب العلمي المبسط باللغة العربية الفصيحة
@@ -148,9 +148,10 @@ async function generateWithClaude(
 - تقديم نصائح عملية وقابلة للتطبيق في الحياة اليومية
 - التشجيع والحماس في نهاية المقالات
 - استخدام الجداول والقوائم المرقمة عند الحاجة
-- الموازنة بين المعلومات العلمية والأسلوب السهل والمحبب للقارئ
 
-الفئات المتاحة في الموقع: ${availableCategoryNames()}`;
+الفئات المتاحة في الموقع: ${availableCategoryNames()}
+
+تخرج دائماً JSON صحيح فقط بدون أي نص إضافي أو code blocks.`;
 
   const userPrompt = `بناءً على هذه الأمثلة من أسلوب كتابة المدونة:
 
@@ -158,9 +159,9 @@ ${styleExamples}
 
 ---
 
-اكتب الآن مقالة جديدة وفريدة تماماً عن موضوع لياقة بدنية أو تغذية رياضية لم يُتناول في الأمثلة أعلاه. اختر موضوعاً مفيداً وشائق للقراء العرب المهتمين باللياقة.
+اكتب الآن مقالة جديدة وفريدة تماماً عن موضوع لياقة بدنية أو تغذية رياضية لم يُتناول في الأمثلة أعلاه.
 
-أخرج النتيجة كـ JSON صحيح فقط، بدون أي نص قبله أو بعده:
+أخرج النتيجة كـ JSON صحيح فقط:
 
 {
   "title": "عنوان المقالة الكامل",
@@ -184,21 +185,23 @@ ${styleExamples}
 المتطلبات:
 - 7 أقسام على الأقل بمحتوى تفصيلي حقيقي
 - كل قسم يحتوي على 3 فقرات أو أكثر
-- استشهد بمصادر علمية حقيقية (ISSN, ACSM, CDC, وغيرها) مع روابطها
-- pexelsQuery بالإنجليزية ومرتبط بموضوع المقالة
-- المقالة يجب أن تكون أصلية وغير مستلة من مصدر آخر`;
+- استشهد بمصادر علمية حقيقية مع روابطها
+- pexelsQuery بالإنجليزية ومرتبط بموضوع المقالة`;
 
-  const message = await client.messages.create({
-    model: "claude-opus-4-6",
+  const completion = await client.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+    temperature: 0.7,
     max_tokens: 6000,
-    system: systemPrompt,
-    messages: [{ role: "user", content: userPrompt }],
+    response_format: { type: "json_object" },
   });
 
-  const text =
-    message.content[0].type === "text" ? message.content[0].text : "";
-
+  const text = completion.choices[0]?.message?.content ?? "";
   const jsonMatch = text.match(/\{[\s\S]*\}/);
+
   if (!jsonMatch) {
     throw new Error("لم يتمكن الذكاء الاصطناعي من إنتاج مقالة صالحة");
   }
@@ -240,8 +243,8 @@ export async function generateAiArticle(): Promise<GeneratedArticleResult> {
 
   const styleExamples = buildStyleExamples(existingArticles);
 
-  // 2. Generate article content with Claude
-  const generated = await generateWithClaude(styleExamples);
+  // 2. Generate article content with Groq (Llama 3)
+  const generated = await generateWithGroq(styleExamples);
 
   // 3. Normalize category to one of the known categories
   const validCategory =

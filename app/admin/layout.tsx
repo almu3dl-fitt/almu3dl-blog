@@ -44,6 +44,7 @@ export default function AdminLayout({
     { href: "/admin", label: "لوحة التحكم", icon: "📊" },
     { href: "/admin/approvals", label: "المقالات المعلقة", icon: "⏳", badge: true },
     { href: "/admin/articles", label: "المقالات", icon: "📝" },
+    { href: "/admin/ai-generate", label: "وكيل الذكاء الاصطناعي", icon: "🤖" },
   ];
 
   return (

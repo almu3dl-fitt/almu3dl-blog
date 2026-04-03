@@ -1,0 +1,324 @@
+import "server-only";
+
+import Anthropic from "@anthropic-ai/sdk";
+
+import { prisma } from "@/lib/prisma";
+import { CATEGORY_DEFINITIONS, getCategorySlugFromName } from "@/lib/site";
+import { createSlug } from "@/lib/slug";
+
+const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
+
+type GeneratedSection = {
+  heading: string;
+  content: string;
+};
+
+type ClaudeArticleOutput = {
+  title: string;
+  category: string;
+  excerpt: string;
+  seoTitle: string;
+  seoDescription: string;
+  readingTime: string;
+  pexelsQuery: string;
+  sections: GeneratedSection[];
+};
+
+export type GeneratedArticleResult = {
+  postId: number;
+  title: string;
+  slug: string;
+  category: string;
+  excerpt: string;
+};
+
+async function getPublishedArticlesForStyleAnalysis() {
+  try {
+    return await prisma.post.findMany({
+      where: { status: "published" },
+      select: {
+        title: true,
+        excerpt: true,
+        category: { select: { name: true } },
+        sections: {
+          orderBy: { sortOrder: "asc" as const },
+          select: { heading: true, content: true },
+          take: 4,
+        },
+      },
+      orderBy: [{ publishedAt: "desc" }, { id: "desc" }],
+      take: 4,
+    });
+  } catch {
+    return [];
+  }
+}
+
+async function getExistingCoverImageUrls(): Promise<Set<string>> {
+  try {
+    const posts = await prisma.post.findMany({
+      where: { coverImageUrl: { not: null } },
+      select: { coverImageUrl: true },
+    });
+
+    return new Set(
+      posts
+        .map((p) => p.coverImageUrl)
+        .filter((url): url is string => url !== null),
+    );
+  } catch {
+    return new Set();
+  }
+}
+
+async function fetchUniquePexelsCoverImage(
+  query: string,
+  existingUrls: Set<string>,
+): Promise<string | null> {
+  if (!PEXELS_API_KEY) return null;
+
+  for (let page = 1; page <= 5; page++) {
+    const url = new URL("https://api.pexels.com/v1/search");
+    url.searchParams.set("query", query);
+    url.searchParams.set("per_page", "8");
+    url.searchParams.set("page", String(page));
+    url.searchParams.set("orientation", "landscape");
+    url.searchParams.set("size", "large");
+
+    try {
+      const response = await fetch(url.toString(), {
+        headers: { Authorization: PEXELS_API_KEY },
+      });
+
+      if (!response.ok) continue;
+
+      const data = await response.json();
+      const photos: { src: { large2x?: string; large?: string } }[] =
+        data.photos ?? [];
+
+      for (const photo of photos) {
+        const photoUrl = photo.src?.large2x ?? photo.src?.large ?? null;
+        if (photoUrl && !existingUrls.has(photoUrl)) {
+          return photoUrl;
+        }
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return null;
+}
+
+function buildStyleExamples(
+  articles: Awaited<ReturnType<typeof getPublishedArticlesForStyleAnalysis>>,
+): string {
+  if (articles.length === 0) {
+    return "لا توجد مقالات منشورة بعد.";
+  }
+
+  return articles
+    .map((article, i) => {
+      const sectionsText = article.sections
+        .map((s) => `### ${s.heading}\n${s.content.slice(0, 400)}`)
+        .join("\n\n");
+
+      return `--- مثال ${i + 1} ---
+العنوان: ${article.title}
+الفئة: ${article.category.name}
+المقتطف: ${article.excerpt}
+
+${sectionsText}`;
+    })
+    .join("\n\n");
+}
+
+function availableCategoryNames(): string {
+  return CATEGORY_DEFINITIONS.map((c) => c.name).join("، ");
+}
+
+async function generateWithClaude(
+  styleExamples: string,
+): Promise<ClaudeArticleOutput> {
+  const client = new Anthropic();
+
+  const systemPrompt = `أنت كاتب محتوى عربي متخصص في اللياقة البدنية والتغذية الرياضية. تكتب لمدونة "المعضّل" وأسلوبك يتسم بـ:
+- الأسلوب العلمي المبسط باللغة العربية الفصيحة
+- الاستشهاد بمصادر علمية موثوقة مثل ISSN وACSM وCDC وجامعات معروفة
+- تقديم نصائح عملية وقابلة للتطبيق في الحياة اليومية
+- التشجيع والحماس في نهاية المقالات
+- استخدام الجداول والقوائم المرقمة عند الحاجة
+- الموازنة بين المعلومات العلمية والأسلوب السهل والمحبب للقارئ
+
+الفئات المتاحة في الموقع: ${availableCategoryNames()}`;
+
+  const userPrompt = `بناءً على هذه الأمثلة من أسلوب كتابة المدونة:
+
+${styleExamples}
+
+---
+
+اكتب الآن مقالة جديدة وفريدة تماماً عن موضوع لياقة بدنية أو تغذية رياضية لم يُتناول في الأمثلة أعلاه. اختر موضوعاً مفيداً وشائق للقراء العرب المهتمين باللياقة.
+
+أخرج النتيجة كـ JSON صحيح فقط، بدون أي نص قبله أو بعده:
+
+{
+  "title": "عنوان المقالة الكامل",
+  "category": "اسم الفئة الدقيق من القائمة المتاحة",
+  "excerpt": "مقتطف وصفي جذاب من جملتين يلخص المقالة",
+  "seoTitle": "عنوان SEO مع الكلمة المفتاحية الرئيسية",
+  "seoDescription": "وصف SEO واضح بين 150-160 حرف",
+  "readingTime": "X دقائق",
+  "pexelsQuery": "english fitness photo search query for cover image",
+  "sections": [
+    { "heading": "المقدمة", "content": "محتوى تفصيلي..." },
+    { "heading": "عنوان القسم 2", "content": "..." },
+    { "heading": "عنوان القسم 3", "content": "..." },
+    { "heading": "عنوان القسم 4", "content": "..." },
+    { "heading": "عنوان القسم 5", "content": "..." },
+    { "heading": "عنوان القسم 6", "content": "..." },
+    { "heading": "الخلاصة", "content": "..." }
+  ]
+}
+
+المتطلبات:
+- 7 أقسام على الأقل بمحتوى تفصيلي حقيقي
+- كل قسم يحتوي على 3 فقرات أو أكثر
+- استشهد بمصادر علمية حقيقية (ISSN, ACSM, CDC, وغيرها) مع روابطها
+- pexelsQuery بالإنجليزية ومرتبط بموضوع المقالة
+- المقالة يجب أن تكون أصلية وغير مستلة من مصدر آخر`;
+
+  const message = await client.messages.create({
+    model: "claude-opus-4-6",
+    max_tokens: 6000,
+    system: systemPrompt,
+    messages: [{ role: "user", content: userPrompt }],
+  });
+
+  const text =
+    message.content[0].type === "text" ? message.content[0].text : "";
+
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error("لم يتمكن الذكاء الاصطناعي من إنتاج مقالة صالحة");
+  }
+
+  const parsed = JSON.parse(jsonMatch[0]) as ClaudeArticleOutput;
+
+  if (!parsed.title || !parsed.sections?.length) {
+    throw new Error("استجابة الذكاء الاصطناعي غير مكتملة");
+  }
+
+  return parsed;
+}
+
+async function resolveUniqueSlug(base: string): Promise<string> {
+  let slug = base || `ai-article-${Date.now()}`;
+  let attempt = 0;
+
+  while (true) {
+    const existing = await prisma.post.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
+
+    if (!existing) break;
+
+    attempt++;
+    slug = `${base}-${attempt}`;
+  }
+
+  return slug;
+}
+
+export async function generateAiArticle(): Promise<GeneratedArticleResult> {
+  // 1. Load existing articles for style analysis (best effort)
+  const [existingArticles, existingCoverUrls] = await Promise.all([
+    getPublishedArticlesForStyleAnalysis(),
+    getExistingCoverImageUrls(),
+  ]);
+
+  const styleExamples = buildStyleExamples(existingArticles);
+
+  // 2. Generate article content with Claude
+  const generated = await generateWithClaude(styleExamples);
+
+  // 3. Normalize category to one of the known categories
+  const validCategory =
+    CATEGORY_DEFINITIONS.find((c) => c.name === generated.category)?.name ??
+    CATEGORY_DEFINITIONS[0].name;
+  const categorySlug = getCategorySlugFromName(validCategory);
+
+  // 4. Fetch a unique cover image from Pexels
+  const coverImageUrl = await fetchUniquePexelsCoverImage(
+    generated.pexelsQuery,
+    existingCoverUrls,
+  );
+
+  // 5. Resolve a unique slug
+  const slug = await resolveUniqueSlug(createSlug(generated.title));
+
+  // 6. Save to database
+  return await prisma.$transaction(async (tx) => {
+    const category = await tx.category.upsert({
+      where: { name: validCategory },
+      update: { slug: categorySlug },
+      create: { name: validCategory, slug: categorySlug },
+    });
+
+    const post = await tx.post.create({
+      data: {
+        title: generated.title,
+        slug,
+        excerpt: generated.excerpt,
+        categoryId: category.id,
+        coverImageUrl: coverImageUrl ?? null,
+        seoTitle: generated.seoTitle || generated.title,
+        seoDescription:
+          generated.seoDescription || generated.excerpt || generated.title,
+        status: "pending_approval",
+        publishedAt: null,
+        readingTime: generated.readingTime || null,
+      },
+      select: { id: true },
+    });
+
+    // Build sections with unique anchors
+    const usedAnchors = new Set<string>();
+    const sections = generated.sections
+      .filter((s) => s.content?.trim())
+      .map((section, index) => {
+        const heading = section.heading?.trim() || `القسم ${index + 1}`;
+        const baseAnchor = createSlug(heading) || `section-${index + 1}`;
+        let anchor = baseAnchor;
+        let suffix = 2;
+
+        while (usedAnchors.has(anchor)) {
+          anchor = `${baseAnchor}-${suffix}`;
+          suffix++;
+        }
+
+        usedAnchors.add(anchor);
+
+        return {
+          postId: post.id,
+          heading,
+          anchor,
+          content: section.content.trim(),
+          sortOrder: index + 1,
+        };
+      });
+
+    if (sections.length > 0) {
+      await tx.postSection.createMany({ data: sections });
+    }
+
+    return {
+      postId: post.id,
+      title: generated.title,
+      slug,
+      category: validCategory,
+      excerpt: generated.excerpt,
+    };
+  });
+}

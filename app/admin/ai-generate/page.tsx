@@ -45,7 +45,7 @@ export default function AiGeneratePage() {
     <div className="space-y-8" dir="rtl">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">
-          وكيل الذكاء الاصطناعي
+          المعضّل AI
         </h1>
         <p className="mt-2 text-gray-500">
           أنشئ مقالة جديدة بالذكاء الاصطناعي بناءً على أسلوب كتابتك

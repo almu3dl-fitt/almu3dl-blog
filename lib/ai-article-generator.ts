@@ -54,18 +54,31 @@ async function getPublishedArticlesForStyleAnalysis() {
   }
 }
 
-async function getExistingCoverImageUrls(): Promise<Set<string>> {
+/** Extracts the Pexels photo ID from a URL like:
+ *  https://images.pexels.com/photos/12345/pexels-photo-12345.jpeg?...
+ *  Returns null if the URL is not a Pexels photo URL.
+ */
+function extractPexelsPhotoId(url: string): string | null {
+  const match = url.match(/pexels\.com\/photos\/(\d+)\//);
+  return match?.[1] ?? null;
+}
+
+async function getExistingPexelsPhotoIds(): Promise<Set<string>> {
   try {
     const posts = await prisma.post.findMany({
       where: { coverImageUrl: { not: null } },
       select: { coverImageUrl: true },
     });
 
-    return new Set(
-      posts
-        .map((p) => p.coverImageUrl)
-        .filter((url): url is string => url !== null),
-    );
+    const ids = new Set<string>();
+
+    for (const post of posts) {
+      if (!post.coverImageUrl) continue;
+      const id = extractPexelsPhotoId(post.coverImageUrl);
+      if (id) ids.add(id);
+    }
+
+    return ids;
   } catch {
     return new Set();
   }
@@ -73,14 +86,14 @@ async function getExistingCoverImageUrls(): Promise<Set<string>> {
 
 async function fetchUniquePexelsCoverImage(
   query: string,
-  existingUrls: Set<string>,
+  existingPhotoIds: Set<string>,
 ): Promise<string | null> {
   if (!PEXELS_API_KEY) return null;
 
-  for (let page = 1; page <= 5; page++) {
+  for (let page = 1; page <= 8; page++) {
     const url = new URL("https://api.pexels.com/v1/search");
     url.searchParams.set("query", query);
-    url.searchParams.set("per_page", "8");
+    url.searchParams.set("per_page", "10");
     url.searchParams.set("page", String(page));
     url.searchParams.set("orientation", "landscape");
     url.searchParams.set("size", "large");
@@ -93,14 +106,15 @@ async function fetchUniquePexelsCoverImage(
       if (!response.ok) continue;
 
       const data = await response.json();
-      const photos: { src: { large2x?: string; large?: string } }[] =
+      const photos: { id: number; src: { large2x?: string; large?: string } }[] =
         data.photos ?? [];
 
       for (const photo of photos) {
+        const photoId = String(photo.id);
+        if (existingPhotoIds.has(photoId)) continue;
+
         const photoUrl = photo.src?.large2x ?? photo.src?.large ?? null;
-        if (photoUrl && !existingUrls.has(photoUrl)) {
-          return photoUrl;
-        }
+        if (photoUrl) return photoUrl;
       }
     } catch {
       continue;
@@ -236,9 +250,9 @@ async function resolveUniqueSlug(base: string): Promise<string> {
 
 export async function generateAiArticle(): Promise<GeneratedArticleResult> {
   // 1. Load existing articles for style analysis (best effort)
-  const [existingArticles, existingCoverUrls] = await Promise.all([
+  const [existingArticles, existingPhotoIds] = await Promise.all([
     getPublishedArticlesForStyleAnalysis(),
-    getExistingCoverImageUrls(),
+    getExistingPexelsPhotoIds(),
   ]);
 
   const styleExamples = buildStyleExamples(existingArticles);
@@ -252,10 +266,10 @@ export async function generateAiArticle(): Promise<GeneratedArticleResult> {
     CATEGORY_DEFINITIONS[0].name;
   const categorySlug = getCategorySlugFromName(validCategory);
 
-  // 4. Fetch a unique cover image from Pexels
+  // 4. Fetch a unique cover image from Pexels (compare by photo ID, not full URL)
   const coverImageUrl = await fetchUniquePexelsCoverImage(
     generated.pexelsQuery,
-    existingCoverUrls,
+    existingPhotoIds,
   );
 
   // 5. Resolve a unique slug

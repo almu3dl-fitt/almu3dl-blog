@@ -10,6 +10,7 @@ type SuggestedArticleCoverInput = {
   sections?: ArticleCoverSectionInput[];
 };
 
+// Images used by keyword rules (COVER_IMAGE_KEYWORD_RULES below)
 const FREE_LOCAL_COVER_IMAGES = {
   protein: "/legacy-uploads/2022/12/protein.png",
   muscleMealPlan: "/legacy-uploads/2022/12/build-muscle-meal-plan.png",
@@ -29,14 +30,16 @@ const FREE_LOCAL_COVER_IMAGES = {
   gymRecovery: "/legacy-uploads/2022/12/gym-with-sauna.png",
 } as const;
 
+// Category fallbacks use DIFFERENT images than keyword rules to avoid duplicates
+// when two articles in the same category get assigned the same local image.
 const CATEGORY_FALLBACK_COVER_URLS: Record<string, string> = {
-  "التغذية الرياضية": FREE_LOCAL_COVER_IMAGES.protein,
-  "خسارة الدهون": FREE_LOCAL_COVER_IMAGES.fatLoss,
-  "بناء العضلات والأداء": FREE_LOCAL_COVER_IMAGES.heavyWeights,
-  "المستلزمات الرياضية": FREE_LOCAL_COVER_IMAGES.compressionGear,
-  "المكملات الغذائية": FREE_LOCAL_COVER_IMAGES.creatine,
-  "الصحة العامة": FREE_LOCAL_COVER_IMAGES.wellness,
-  "الوصفات الصحية": FREE_LOCAL_COVER_IMAGES.healthyRecipe,
+  "التغذية الرياضية": "/legacy-uploads/2022/12/carbohydrates.jpg",
+  "خسارة الدهون": "/legacy-uploads/2022/12/Calorie-diet.webp",
+  "بناء العضلات والأداء": "/legacy-uploads/2022/12/bodybuilding-for-beginners.jpg",
+  "المستلزمات الرياضية": "/legacy-uploads/2022/12/weightlifting-for-basketball-players.jpg",
+  "المكملات الغذائية": "/legacy-uploads/2022/12/BCAA.png",
+  "الصحة العامة": "/legacy-uploads/2022/12/sports-massage-therapist.png",
+  "الوصفات الصحية": "/legacy-uploads/2022/12/Watermelon-and-avocado.webp",
   "أسلوب الحياة الرياضي": FREE_LOCAL_COVER_IMAGES.athleticLifestyle,
 };
 

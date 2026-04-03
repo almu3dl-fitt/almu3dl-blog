@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  getSuggestedCoverImageForArticle,
+  getSuggestedCoverImageForArticleAsync,
   normalizeCoverImageForStorage,
 } from "@/lib/article-cover-images";
 import {
@@ -96,12 +96,12 @@ export async function PUT(request: NextRequest, { params }: ArticleParams) {
 
     const coverImageUrl =
       normalizedCoverImageUrl ??
-      getSuggestedCoverImageForArticle({
+      (await getSuggestedCoverImageForArticleAsync({
         title,
         excerpt,
         categoryName: category.name,
         sections,
-      });
+      }));
 
     const publishedAt =
       status === "published"

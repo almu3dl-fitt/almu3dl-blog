@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
-  getSuggestedCoverImageForArticle,
+  getSuggestedCoverImageForArticleAsync,
   normalizeCoverImageForStorage,
   resolveArticleCoverImageUrl,
 } from "@/lib/article-cover-images";
@@ -670,12 +670,12 @@ async function upsertDraftOverlayPost(
   const sections = normalizeDraftSectionsForStorage(input.sections);
   const coverImageUrl =
     normalizeCoverImageForStorage(input.coverImageUrl?.trim()) ??
-    getSuggestedCoverImageForArticle({
+    (await getSuggestedCoverImageForArticleAsync({
       title,
       excerpt,
       categoryName,
       sections,
-    });
+    }));
   const now = new Date();
 
   const conflictingPost = await findDraftOverlayPostBySlug(slug);

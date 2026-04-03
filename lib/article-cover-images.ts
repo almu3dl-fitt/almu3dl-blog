@@ -111,18 +111,22 @@ function normalizeSearchableText(value: string | null | undefined) {
 
 const COVER_IMAGE_KEYWORD_RULES: Array<{
   imagePath: string;
+  pexelsQuery: string;
   keywords: string[];
 }> = [
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.creatine,
+    pexelsQuery: "creatine supplement powder fitness",
     keywords: ["كرياتين", "creatine", "مونوهيدرات", "monohydrate"],
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.fishOil,
+    pexelsQuery: "fish oil omega 3 capsules supplement",
     keywords: ["fish oil", "omega", "omega 3", "اوميغا", "أوميغا", "سمك", "سلمون"],
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.protein,
+    pexelsQuery: "protein powder shake fitness supplement",
     keywords: [
       "بروتين",
       "protein",
@@ -136,6 +140,7 @@ const COVER_IMAGE_KEYWORD_RULES: Array<{
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.muscleMealPlan,
+    pexelsQuery: "meal prep healthy food containers",
     keywords: [
       "خطة غذائية",
       "meal plan",
@@ -148,14 +153,17 @@ const COVER_IMAGE_KEYWORD_RULES: Array<{
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.healthyRecipe,
+    pexelsQuery: "healthy food cooking meal nutrition",
     keywords: ["وصفة", "recipe", "steak", "طبخ", "طبخة", "مطبخ", "meal"],
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.healthyCookies,
+    pexelsQuery: "healthy snack cookies baking",
     keywords: ["cookie", "cookies", "كوكيز", "حلى", "حلويات", "snack"],
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.fatLoss,
+    pexelsQuery: "fat loss cardio running workout",
     keywords: [
       "دهون",
       "تنشيف",
@@ -168,10 +176,12 @@ const COVER_IMAGE_KEYWORD_RULES: Array<{
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.loseFat,
+    pexelsQuery: "weight loss body transformation fitness",
     keywords: ["body recomposition", "وزن", "weight", "عجز", "deficit"],
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.heavyWeights,
+    pexelsQuery: "gym weightlifting barbell strength training",
     keywords: [
       "ضغط",
       "push up",
@@ -189,18 +199,22 @@ const COVER_IMAGE_KEYWORD_RULES: Array<{
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.compressionGear,
+    pexelsQuery: "sports gear compression clothing athlete",
     keywords: ["gear", "معدات", "مستلزمات", "compression", "ملابس", "أداة", "اداة"],
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.gymRecovery,
+    pexelsQuery: "gym sauna recovery rest athlete",
     keywords: ["sauna", "استشفاء", "recovery day", "روتين النادي", "gym routine"],
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.energy,
+    pexelsQuery: "energy drink sports performance caffeine",
     keywords: ["طاقة", "energy", "كافيين", "caffeine", "مشروبات الطاقة"],
   },
   {
     imagePath: FREE_LOCAL_COVER_IMAGES.wellness,
+    pexelsQuery: "wellness health lifestyle sleep relaxation",
     keywords: ["صحة", "health", "نوم", "sleep", "تعافي عام", "wellness"],
   },
 ];
@@ -277,4 +291,62 @@ export function resolveCoverImageUrl(
     coverImageUrl: value,
     categoryName,
   });
+}
+
+const CATEGORY_PEXELS_QUERIES: Record<string, string> = {
+  "التغذية الرياضية": "sports nutrition protein fitness",
+  "خسارة الدهون": "fat loss cardio weight loss workout",
+  "بناء العضلات والأداء": "muscle building gym strength training",
+  "المستلزمات الرياضية": "sports gear equipment athlete",
+  "المكملات الغذائية": "sports supplements powder fitness",
+  "الصحة العامة": "health wellness lifestyle",
+  "الوصفات الصحية": "healthy food meal nutrition",
+  "أسلوب الحياة الرياضي": "athletic lifestyle fitness sport",
+};
+
+/**
+ * Async version of getSuggestedCoverImageForArticle.
+ * Tries to fetch a high-quality photo from Pexels first;
+ * falls back to local images if the API is unavailable or no key is set.
+ */
+export async function getSuggestedCoverImageForArticleAsync(
+  input: SuggestedArticleCoverInput,
+): Promise<string> {
+  const { fetchPexelsCoverImage } = await import("./cover-image-fetch");
+
+  const searchableText = normalizeSearchableText(
+    [
+      input.title,
+      input.excerpt,
+      ...(input.sections?.flatMap((section) => [section.heading, section.content]) ?? []),
+    ]
+      .filter(Boolean)
+      .join(" "),
+  );
+
+  if (searchableText) {
+    const matchedRule = COVER_IMAGE_KEYWORD_RULES.find((rule) =>
+      rule.keywords.some((keyword) =>
+        searchableText.includes(normalizeSearchableText(keyword)),
+      ),
+    );
+
+    if (matchedRule) {
+      const pexelsUrl = await fetchPexelsCoverImage(matchedRule.pexelsQuery);
+      if (pexelsUrl) return pexelsUrl;
+      return matchedRule.imagePath;
+    }
+  }
+
+  const categoryQuery =
+    input.categoryName?.trim()
+      ? CATEGORY_PEXELS_QUERIES[input.categoryName.trim()]
+      : undefined;
+
+  if (categoryQuery) {
+    const pexelsUrl = await fetchPexelsCoverImage(categoryQuery);
+    if (pexelsUrl) return pexelsUrl;
+  }
+
+  return getCategoryFallbackCoverImage(input.categoryName);
 }

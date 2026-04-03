@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import {
-  getSuggestedCoverImageForArticle,
+  getSuggestedCoverImageForArticleAsync,
   normalizeCoverImageForStorage,
 } from "@/lib/article-cover-images";
 import {
@@ -85,12 +85,12 @@ export async function POST(request: NextRequest) {
 
     const coverImageUrl =
       normalizedCoverImageUrl ??
-      getSuggestedCoverImageForArticle({
+      (await getSuggestedCoverImageForArticleAsync({
         title,
         excerpt,
         categoryName: category.name,
         sections,
-      });
+      }));
 
     const slug = createSlug(title);
 

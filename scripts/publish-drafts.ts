@@ -44,7 +44,7 @@ async function main() {
     console.log(`  cover: ${coverImageUrl}`);
 
     // Update frontmatter fields
-    let updated = raw
+    const updated = raw
       .replace(/^coverImageUrl:.*$/m, `coverImageUrl: "${coverImageUrl}"`)
       .replace(/^status:.*$/m, `status: "published"`)
       .replace(/^publishedAt:.*$/m, `publishedAt: "${publishedAt}"`);

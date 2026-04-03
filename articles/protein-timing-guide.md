@@ -9,8 +9,8 @@ metaDescription: "دليل كامل عن توقيت تناول البروتين 
 sourceUrl: "https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0177-8"
 mainKeyword: "توقيت البروتين"
 secondaryKeywords: ["البروتين بعد التمرين", "نمو العضلات", "التعافي العضلي", "تغذية رياضية", "كمال الأجسام"]
-publishedAt: "2026-04-03T13:47:01.224Z"
-status: "published"
+publishedAt: null
+status: "pending"
 ---
 
 ## مقدمة

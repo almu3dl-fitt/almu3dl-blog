@@ -613,7 +613,14 @@ function buildDraftUpdateInputFromState(
     slug: overlay?.slug ?? draft.slug,
     excerpt: overlay?.excerpt ?? draft.excerpt,
     category: overlay?.category.name ?? draft.category,
-    coverImageUrl: overlay?.coverImageUrl ?? draft.coverImageUrl ?? undefined,
+    // Prefer overlay coverImageUrl only if it is a non-legacy URL.
+    // Legacy URLs (old almu3dl.com uploads) stored in the overlay are
+    // outdated; in that case fall through to the draft's coverImageUrl
+    // which may have a fresh Pexels URL assigned at draft-creation time.
+    coverImageUrl: (normalizeCoverImageForStorage(overlay?.coverImageUrl ?? null) === null ||
+      /^\/legacy-uploads\//.test(normalizeCoverImageForStorage(overlay?.coverImageUrl ?? null) ?? ""))
+      ? draft.coverImageUrl ?? undefined
+      : overlay?.coverImageUrl ?? draft.coverImageUrl ?? undefined,
     seoTitle: overlay?.seoTitle ?? draft.seoTitle,
     seoDescription: overlay?.seoDescription ?? draft.seoDescription,
     sourceUrl: getDraftSourceUrlFromOverlay(overlay ?? null) ?? draft.sourceUrl ?? undefined,
